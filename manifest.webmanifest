@@ -1,0 +1,15 @@
+{
+  "name": "운명의 아이들 — 사주×자미두수 운명분석",
+  "short_name": "운명의 아이들",
+  "description": "3분이면 사주×자미두수×별자리가 너만의 운명 캐릭터를 소환해. 완전 무료 · 로그인 없음 · 개인정보 서버 전송 없음.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#eef5ef",
+  "theme_color": "#eef5ef",
+  "lang": "ko",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}
