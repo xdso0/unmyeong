@@ -13,12 +13,18 @@
 
 이 앱은 **`index.html` 파일 하나**가 전부예요. (CSS·JS·데이터 모두 안에 들어 있음)
 
-수정하려면:
-1. `index.html`을 편집기로 열어서 고친다
-2. 저장 후 푸시: `git add -A && git commit -m "수정 내용" && git push`
-3. 맨 위 `const BUILD='YYYY-MM-DD.N'` 숫자를 **+1** 올린다 → 사용자 폰에서 자동 새로고침됨
+> ⚠️ **이 저장소의 `index.html`은 빌드 산출물입니다 — 직접 수정 금지.**
+> 정본은 상위 폴더의 `../사주별자리_운명분석.html` 하나뿐이에요.
 
-> 로컬 미리보기: 폴더에서 `python -m http.server 8744` 실행 후 브라우저로 열기.
+수정하려면 (상위 폴더에서):
+1. `사주별자리_운명분석.html`(정본)을 편집기로 열어서 고친다
+2. `python build.py --bump` 실행 → BUILD 태그 +1, 압축된 `site/index.html` 자동 생성
+3. `cd site && git add -A && git commit -m "수정 내용 BUILD <태그>" && git push`
+
+자세한 규칙은 `../README.md` 참고.
+
+> 로컬 미리보기: 상위 폴더에서 `python -m http.server 8744` 실행 후
+> `http://localhost:8744/site/index.html` 열기.
 
 ### index.html 안의 주요 블록 (Ctrl+F로 찾기)
 
