@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>겉 띠와 속 띠 — 태어난 날에도 띠가 있다는 걸 아시나요</title>
+<meta name="description" content="띠는 태어난 해에서 오지만, 사주에는 태어난 날의 띠(일지)가 하나 더 있습니다. 겉모습은 개띠인데 속마음 자리엔 쥐가 사는 식이죠. 생일로 속 띠를 확인해 보세요." />
+<link rel="canonical" href="https://xdso0.github.io/unmyeong/guide/tti-ilji.html" />
+<meta property="og:title" content="내 속마음의 띠는 따로 있다: 일지 이야기" />
+<meta property="og:description" content="띠는 태어난 해에서 오지만, 사주에는 태어난 날의 띠(일지)가 하나 더 있습니다. 겉모습은 개띠인데 속마음 자리엔 쥐가 사는 식이죠. 생일로 속 띠를 확인해 보세요." />
+<meta property="og:image" content="https://xdso0.github.io/unmyeong/og.png" />
+<meta property="og:url" content="https://xdso0.github.io/unmyeong/guide/tti-ilji.html" />
+<meta name="twitter:card" content="summary_large_image" />
+<link rel="icon" type="image/png" href="../favicon.png" />
+<style>
+:root{--bg:#eef5ef;--ink:#1d3329;--sub:#56695e;--line:#d2e2d8;--violet:#2e8a60;--gilt:#b78f3d;--card:#fff}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo",Pretendard,"Malgun Gothic",sans-serif;line-height:1.75;font-size:15.5px}
+.wrap{max-width:640px;margin:0 auto;padding:34px 20px 60px}
+h1{font-size:24px;line-height:1.45;margin:6px 0 4px}
+.brand{font-size:12px;letter-spacing:.2em;color:var(--gilt);font-weight:700}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:18px;margin:20px 0;box-shadow:0 8px 26px rgba(24,86,80,.08)}
+label{font-size:13px;font-weight:700;color:var(--sub);display:block;margin-bottom:6px}
+input{width:100%;padding:12px;border:1.5px solid var(--line);border-radius:12px;font-size:16px;font-family:inherit}
+button{width:100%;margin-top:12px;padding:13px;border:0;border-radius:12px;background:linear-gradient(120deg,#2e8a60,#3d8bbf);color:#fff;font-size:15.5px;font-weight:800;cursor:pointer;font-family:inherit}
+#out{display:none;margin-top:14px;padding:14px;border-radius:12px;font-size:14.5px;background:#e2f3e9;border:1.5px solid #bfe3cd}
+h2{font-size:18px;margin:28px 0 8px}
+p{margin:10px 0}
+.cta{display:block;text-align:center;background:linear-gradient(120deg,#2e8a60,#3d8bbf);color:#fff;text-decoration:none;padding:14px;border-radius:14px;font-weight:800;margin-top:24px}
+.foot{font-size:12px;color:var(--sub);margin-top:26px}
+a{color:var(--violet)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="brand">✦ 하늘궁전 · 운명의 아이들 ✦</div>
+  <h1>겉 띠와 속 띠,<br>당신 안에는 동물이 둘 있습니다</h1>
+  <p>"개띠인데 왜 일지가 쥐예요?" 저희 앱에서 실제로 받은 질문입니다. 답은 간단해요. <b>띠는 태어난 해에서 오고, 사주에는 태어난 날의 띠가 하나 더 있습니다.</b> 이걸 일지(日支)라고 부르는데, 밖에서 보이는 내가 연도의 띠라면, 속마음과 가까운 관계에서의 나는 날의 띠를 닮습니다.</p>
+  <div class="card">
+    <label>생년월일로 내 속 띠(일지) 확인하기</label>
+    <input type="date" id="birth" />
+    <button onclick="check()">속 띠 확인</button>
+    <div id="out"></div>
+  </div>
+  <h2>어디에 쓰이나요</h2>
+  <p>일지는 사주에서 <b>배우자 자리</b>로 봅니다. 연애와 결혼, 그리고 아주 가까운 사람 앞에서의 내 모습이 이 자리에서 나와요. 궁합에서 두 사람의 일지가 서로 끌어당기는 관계(합)인지, 정면으로 부딪히는 관계(충)인지가 관계의 밑그림이 됩니다.</p>
+  <p>그래서 겉 띠 궁합(연도끼리)만 보고 "우리 상극이래"라고 접는 건 절반만 본 겁니다. 속 띠끼리는 찰떡일 수 있거든요. 반대도 마찬가지고요.</p>
+  <h2>재미있는 조합들</h2>
+  <p>겉은 호랑이(호랑이띠)인데 속은 토끼인 사람, 겉은 양인데 속에 말이 사는 사람. 저희 앱은 이 두 얼굴을 캐릭터로 보여줍니다. 몸은 명궁의 별이 정하고, 곁에 붙는 부적 동물이 바로 이 속 띠예요.</p>
+  <a class="cta" href="../?from=guide-tti-ilji">내 겉 띠와 속 띠, 캐릭터로 보러 가기 →</a>
+  <p class="foot">더 읽기: <a href="ipchun.html">사주의 새해는 입춘</a> · <a href="yongsin.html">용신은 비타민</a> · <a href="../">운명의 아이들 홈</a></p>
+</div>
+<script>
+function check(){
+  const v=document.getElementById('birth').value; const out=document.getElementById('out');
+  if(!v){out.style.display='block';out.textContent='생년월일을 먼저 선택해 주세요.';return;}
+  const [y,m,d]=v.split('-').map(Number);
+  const jdn=(yy,mm,dd)=>{const a=Math.floor((14-mm)/12),y2=yy+4800-a,m2=mm+12*a-3;return dd+Math.floor((153*m2+2)/5)+365*y2+Math.floor(y2/4)-Math.floor(y2/100)+Math.floor(y2/400)-32045;};
+  const idx=((jdn(y,m,d)-jdn(1949,10,1))%60+60)%60;   // 1949-10-01=갑자 기준
+  const ANI=['쥐','소','호랑이','토끼','용','뱀','말','양','원숭이','닭','개','돼지'];
+  const yAni=ANI[((y-4)%12+12)%12];   // 연도 띠(입춘 근사: 1~2월초 출생은 앱에서 확인)
+  const dAni=ANI[idx%12];
+  out.style.display='block';
+  out.innerHTML='겉 띠(태어난 해)는 <b>'+yAni+'띠</b>'+(m<=2?'(1~2월생은 입춘 기준으로 달라질 수 있어요)':'')+', 그리고 속 띠(태어난 날)는 <b>'+dAni+'띠</b>입니다.'+(yAni===dAni?' 겉과 속이 같은, 드물게 한결같은 조합이네요.':' 겉모습은 '+yAni+', 속마음 자리엔 '+dAni+'가 사는 셈이에요.');
+}
+</script>
+</body>
+</html>

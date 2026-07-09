@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>설날에 태어났는데 왜 작년 띠일까 — 사주의 새해는 입춘입니다</title>
+<meta name="description" content="사주의 한 해는 1월 1일도 설날도 아닌 입춘(2월 4일 무렵)에 시작합니다. 1월~입춘 사이에 태어났다면 사주에서는 전년도 띠예요. 생일로 3초 만에 확인하세요." />
+<link rel="canonical" href="https://xdso0.github.io/unmyeong/guide/ipchun.html" />
+<meta property="og:title" content="1~2월생 필독: 당신의 진짜 띠는 다를 수 있어요" />
+<meta property="og:description" content="사주의 한 해는 1월 1일도 설날도 아닌 입춘(2월 4일 무렵)에 시작합니다. 1월~입춘 사이에 태어났다면 사주에서는 전년도 띠예요. 생일로 3초 만에 확인하세요." />
+<meta property="og:image" content="https://xdso0.github.io/unmyeong/og.png" />
+<meta property="og:url" content="https://xdso0.github.io/unmyeong/guide/ipchun.html" />
+<meta name="twitter:card" content="summary_large_image" />
+<link rel="icon" type="image/png" href="../favicon.png" />
+<style>
+:root{--bg:#eef5ef;--ink:#1d3329;--sub:#56695e;--line:#d2e2d8;--violet:#2e8a60;--gilt:#b78f3d;--card:#fff}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo",Pretendard,"Malgun Gothic",sans-serif;line-height:1.75;font-size:15.5px}
+.wrap{max-width:640px;margin:0 auto;padding:34px 20px 60px}
+h1{font-size:24px;line-height:1.45;margin:6px 0 4px}
+.brand{font-size:12px;letter-spacing:.2em;color:var(--gilt);font-weight:700}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:18px;margin:20px 0;box-shadow:0 8px 26px rgba(24,86,80,.08)}
+label{font-size:13px;font-weight:700;color:var(--sub);display:block;margin-bottom:6px}
+input{width:100%;padding:12px;border:1.5px solid var(--line);border-radius:12px;font-size:16px;font-family:inherit}
+button{width:100%;margin-top:12px;padding:13px;border:0;border-radius:12px;background:linear-gradient(120deg,#2e8a60,#3d8bbf);color:#fff;font-size:15.5px;font-weight:800;cursor:pointer;font-family:inherit}
+#out{display:none;margin-top:14px;padding:14px;border-radius:12px;font-size:14.5px;background:#e2f3e9;border:1.5px solid #bfe3cd}
+h2{font-size:18px;margin:28px 0 8px}
+p{margin:10px 0}
+.cta{display:block;text-align:center;background:linear-gradient(120deg,#2e8a60,#3d8bbf);color:#fff;text-decoration:none;padding:14px;border-radius:14px;font-weight:800;margin-top:24px}
+.foot{font-size:12px;color:var(--sub);margin-top:26px}
+a{color:var(--violet)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="brand">✦ 하늘궁전 · 운명의 아이들 ✦</div>
+  <h1>설날에 태어났는데<br>왜 아직 작년 띠일까</h1>
+  <p>"1월생인데 무슨 띠예요?"라는 질문에 사주가 주는 답은 의외입니다. 사주의 한 해는 1월 1일도, 설날도 아닌 <b>입춘</b>(보통 2월 4일 무렵)에 시작하거든요. 봄이 시작되는 날이 한 해의 시작이라는, 태양의 달력입니다.</p>
+  <div class="card">
+    <label>생년월일로 진짜 띠 확인하기</label>
+    <input type="date" id="birth" />
+    <button onclick="check()">사주 기준 띠 확인</button>
+    <div id="out"></div>
+  </div>
+  <h2>왜 입춘인가요</h2>
+  <p>사주는 태양의 위치로 시간을 나눕니다. 달의 모양을 따르는 음력(설날)과는 체계가 달라요. 태양이 황경 315도를 지나는 순간이 입춘이고, 그 순간부터 새로운 해의 기운, 즉 새로운 띠가 시작됩니다. 그래서 1월 1일~입춘 사이에 태어난 사람은 <b>주민등록상 연도와 사주의 연도가 다릅니다.</b> 2월 초 출생자는 연도별 입춘 시각(2월 3~5일 사이에서 해마다 다르고, 심지어 몇 시 몇 분인지까지 갈립니다)에 따라 갈려요.</p>
+  <h2>띠가 바뀌면 뭐가 달라지나요</h2>
+  <p>사주 여덟 글자 중 연주(年柱) 두 글자가 통째로 바뀝니다. 성격 풀이의 바탕, 다른 사람과의 궁합에서 띠로 보는 부분이 전부 달라져요. 그동안 "띠 궁합이 안 맞는다"고 들었던 1~2월생이라면, 애초에 띠를 잘못 알고 있었을 가능성이 있습니다.</p>
+  <p>저희 앱은 입춘 시각을 천문 계산(태양 황경)으로 분 단위까지 구해서 연주를 정합니다. 2월 3~5일 애매한 날짜에 태어났어도 정확하게 갈라 드려요.</p>
+  <a class="cta" href="../?from=guide-ipchun">분 단위로 계산된 내 진짜 띠 보러 가기 →</a>
+  <p class="foot">더 읽기: <a href="summertime.html">서머타임과 사주</a> · <a href="tti-ilji.html">겉 띠와 속 띠</a> · <a href="../">운명의 아이들 홈</a></p>
+</div>
+<script>
+function check(){
+  const v=document.getElementById('birth').value; const out=document.getElementById('out');
+  if(!v){out.style.display='block';out.textContent='생년월일을 먼저 선택해 주세요.';return;}
+  const [y,m,d]=v.split('-').map(Number); const md=m*100+d;
+  const ANI=['원숭이','닭','개','돼지','쥐','소','호랑이','토끼','용','뱀','말','양'];
+  const yr=(md<204)?y-1:y;   // 근사 경계 2/4 — 2/3~2/5 출생은 앱에서 분 단위 확인 안내
+  const ani=ANI[yr%12];
+  out.style.display='block';
+  if(md>=203&&md<=205){
+    out.innerHTML='🌗 <b>'+m+'월 '+d+'일은 입춘 경계선 위</b>입니다. 태어난 해의 입춘이 몇 시였는지에 따라 띠가 갈려요. 아래 버튼으로 가면 분 단위 천문 계산으로 정확히 알려 드립니다.';
+  }else if(md<204){
+    out.innerHTML='🔄 사주 기준으로 당신은 <b>'+(y-1)+'년생 '+ani+'띠</b>입니다. 주민등록 연도('+y+'년)와 달라요. 입춘 전에 태어났기 때문입니다.';
+  }else{
+    out.innerHTML='✅ 사주 기준으로도 <b>'+y+'년생 '+ani+'띠</b>가 맞습니다. 입춘이 지난 뒤에 태어났거든요.';
+  }
+}
+</script>
+</body>
+</html>
