@@ -7,7 +7,7 @@ self.addEventListener('activate',e=>{
 self.addEventListener('fetch',e=>{
   const url=new URL(e.request.url);
   if(e.request.method!=='GET'||url.origin!==location.origin) return;
-  const isStatic=/\/char\/|\/fonts\/|icon-|apple-touch|favicon|manifest/.test(url.pathname);
+  const isStatic=/\/char\/|\/fonts\/|icon-|apple-touch|favicon|manifest|bg-dawn/.test(url.pathname);
   if(isStatic){
     // 캐시 우선(이미지는 ?v=N으로 버전 관리되므로 안전)
     e.respondWith(caches.open(CACHE).then(c=>c.match(e.request).then(hit=>hit||fetch(e.request).then(res=>{if(res.ok)c.put(e.request,res.clone());return res;}))));
