@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>궁합 점수 78점의 진실 — 점수보다 먼저 봐야 할 것</title>
+<meta name="description" content="궁합 점수 한 장으로는 아무것도 결정할 수 없습니다. 띠 궁합이 실제로 보는 것(육합·충·삼합)과 그 한계, 그리고 점수 대신 봐야 할 '조심할 달'을 알려드립니다. 두 사람 띠로 3초 확인." />
+<link rel="canonical" href="https://xdso0.github.io/unmyeong/guide/gunghap-score.html" />
+<meta property="og:title" content="궁합 점수 78점의 진실" />
+<meta property="og:description" content="점수 한 장보다 '언제 조심할지'가 백 배 실용적입니다. 두 사람 띠로 3초 확인해 보세요." />
+<meta property="og:image" content="https://xdso0.github.io/unmyeong/og.png" />
+<meta property="og:url" content="https://xdso0.github.io/unmyeong/guide/gunghap-score.html" />
+<meta name="twitter:card" content="summary_large_image" />
+<link rel="icon" type="image/png" href="../favicon.png" />
+<style>
+:root{--bg:#eef5ef;--ink:#1d3329;--sub:#56695e;--line:#d2e2d8;--violet:#2e8a60;--gilt:#b78f3d;--card:#fff}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo",Pretendard,"Malgun Gothic",sans-serif;line-height:1.75;font-size:15.5px}
+.wrap{max-width:640px;margin:0 auto;padding:34px 20px 60px}
+h1{font-size:24px;line-height:1.45;margin:6px 0 4px}
+.brand{font-size:12px;letter-spacing:.2em;color:var(--gilt);font-weight:700}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:18px;margin:20px 0;box-shadow:0 8px 26px rgba(24,86,80,.08)}
+label{font-size:13px;font-weight:700;color:var(--sub);display:block;margin-bottom:6px}
+select{width:100%;padding:12px;border:1.5px solid var(--line);border-radius:12px;font-size:16px;font-family:inherit;background:#fff}
+.two{display:flex;gap:10px}.two>div{flex:1}
+button{width:100%;margin-top:12px;padding:13px;border:0;border-radius:12px;background:linear-gradient(120deg,#2e8a60,#3d8bbf);color:#fff;font-size:15.5px;font-weight:800;cursor:pointer;font-family:inherit}
+#out{display:none;margin-top:14px;padding:14px;border-radius:12px;font-size:14.5px}
+#out.hap{display:block;background:#e2f3e9;border:1.5px solid #bfe3cd}
+#out.chung{display:block;background:#fbeadf;border:1.5px solid #efcdb7}
+#out.plain{display:block;background:#eef2f7;border:1.5px solid #d5deea}
+h2{font-size:18px;margin:28px 0 8px}
+p{margin:10px 0}
+.cta{display:block;text-align:center;background:linear-gradient(120deg,#2e8a60,#3d8bbf);color:#fff;text-decoration:none;padding:14px;border-radius:14px;font-weight:800;margin-top:24px}
+.foot{font-size:12px;color:var(--sub);margin-top:26px}
+a{color:var(--violet)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="brand">✦ 하늘궁전 · 운명의 아이들 ✦</div>
+  <h1>궁합 점수 78점의 진실,<br>점수보다 먼저 봐야 할 것</h1>
+  <p>궁합 앱에서 78점을 받았다고 해 볼게요. 그래서 뭘 하면 되나요? 만나야 하나요, 헤어져야 하나요? 점수 한 장은 아무 행동도 알려주지 않습니다. 반면 <b>"두 사람은 몇 월에 부딪히기 쉬운가"</b>는 당장 쓸 수 있는 정보예요. 이 글은 궁합 점수가 실제로 뭘 계산한 것인지, 그리고 점수 대신 봐야 할 것이 무엇인지 설명합니다.</p>
+
+  <div class="card">
+    <label>두 사람의 띠를 고르면 3초 만에 확인해 드려요</label>
+    <div class="two">
+      <div><select id="a"></select></div>
+      <div><select id="b"></select></div>
+    </div>
+    <button onclick="check()">두 띠의 관계 확인하기</button>
+    <div id="out"></div>
+  </div>
+
+  <h2>띠 궁합이 실제로 계산하는 것</h2>
+  <p>흔히 보는 띠 궁합은 두 사람이 태어난 해의 지지(띠) 관계를 봅니다. 서로 끌어당기는 짝이면 <b>육합</b>(쥐·소, 호랑이·돼지, 토끼·개, 용·닭, 뱀·원숭이, 말·양), 정면으로 마주 보는 짝이면 <b>충</b>(쥐·말, 소·양, 호랑이·원숭이, 토끼·닭, 용·개, 뱀·돼지), 같은 팀 기운이면 <b>삼합</b>입니다. 여기까지는 근거가 있는 계산이에요.</p>
+  <p>문제는 그 다음입니다. 사주는 여덟 글자인데, 띠는 그중 <b>한 글자</b>예요. 태어난 해의 지지 하나만 보고 두 사람 관계 전체를 점수로 만드는 건, 책의 첫 글자만 읽고 별점을 매기는 것과 비슷합니다. 제대로 된 궁합은 두 사람의 일간이 서로 어떤 오행 관계인지, 서로에게 필요한 기운(용신)을 채워 주는지, 속마음 자리를 흔드는 시기가 언제 겹치는지까지 봐야 해요.</p>
+
+  <h2>충이 나쁜 궁합이라는 오해</h2>
+  <p>충이 나오면 "상극이라 안 된다"고 겁주는 풀이가 많은데, 절반만 맞는 얘기입니다. 충은 서로 반대 기운이라 부딪히기 쉽다는 뜻이지만, 반대라서 생기는 강한 끌림도 같이 갖고 있어요. 실제로 오래 가는 커플 중에 충 조합이 적지 않습니다. 핵심은 "만나면 안 된다"가 아니라 <b>"언제 부딪히기 쉬운지 미리 알고 그 달에 큰 얘기를 꺼내지 않는 것"</b>이에요.</p>
+  <p>반대로 육합이 나왔다고 만점 궁합인 것도 아닙니다. 처음부터 결이 잘 맞아 편한 대신, 편해서 무뎌지는 구간이 옵니다. 어느 조합이든 좋기만 한 궁합도, 나쁘기만 한 궁합도 없어요.</p>
+
+  <h2>점수 대신 이걸 보세요</h2>
+  <p>저희 앱의 궁합은 점수 한 장으로 끝나지 않습니다. 두 사람의 사주 여덟 글자를 각각 계산해서, 올해 <b>어느 달에 둘 다 순풍인지</b>, <b>어느 달에 부딪히기 쉬운지</b>를 달력으로 보여줘요. 사귄 날을 넣으면 지나온 위기 구간도 확인할 수 있습니다. 회원가입 없고, 입력한 정보는 휴대폰 밖으로 나가지 않아요.</p>
+
+  <a class="cta" href="../?from=guide-gh">우리 둘의 달력 보러 가기 →</a>
+
+  <p class="foot">참고: 이 페이지의 확인 결과는 태어난 해의 띠 관계만 본 것으로, 전체 궁합의 일부입니다. 정확한 궁합은 앱에서 두 사람의 생년월일을 넣어 확인하세요. 입춘 전에 태어났다면 띠가 앞 해 기준일 수 있어요(<a href="ipchun.html">입춘 이야기</a>). · <a href="../">운명의 아이들 홈</a></p>
+</div>
+<script>
+const ANI=['쥐','소','호랑이','토끼','용','뱀','말','양','원숭이','닭','개','돼지'];
+const HAP={0:1,2:11,3:10,4:9,5:8,6:7};              // 육합: 자축 인해 묘술 진유 사신 오미
+const SAM=[[8,0,4],[5,9,1],[2,6,10],[11,3,7]];      // 삼합: 신자진 사유축 인오술 해묘미
+(function(){const o=ANI.map((a,i)=>'<option value="'+i+'">'+a+'띠</option>').join('');
+document.getElementById('a').innerHTML=o;document.getElementById('b').innerHTML=o.replace('value="0"','value="0" selected').replace('value="6"','value="6" selected');})();
+function check(){
+  const a=+document.getElementById('a').value,b=+document.getElementById('b').value,out=document.getElementById('out');
+  const hap=(HAP[a]===b)||(HAP[b]===a);
+  const chung=(a+6)%12===b;
+  const sam=a!==b&&SAM.some(g=>g.includes(a)&&g.includes(b));
+  const n1=ANI[a],n2=ANI[b];
+  if(hap){out.className='hap';out.innerHTML='💞 <b>'+n1+'띠와 '+n2+'띠는 육합</b>, 처음부터 서로 끌어당기는 짝입니다.<br>결이 잘 맞아 편한 조합이에요. 다만 편해서 무뎌지는 구간이 오니, 만점이라 믿고 방심하지 않는 게 오히려 비결입니다.';}
+  else if(chung){out.className='chung';out.innerHTML='⚡ <b>'+n1+'띠와 '+n2+'띠는 충</b>, 정면으로 마주 보는 짝입니다.<br>부딪히기 쉽지만 그만큼 끌림도 강한 조합이에요. 나쁜 궁합이라는 뜻이 아니라, <b>부딪히기 쉬운 달을 미리 알아 두면 좋은</b> 조합입니다. 아래 버튼에서 두 사람의 달력을 확인해 보세요.';}
+  else if(sam){out.className='hap';out.innerHTML='🤝 <b>'+n1+'띠와 '+n2+'띠는 삼합</b>, 같은 팀 기운입니다.<br>같은 방향을 볼 때 시너지가 큰 조합이에요. 연애보다 동료 운으로도 자주 언급됩니다.';}
+  else if(a===b){out.className='plain';out.innerHTML='🪞 <b>같은 띠</b>네요. 닮아서 편하고, 닮아서 부딪히는 조합입니다.<br>띠만으로는 여기까지예요. 진짜 차이는 일간과 태어난 날에서 갈립니다.';}
+  else{out.className='plain';out.innerHTML='🌿 '+n1+'띠와 '+n2+'띠는 띠 기준으로 특별한 합도 충도 아닙니다.<br>이게 나쁜 소식이 아니에요. 띠는 사주 여덟 글자 중 한 글자일 뿐이라, 진짜 궁합은 생년월일 전체로 봐야 합니다.';}
+}
+</script>
+</body>
+</html>

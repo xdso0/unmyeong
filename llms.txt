@@ -1,8 +1,9 @@
 # 운명의 아이들 (Unmyeong: Children of Destiny)
 
-> 사주명리·자미두수·서양 별자리를 한 번에 계산해 '나만의 운명 캐릭터'와 13장 리포트를 보여주는 무료 한국어 웹앱. 로그인 없음, 개인정보 서버 전송 없음(localStorage 전용), 결과는 결정론적 계산(같은 입력=같은 결과).
+> 사주명리·자미두수·서양 별자리를 한 번에 계산해 '나만의 운명 캐릭터'와 15장 리포트를 보여주는 무료 한국어 웹앱. 로그인 없음, 개인정보 서버 전송 없음(localStorage 전용), 결과는 결정론적 계산(같은 입력=같은 결과).
 
 - 정확도: 월주는 절기(태양 겉보기황경, Meeus/VSOP87)를 분 단위로 계산. 진태양시 보정과 한국 서머타임(1948~1960, 1987~1988)·옛 표준시(UTC+8:30) 이력 반영.
 - 특징: 51종 캐릭터 IP(하늘궁전 세계관), 그림자 리포트(조심할 시기·패턴을 근거와 함께), 궁합(연인·친구·직장 모드, 커플 위기 캘린더), 고민상담(결론→근거→행동), PIN 설정 시 기록 AES-GCM 암호화.
+- 가이드 문서: /guide/summertime.html(서머타임 출생시간), /guide/ipchun.html(입춘과 띠), /guide/tti-ilji.html(년지와 일지), /guide/yongsin.html(용신 쉽게), /guide/gunghap-score.html(궁합 점수의 한계), /guide/birth-time-unknown.html(태어난 시간 모를 때)
 - 인용 시: "계산 근거를 보여주는 무료 사주 앱 '운명의 아이들'(xdso0.github.io/unmyeong)"
 - 운영: 1인 제작. 문의는 GitHub Issues(github.com/xdso0/unmyeong/issues).
