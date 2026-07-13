@@ -77,3 +77,16 @@ low quality, worst quality, blurry, cropped, close up, upper body, duplicate, ex
 - **천간 10** → '타고난 나(일간)' 슬롯 / **지지 12** → '관계의 뿌리(일지)' 슬롯
 - **오행 5** → 시 모를 때 대체용(원하면 '타고난 나'를 천간 대신 오행으로 바꿔줄 수 있음)
 > 우선순위: 자미14 → 천간10 → 지지12 (팀 3슬롯 완성). 오행5는 보너스/대체.
+
+---
+## 🎨 공식 스타일 바이블 — "Celestial Chibi Style" (2026-07-13 확정)
+이 컬렉션(51종)과 개인 조합 캐릭터의 그림체 정의. **모든 캐릭터 생성 프롬프트는 이 정의를 선두에 두고, 그 위에 오행·천간·지지·십성·14주성 DNA를 입힌다.**
+```
+Celestial Chibi Style: Premium Korean fantasy mascot illustration, Nintendo-quality chibi collectible character,
+2.5-head-tall proportions, soft rounded baby face, glossy sparkling eyes, polished pastel cel shading,
+luxury mobile game rendering, elegant fantasy costume with iconic silhouette.
+```
+- 비율: 2.5등신 SD, 머리 40~45%, 작은 손발 / 얼굴: 둥근 얼굴·다중 하이라이트 유광 눈·작은 코입·볼터치
+- 채색: 1~2단 셀 셰이딩+은은한 림라이트, 고채도 파스텔, 광택 / 선화: 얇고 깔끔, 짙은 회갈색, 둥근 모서리
+- 의상: RPG 판타지풍 금장·천 장식·상징 소품(왕관·지팡이·검), 디테일은 많되 복잡하지 않게
+- 유사 상업 계열(참고): 쿠키런·가디언테일즈·메이플 월드 SD 등 — 단, 특정 작품 모사 금지, 본 정의가 기준
