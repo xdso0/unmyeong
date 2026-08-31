@@ -20,7 +20,7 @@
 /* ============================================================
    사주 × 별자리 운명 분석, 전부 로컬, 외부통신 없음
    ============================================================ */
-const BUILD='2026-08-31.12';   // 날짜=빌드일, .N=그날 배포 순번. 재배포마다 갱신 → 자동 새로고침 트리거
+const BUILD='2026-08-31.13';   // 날짜=빌드일, .N=그날 배포 순번. 재배포마다 갱신 → 자동 새로고침 트리거
 /* 자동 업데이트: ①켜질 때 최신 BUILD 확인 → 다르면 캐시버스트 이동 ②탭이 다시 보일 때도 확인 → 읽던 중이면 강제 리로드 대신 배너
    (폰 브라우저는 옛 탭을 리로드 없이 복원하므로 ②가 없으면 며칠 전 버전이 계속 보임 — 오너 "어떤 건 배포됐고 어떤 건 안 됐던데" 원인) */
 (function(){try{
@@ -6263,6 +6263,68 @@ function elemMixHTML(me, op, rawName, rel){
       <div class="info-grid">${cards.join('')}${fills}</div><p class="body" style="font-size:14.5px;margin-top:14px">기운의 양을 봤으니 이번엔 <b>방향</b>이야. 명리에선 상대가 내 일간에게 어떤 자리인지를 <b>십성</b>으로 불러. 중요한 건 이게 <b>서로 다르다</b>는 거야. 내가 상대를 챙기는 자리인데 상대는 나를 누르는 자리일 수 있고, 그 어긋남이 관계에서 그대로 나타나.</p><div class="info-grid">${sipCards}</div><p class="body" style="font-size:14.5px;margin-top:12px">이 장은 <b>좋고 나쁨</b>이 아니라 <b>배치</b>야. 비어 있는 자리는 채우면 되고, 넘치는 자리는 누가 말릴지 정하면 돼. 십성 구조도 마찬가지라서, <b>어느 쪽이 어떤 몫을 맡는 게 덜 힘든지</b>를 알려 주는 것뿐이야. 사람을 바꾸라는 말이 아니라 <b>역할을 바꾸라</b>는 말에 가까워.</p></div>`;
   }catch(e){ return ''; }
 }
+/* ★궁합 용신 보완도 (2026-08-31, 궁합 분량 확대 3단계).
+   각자에게 약이 되는 오행(용신)을 상대가 얼마나 갖고 있나. 양방향.
+   기운 배합 장과 다르다 - 그건 커플의 총량, 이건 개인의 처방이다.
+   시가 없어도 나온다(yongsin 은 dayEl·sinLevel·counts 만 쓴다). */
+function yongFitHTML(me, op, rawName, rel){
+  try{
+    if(typeof yongsin!=='function'||typeof rawElementCount!=='function') return '';
+    const oname=(typeof escapeHtml==='function')?escapeHtml(rawName||'상대'):(rawName||'상대');
+    const Y1=yongsin(me), Y2=yongsin(op);
+    if(!Y1||!Y1.yong||!Y2||!Y2.yong) return '';
+    const A=rawElementCount(me.p), B=rawElementCount(op.p);
+    if(!A||!B) return '';
+    const toMe=B[Y1.yong]||0, toOp=A[Y2.yong]||0;      /* 상대가 내 용신을 몇 자 */
+    const giMe=B[Y1.gi]||0,   giOp=A[Y2.gi]||0;        /* 상대가 내 기신을 몇 자 */
+    const lv = pr => { const s=String(pr.sinLevel||''); return s.indexOf('강')>=0?'강':(s.indexOf('약')>=0?'약':'중'); };
+    /* 왜 그게 약인가 - yongsin() 의 분기를 그대로 말로 옮긴다. 지어내지 않는다. */
+    const WHY={
+      강:'기운이 센 편이라, 더 보태는 게 아니라 <b>덜어내거나 눌러 주는</b> 기운이 약이야.',
+      약:'기운이 여린 편이라, <b>널 낳아 주고 받쳐 주는</b> 기운이 약이야.',
+      중:'한쪽으로 크게 안 기울어서, <b>제일 얇은 자리를 메우는</b> 기운이 약이야.'};
+    /* ★who 에는 <조사를 붙이지 않은> 소유격 주체를 넘긴다.
+       초안에서 neun() 을 붙여 넘겨 「상대는 여덟 글자 중」이 나갔다. */
+    const verdict = (n, yEl, who, isMe) => {
+      const yn=EL[yEl].name, ya=JOSA(yn,'이야','야');
+      if(n>=3) return `${who} 여덟 글자 중 <b>${n}자</b>가 ${ya}. 두껍게 갖고 있어. ${isMe
+        ? `이 사람 옆에서 네가 잘 굴러간다면 그건 기분 탓이 아니야. <b>네게 모자란 걸 상대가 그냥 들고 있어.</b>`
+        : `${oname}에게 모자란 걸 <b>네가 들고 있다</b>는 뜻이야. 상대가 너를 편해하는 이유가 성격만은 아니야.`}`;
+      if(n>=1) return `${who} 여덟 글자 중 <b>${n}자</b>가 ${ya}. 많진 않아도 <b>없는 것과는 달라</b>. ${isMe
+        ? `${yn} 쪽으로 일이 풀릴 때 상대가 곁에 있었다면, 우연이 아닐 수 있어.`
+        : `${oname}${iga(oname)} ${yn} 쪽에서 막힐 때 네가 도움이 되는 자리야.`}`;
+      const g=(typeof GAEUN!=='undefined'&&GAEUN[yEl])?GAEUN[yEl]:null;
+      return `${who} 여덟 글자엔 ${yn}${iga(yn)} <b>한 자도 없어</b>. ${isMe
+        ? `상대가 나쁜 게 아니라, <b>네게 필요한 걸 이 사람에게서는 못 얻는다</b>는 뜻이야. 그 자리는 관계 밖에서 채워야 해.${g?` ${g.doo} 같은 것들이야.`:''}`
+        : `${oname}에게 필요한 걸 <b>네가 줄 수는 없다</b>는 뜻이야. 안 해 준 게 아니라 없는 거니까, 못 해 줬다고 자책할 자리가 아니야.${g?` 상대에겐 ${g.doo} 쪽이 따로 필요해.`:''}`}`;
+    };
+    const giNote = (n, gEl, who) => {
+      if(n<4) return '';
+      const e=(typeof GI_EFFECT!=='undefined'&&GI_EFFECT[gEl])?GI_EFFECT[gEl]:'';
+      return `<br><span style="color:var(--care)">다만 ${who} <b>${EL[gEl].name} ${n}자</b>를 갖고 있어. 네겐 과하면 독이 되는 기운이야. ${e}</span>`;
+    };
+    const giNoteOp = (n, gEl) => {
+      if(n<4) return '';
+      return `<br><span style="color:var(--care)">반대로 네가 <b>${EL[gEl].name} ${n}자</b>를 갖고 있어. ${oname}에겐 과하면 부담이 되는 기운이라, 네가 잘해 주는 방식이 상대에겐 무겁게 닿을 수 있어.</span>`;
+    };
+    const both = (toMe>=1&&toOp>=1), onlyMe=(toMe>=1&&toOp===0), onlyOp=(toMe===0&&toOp>=1);
+    /* ★둘의 용신이 같은 경우. 실측 6쌍 중 4쌍이 여기 걸렸는데 초안은 아무 말도 안 했다.
+       같은 걸 필요로 한다는 건 관계에서 큰 정보다 - 특히 둘 다 없을 때. */
+    const sameYong = (Y1.yong===Y2.yong);
+    const sameTxt = !sameYong ? '' : (both
+      ? ` 그리고 <b>둘의 약이 같은 기운</b>이야. 같은 걸 좋아하고 같은 데서 힘을 얻으니까 취향이 잘 맞아. 대신 <b>둘 다 부족해질 때 같이 부족해져</b>. 한쪽이 채워 줄 수가 없는 구조라, 힘든 시기가 겹치면 서로 기댈 데가 없어져.`
+      : ` 게다가 <b>둘의 약이 같은 기운</b>인데 <b>둘 다 그걸 안 갖고 있어</b>. 서로에게서 못 얻는 정도가 아니라 <b>같은 것을 같이 아쉬워하는</b> 사이야. 이건 오히려 편할 수도 있어. 상대가 왜 그걸 원하는지 설명 안 해도 알거든. 다만 둘이 같이 그걸 <b>밖에서</b> 구하기로 정해 둬야 해. 서로에게 조르면 둘 다 없는 걸 조르는 셈이야.`);
+    const sumTxt = both
+      ? `<b>서로가 서로의 약을 갖고 있어.</b> 궁합에서 제일 실속 있는 배치야. 둘 다 상대에게서 얻을 게 있다는 뜻이고, 그래서 오래 붙어 있을수록 서로 편해져. 다만 <b>편한 것과 성장하는 건 다르다</b>는 것만 기억해 둬.`
+      : onlyMe
+      ? `<b>너는 받는데, ${oname}${neun(oname)} 이 관계에서 그걸 못 받아.</b> 나쁜 뜻이 아니라 <b>기울어 있다</b>는 뜻이야. 받는 쪽은 편해서 못 느끼고 주는 쪽만 느끼는 게 이런 배치의 특징이라, 네가 먼저 알아채는 게 중요해. 상대가 필요한 <b>${EL[Y2.yong].name}</b>${neun(EL[Y2.yong].name)} 네가 못 주니까, 상대가 그걸 밖에서 채우는 걸 <b>서운해하지 않는 것</b>이 이 관계에선 배려야.`
+      : onlyOp
+      ? `<b>${oname}${neun(oname)} 받는데 너는 이 관계에서 그걸 못 받아.</b> 나쁜 뜻이 아니라 기울어 있다는 뜻이야. 이런 배치에서 지치는 건 늘 주는 쪽이고, 지금은 네가 그쪽이야. 네게 필요한 <b>${EL[Y1.yong].name}</b>${eul(EL[Y1.yong].name)} <b>관계 밖에서 채워도 되는 것</b>으로 정해 둬. 그게 이 관계를 오래 가게 해.`
+      : `<b>서로의 약을 서로가 안 갖고 있어.</b> 이건 나쁜 궁합이라는 뜻이 아니야. <b>보완하는 관계가 아니라 나누는 관계</b>라는 뜻이야. 서로를 채워 주려고 애쓸수록 둘 다 없는 걸 짜내게 되니까, 각자 필요한 건 각자 밖에서 채우고 <b>이 관계에서는 다른 걸 기대하는 편</b>이 훨씬 편해.`;
+    const sumFull = sumTxt + sameTxt;
+    return `<div class="chapter"><div class="ch-h"><span class="ch-n">장</span><div class="ch-tt"><div class="ch-t">서로에게 약이 되나</div><div class="ch-s">각자에게 필요한 기운을 상대가 갖고 있는지</div></div></div><p class="body" style="font-size:14.5px">명리에선 사람마다 <b>약이 되는 기운</b>이 따로 있다고 봐. 같은 오행이어도 누구에겐 보약이고 누구에겐 과잉이야. 앞 장에서 <b>둘을 합치면 무엇이 차고 비는지</b>를 봤다면, 이번엔 <b>각자에게 필요한 걸 상대가 들고 있는지</b>를 봐. 총량이 아니라 <b>처방</b>이야.</p><div class="info-grid"><div class="info-card"><div class="lab">너에게 약이 되는 기운 · ${EL[Y1.yong].name}</div><div class="val" style="font-weight:500">${WHY[lv(me)]} 그래서 네 약은 <b>${EL[Y1.yong].name}</b>${jong(EL[Y1.yong].name)?'이야':'야'}.<br>${verdict(toMe, Y1.yong, oname, true)}${giNote(giMe, Y1.gi, `${oname}${iga(oname)}`)}</div></div><div class="info-card"><div class="lab">${oname}에게 약이 되는 기운 · ${EL[Y2.yong].name}</div><div class="val" style="font-weight:500">${WHY[lv(op)]} 그래서 ${oname}의 약은 <b>${EL[Y2.yong].name}</b>${jong(EL[Y2.yong].name)?'이야':'야'}.<br>${verdict(toOp, Y2.yong, '네', false)}${giNoteOp(giOp, Y2.gi)}</div></div><div class="info-card wide"><div class="lab" style="color:${both?'var(--good)':((onlyMe||onlyOp)?'var(--ok)':'var(--muted)')}">두 방향을 겹치면</div><div class="val" style="font-weight:500">${sumFull}</div></div></div><p class="body sub" style="font-size:12.5px;margin-top:10px;color:var(--muted)">개수는 <b>겉 여덟 글자</b>를 센 값이야. 그리고 용신을 무엇으로 잡느냐는 <b>유파마다 다르고</b>, 여기 값은 이 앱이 정한 규칙(억부 기준)을 따른 거야. 다른 곳에서 다른 오행을 들었다면 틀린 게 아니라 <b>기준이 다른 것</b>일 수 있어.</p></div>`;
+  }catch(e){ return ''; }
+}
 let _reportBuilders={};   // cid → ()=>chaptersHTML. 무거운 9장 보고서를 '열 때' 만들기 위한 지연 빌더(로컬 카운슬 성능 2026-07-21)
 function renderCompatList(){
   const box=document.getElementById('compList');box.innerHTML='';
@@ -6387,6 +6449,7 @@ function renderCompatList(){
           <div class="mc-section" style="margin-top:14px">📜 ${escapeHtml(c.name)} 님 사주 원국</div>
           ${renderMyeongsik(op)}</div>
         ${elemMixHTML(me,op,c.name,rel)}
+        ${yongFitHTML(me,op,c.name,rel)}
         <div class="chapter"><div class="ch-h"><span class="ch-n">둘</span><div class="ch-tt"><div class="ch-t">성격궁합</div><div class="ch-s">닮은 결, 부딪히는 결</div></div></div><p class="body" style="font-size:14.5px">${r.storyPersonality}</p><div class="info-grid"><div class="info-card wide"><div class="lab">${M.styleLab}</div><div class="val" style="font-weight:500">${M.styleVal}</div></div><div class="info-card wide"><div class="lab">💬 잘 통하는 대화 주제</div><div class="val" style="font-weight:500">${r.talk}</div></div></div><div class="twocol" style="margin-top:10px"><div><div class="mc-section" style="color:var(--good)">💚 잘 맞는 결</div><ul class="clean">${r.goods.map(x=>`<li>${x}</li>`).join('')}</ul></div><div><div class="mc-section" style="color:var(--bad)">💔 부딪히는 결</div><ul class="clean">${r.cautions.map(x=>`<li>${x}</li>`).join('')}</ul></div></div>
           ${chPersonMore(me,op,c.name,rel)}</div><div class="chapter"><div class="ch-h"><span class="ch-n">셋</span><div class="ch-tt"><div class="ch-t">${M.emoT}</div><div class="ch-s">${rel==='work'?'의사소통과 감정 처리 방식':rel==='friend'?'마음을 주고받는 방식':'마음을 주고받는 방식'}</div></div></div><p class="body" style="font-size:14.5px">${r.storyEmotion}</p>
           ${chEmoMore(me,op,c.name)}
