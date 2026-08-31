@@ -20,7 +20,7 @@
 /* ============================================================
    사주 × 별자리 운명 분석, 전부 로컬, 외부통신 없음
    ============================================================ */
-const BUILD='2026-08-31.13';   // 날짜=빌드일, .N=그날 배포 순번. 재배포마다 갱신 → 자동 새로고침 트리거
+const BUILD='2026-08-31.14';   // 날짜=빌드일, .N=그날 배포 순번. 재배포마다 갱신 → 자동 새로고침 트리거
 /* 자동 업데이트: ①켜질 때 최신 BUILD 확인 → 다르면 캐시버스트 이동 ②탭이 다시 보일 때도 확인 → 읽던 중이면 강제 리로드 대신 배너
    (폰 브라우저는 옛 탭을 리로드 없이 복원하므로 ②가 없으면 며칠 전 버전이 계속 보임 — 오너 "어떤 건 배포됐고 어떤 건 안 됐던데" 원인) */
 (function(){try{
@@ -1120,18 +1120,67 @@ function renderZwCompat(me,op,rel){
     `</div>`+
     (()=>{const m0=Z.mM.stars.filter(s=>ZW_STAR[s])[0], o0=Z.oM.stars.filter(s=>ZW_STAR[s])[0];
       if(!m0||!o0) return '';
-      const chem = m0===o0
-        ? `너랑 ${oname}, 명궁에 똑같이 <b>${m0}</b>${iga(m0)} 앉아 있어. 거울처럼 닮은 둘이라 말 안 해도 통하는 게 많은데, ‘${ZW_STAR[m0].tags.slice(0,2).join('·')}’의 그늘 같은 약점도 똑같이 나눠 가지니까 서로 거울 삼아 다독여 줘.`
-        : `너의 명궁은 <b>${m0}</b>(${ZW_STAR[m0].tags[0]}), ${oname}의 명궁은 <b>${o0}</b>(${ZW_STAR[o0].tags[0]})${iya(ZW_STAR[o0].tags[0])}. ‘${ZW_STAR[m0].tags[0]}’${eul(ZW_STAR[m0].tags[0])} 가진 너랑 ‘${ZW_STAR[o0].tags[0]}’${eul(ZW_STAR[o0].tags[0])} 가진 ${oname}${iga(oname)} 서로의 빈 곳을 채워 주는 그림이야. 역할이 자연스레 갈려서, 부딪힘보다 보완이 커.`;
-      return `<div class="zwfuse" style="margin-top:10px"><span class="fh">🧭 두 명궁 별의 케미</span>${chem}</div>`;})()+
+      /* ★두 명궁 별을 tend 4축 수치로 읽는다 (2026-08-31).
+         전엔 tags[0] 만 갈아 끼우는 한 문장이라 6쌍 중 5쌍이 글자까지 같았고,
+         더 나쁘게는 <틀렸다> - 무곡(행동82)×칠살(85)처럼 둘 다 주도하려는 별을
+         「역할이 갈려서 보완이 크다」고 말했다. 다르기만 하면 보완이란 템플릿이었다.
+         같은 별일 때를 따로 분기하지 않는다 - 같으면 네 축이 같아 자연히 「둘 다」로 떨어진다. */
+      const T1=ZW_STAR[m0].tend||[], T2=ZW_STAR[o0].tend||[];
+      if(T1.length<4||T2.length<4) return '';
+      const AX=[
+        {n:'활동',
+         gap:(a,b)=>`한쪽은 <b>사람 속에서</b>, 한쪽은 <b>혼자 있을 때</b> 충전돼. ${a>b?'네가 밖으로 돌고 상대가 안으로 도는 쪽이야':'상대가 밖으로 돌고 네가 안으로 도는 쪽이야'}. 주말을 어떻게 보낼지에서 제일 자주 갈려.`,
+         both:'둘 다 밖으로 도는 편이라 같이 있는 시간이 의외로 적어. 약속을 안 잡으면 그냥 안 만나게 돼.',
+         low:'둘 다 안으로 도는 편이라 편해. 대신 관계가 <b>둘만의 세계에 갇히기</b> 쉬워.',
+         mid:'활동 반경이 비슷해서 이 축은 사건이 안 돼.'},
+        {n:'판단',
+         gap:(a,b)=>`같은 일에 한쪽은 <b>따지고</b> 한쪽은 <b>느껴</b>. 다툴 때 ${a>b?'네가 맞는 말을 하고 상대가 서운해하는':'상대가 맞는 말을 하고 네가 서운해하는'} 구조야. <b>맞는 말이 이기는 게 아니라는 걸</b> ${a>b?'네가':'상대가'} 기억해야 해.`,
+         both:'둘 다 이성으로 재는 편이라 대화가 효율적인데, <b>감정을 말할 자리가 안 생겨</b>. 서운함이 쌓여도 안건으로 안 올라와.',
+         low:'둘 다 감으로 움직여서 결이 잘 맞아. 대신 큰 결정에서 둘 다 근거가 얇아져.',
+         mid:'판단 방식이 비슷해서 이 축은 무난해.'},
+        {n:'지향',
+         gap:(a,b)=>`한쪽은 <b>바꾸자</b> 하고 한쪽은 <b>두자</b> 해. ${a>b?'네가 바꾸자는 쪽':'상대가 바꾸자는 쪽'}이야. 이사·이직·큰 지출에서 <b>매번 같은 자리에서</b> 갈려.`,
+         both:'둘 다 변화를 좋아해서 지루할 틈이 없어. 대신 <b>안정시켜 줄 사람이 없어서</b> 흔들릴 땐 같이 흔들려.',
+         low:'둘 다 안정을 좋아해서 편한데, <b>바꿔야 할 때 둘 다 미뤄</b>. 미루다 떠밀려 움직이는 패턴이 반복돼.',
+         mid:'변화를 대하는 속도가 비슷해서 이 축은 괜찮아.'},
+        {n:'행동',
+         gap:(a,b)=>`${a>b?'네가 끌고 상대가 받쳐':'상대가 끌고 네가 받쳐'}. <b>이 축은 자연스럽게 갈려서</b> 둘 사이에서 제일 덜 싸우는 자리야.`,
+         both:'★<b>둘 다 주도하는 별이야.</b> 역할이 갈리는 게 아니라 <b>같은 자리를 두고 겹쳐</b>. 누가 정할지 영역을 미리 나눠 두지 않으면, 메뉴 고르는 것까지 힘겨루기가 돼.',
+         low:'둘 다 받는 편이라 부딪힘은 적은데 <b>아무도 안 정해서</b> 결정이 계속 미뤄져. 「넌 따를게」가 둘 다 나오면 그게 이 구조야.',
+         mid:'주도권이 비슷해서 그때그때 엇바뀌는 편이야.'}];
+      const lines=AX.map((ax,i)=>{
+        const a=T1[i], b=T2[i], d=Math.abs(a-b);
+        const txt = d>=25 ? ax.gap(a,b)
+          : (a>=65&&b>=65) ? ax.both
+          : (a<=45&&b<=45) ? ax.low : ax.mid;
+        return {n:ax.n, d:d, txt:txt};
+      });
+      const top=lines.slice().sort((x,y)=>y.d-x.d)[0];
+      const head = (top.d>=25)
+        ? `네 축 중 제일 크게 갈리는 건 <b>${top.n}</b>이야(${top.d}점 차이).`
+        : `네 축 모두 크게 안 갈려. 성향으로는 부딪힐 일이 적은 조합이야.`;
+      const intro = (m0===o0)
+        ? `너랑 ${oname}, 명궁에 똑같이 <b>${m0}</b>${iga(m0)} 앉아 있어. 성향 네 축이 그대로 같다는 뜻이라, 닮은 만큼 <b>같은 데서 강하고 같은 데서 같이 약해</b>.`
+        : `너의 명궁은 <b>${m0}</b>(${ZW_STAR[m0].tags[0]}), ${oname}의 명궁은 <b>${o0}</b>(${ZW_STAR[o0].tags[0]})이야. 별 이름보다 <b>성향 네 축</b>을 겹쳐 보는 게 빨라.`;
+      const rows=lines.map((L,i)=>`<div style="margin-top:7px"><b style="color:var(--gold)">${L.n}</b><span style="color:var(--muted);font-size:12px">너 ${T1[i]} · ${oname} ${T2[i]}</span><br>${L.txt}</div>`).join('');
+      return `<div class="zwfuse" style="margin-top:10px"><span class="fh">🧭 두 명궁 별의 성향 네 축</span>${intro} ${head}${rows}</div>`;})()+
     `<div class="info-grid" style="margin-top:10px">`+
-    `<div class="info-card"><div class="lab">🌐 천이궁 (사회·바깥)</div><div class="val" style="font-weight:500">${
-      Z.cheonSame.length? `같은 별(${Z.cheonSame.join('·')})${iga(Z.cheonSame.join('·'))} 들어서, 밖에서 같이 다닐 때 비슷한 분위기를 풍기고 자연스레 잘 어울려.`
-      : `별이 서로 달라서 사회적으론 다른 매력을 풍겨, 같이 있으면 서로 부족한 사회성을 채워 줘.`}</div></div>`+
+    (()=>{const mC=zwStarsAtPal(Z.Zm,'천이궁'), oC=zwStarsAtPal(Z.Zo,'천이궁');
+      /* ★무엇이 다른지 말한다. 전엔 「별이 서로 달라서 다른 매력을 풍겨」만 하고
+         <어떻게> 다른지를 안 말해서 15쌍이 같은 문장을 받았다. */
+      const tg=s=>{const a=(s.stars||[]).filter(x=>ZW_STAR[x]); return a.length?ZW_STAR[a[0]].tags.slice(0,2).join('·'):'';};
+      const nm=s=>((s.stars||[]).join('·')||'주성 없음');
+      const mt=tg(mC), ot=tg(oC);
+      return `<div class="info-card"><div class="lab">🌐 천이궁 (사회·바깥)</div><div class="val" style="font-weight:500">${
+        Z.cheonSame.length? `같은 별(${Z.cheonSame.join('·')})${iga(Z.cheonSame.join('·'))} 들어서, 밖에서 같이 다닐 때 비슷한 분위기를 풍겨. 어느 모임에 데려가도 어색함이 없는 대신, <b>둘이 같은 인상으로 묶여</b> 보이기도 해.`
+        : `밖에서 너는 <b>${nm(mC)}</b>${mt?`(${mt})`:''}, ${oname}${neun(oname)} <b>${nm(oC)}</b>${ot?`(${ot})`:''} 쪽이야. <b>사회에서 맡는 역할이 달라서</b> 같이 다니면 서로 못 하는 자리를 메워 줘. 대신 어느 모임에 갈지에서 취향이 갈릴 수 있어.`}</div></div>`;})()+
     (()=>{const mF=zwStarsAtPal(Z.Zm,'복덕궁'),oF=zwStarsAtPal(Z.Zo,'복덕궁');const same=mF.stars.filter(s=>oF.stars.includes(s));
+      const tg=s=>{const a=(s.stars||[]).filter(x=>ZW_STAR[x]); return a.length?ZW_STAR[a[0]].tags.slice(0,2).join('·'):'';};
+      const nm=s=>((s.stars||[]).join('·')||'주성 없음');
+      const mt=tg(mF), ot=tg(oF);
       return `<div class="info-card"><div class="lab">🧘 복덕궁 (정신·취향)</div><div class="val" style="font-weight:500">${
-        same.length? `같은 별(${same.join('·')})이라 쉬는 방식이랑 행복 코드가 닮았어. 같이 있을 때 마음이 편해.`
-        : `별이 달라서 즐기고 충전하는 방식이 서로 달라, 각자의 방식을 존중하면 오히려 편해.`}</div></div>`;})()+
+        same.length? `같은 별(${same.join('·')})이라 쉬는 방식이랑 행복 코드가 닮았어. 마음이 편하고 <b>쉬는 날 뭘 할지로 안 싸워</b>.`
+        : `너는 <b>${nm(mF)}</b>${mt?`(${mt})`:''}, ${oname}${neun(oname)} <b>${nm(oF)}</b>${ot?`(${ot})`:''} 쪽이라 <b>충전하는 방식이 달라</b>. 같이 쉬어야 가까워진다고 믿으면 둘 다 안 쉬게 되니까, <b>따로 충전하고 만나는 걸</b> 서운해하지 않기로 정해 두는 게 나아.`}</div></div>`;})()+
     `</div>`;
 }
 /* ===== 자미두수 12궁 풀이 ===== */
