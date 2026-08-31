@@ -20,7 +20,7 @@
 /* ============================================================
    사주 × 별자리 운명 분석, 전부 로컬, 외부통신 없음
    ============================================================ */
-const BUILD='2026-08-31.26';   // 날짜=빌드일, .N=그날 배포 순번. 재배포마다 갱신 → 자동 새로고침 트리거
+const BUILD='2026-09-01.1';   // 날짜=빌드일, .N=그날 배포 순번. 재배포마다 갱신 → 자동 새로고침 트리거
 /* 자동 업데이트: ①켜질 때 최신 BUILD 확인 → 다르면 캐시버스트 이동 ②탭이 다시 보일 때도 확인 → 읽던 중이면 강제 리로드 대신 배너
    (폰 브라우저는 옛 탭을 리로드 없이 복원하므로 ②가 없으면 며칠 전 버전이 계속 보임 — 오너 "어떤 건 배포됐고 어떤 건 안 됐던데" 원인) */
 (function(){try{
@@ -3543,10 +3543,10 @@ function sinYongStory(pr){
   const weak=['극약','태약','신약'].includes(pr.sinLevel);
   let core;
   core=strengthCore(pr);
-  return `<p class="body">‘신강신약’은 어렵게 들리지만 핵심은 하나야. <b>일간(나)의 힘이 센가, 여린가.</b> 나를 돕고 채워 주는 기운이 많으면 신강, 나를 쓰고 빼가는 기운이 많으면 신약이지. 이건 좋고 나쁨이 아니라 ‘어떻게 써야 할지’가 다를 뿐이야. 네 신강도는 <b>${pr.sinPct}%</b>, ‘<b>${pr.sinLevel}</b>’ 자리야.</p><p class="body">${core}</p>
+  return `<p class="body">네 타고난 기운은 <b>${pr.sinPct}%</b> 세기야. 여덟 글자 중에 너를 돕고 채워 주는 글자가 많으면 세지고, 너를 쓰고 빼가는 글자가 많으면 여려져. 센 게 좋고 여린 게 나쁜 건 아니야. <b>쓰는 법이 다를 뿐이야.</b></p><p class="body">${core}</p>
   ${strengthWhyHTML(pr)}
   ${strengthNow(pr)}
-  <p class="body">그 ‘약’을 딱 한 글자로 정리한 게 바로 위 카드의 <b>용신(用神)</b>이야. 너한텐 <b>${EL[Y.yong].name}</b> 기운이 가장 필요하고, <b>${EL[Y.hee].name}</b>(희신)이 그 뒤를 받쳐 줘. 반대로 <b>${EL[Y.gi].name}</b>(기신)은 이미 넘치거나 너를 흔드는 쪽이라 조금 덜어내면 좋지. 이 용신은 관념이 아니라 일상으로 채울 수 있어. 색, 방향, 잘 맞는 직업, 심지어 곁에 두는 사람까지. 구체적인 실천법은 <b>개운 가이드</b> 장(5장)에서 색·방위·숫자로 짚어 줄게.</p><p class="body">한 가지만 기억해. 신강신약은 <b>좋고 나쁨의 등급이 아니야.</b> 극단(극왕·극약)에 가까울수록 개성과 힘이 뚜렷한 대신 균형 잡기가 평생 숙제고, 중화에 가까울수록 무난한 대신 ‘내 색’을 키우는 게 숙제일 뿐이지. 어느 자리든 약점과 강점은 한 몸이야. 네 자리에 맞는 균형법을 아는 것, 그게 이 장의 전부야.</p>`;
+  <p class="body">그래서 너한테 제일 필요한 건 이거야. 너한텐 <b>${EL[Y.yong].name}</b> 기운이 가장 필요해. 비타민 같은 거라고 보면 돼. 그다음으로 <b>${EL[Y.hee].name}</b> 기운이 받쳐 주고. 반대로 <b>${EL[Y.gi].name}</b> 기운은 이미 넘치거나 너를 흔드는 쪽이라 조금 덜어내면 좋지. 이건 관념이 아니라 일상으로 채우는 거야. 색, 방향, 잘 맞는 직업, 심지어 곁에 두는 사람까지. 구체적으로 뭐를 하면 되는지는 5장에서 색·방위·숫자로 짚어 줄게.</p><p class="body">한 가지만 기억해. 이건 <b>점수가 아니야.</b> 한쪽 끝에 가까울수록 개성과 힘이 뚜렷한 대신 균형 잡기가 평생 숙제고, 중화에 가까울수록 무난한 대신 ‘내 색’을 키우는 게 숙제일 뿐이지. 어느 자리든 약점과 강점은 한 몸이야. 네 자리에 맞는 균형법을 아는 것, 그게 이 장의 전부야.</p>`;
 }
 /* 개운 실천, 용신 오행별 생활 처방 */
 const GAEUN={
@@ -4454,11 +4454,11 @@ function renderMyDetail(pr){
     sec('🔭','자미두수 명반', renderZiwei(pr)+`<p class="body sub" style="margin-top:8px">위 사주 명식이 ‘타고난 기운의 밀도’라면, 이 명반은 ‘인생 무대의 배치도’야. 아래 모든 풀이는 이 <b>두 지도를 합쳐서</b> 나온 결과야.</p>`+ziweiStory(pr)) +
     sec('⚖️','신강신약 & 용신',
       `<div class="sin7">${SIN_LEVELS.map(l=>`<span class="${l===pr.sinLevel?'on':''}">${l}</span>`).join('')}</div>`+
-      `<p class="body sub" style="margin:0 0 6px">앞 장에서 풀어 준 기운 세기(신강도 <b>${pr.sinPct}%</b> · ‘${pr.sinLevel}’)를 여기선 <b>카드 한 장으로 정리</b>할게, 뭘 곁에 두고(용신·희신), 뭘 덜어낼지(기신)만 기억하면 돼.</p>`+
+      `<p class="body sub" style="margin:0 0 6px">앞 장에서 풀어 준 기운 세기(신강도 <b>${pr.sinPct}%</b> · ‘${pr.sinLevel}’)를 여기선 <b>카드 한 장으로 정리</b>할게, 뭘 곁에 두고 뭘 덜어낼지만 기억하면 돼.</p>`+
       (()=>{const Y=yongsin(pr);const hj=e=>EL[e].name.match(/\((.)\)/)[1];return `<div class="yong3">`+
-        `<div class="yc" style="--c:${EL[Y.yong].hex}"><div class="yl">용신(用神)</div><div class="ycirc">${hj(Y.yong)}</div><div class="yel">${EL[Y.yong].name}</div><div class="yd">가장 필요한 기운</div></div>`+
-        `<div class="yc" style="--c:${EL[Y.hee].hex}"><div class="yl">희신(喜神)</div><div class="ycirc">${hj(Y.hee)}</div><div class="yel">${EL[Y.hee].name}</div><div class="yd">용신 다음으로 네 편</div></div>`+
-        `<div class="yc" style="--c:${EL[Y.gi].hex}"><div class="yl">기신(忌神)</div><div class="ycirc">${hj(Y.gi)}</div><div class="yel">${EL[Y.gi].name}</div><div class="yd">피하면 좋은 기운</div></div>`+
+        `<div class="yc" style="--c:${EL[Y.yong].hex}"><div class="yl">더할 것</div><div class="ycirc">${hj(Y.yong)}</div><div class="yel">${EL[Y.yong].name}</div><div class="yd">가장 필요한 기운</div></div>`+
+        `<div class="yc" style="--c:${EL[Y.hee].hex}"><div class="yl">거들 것</div><div class="ycirc">${hj(Y.hee)}</div><div class="yel">${EL[Y.hee].name}</div><div class="yd">용신 다음으로 네 편</div></div>`+
+        `<div class="yc" style="--c:${EL[Y.gi].hex}"><div class="yl">뺄 것</div><div class="ycirc">${hj(Y.gi)}</div><div class="yel">${EL[Y.gi].name}</div><div class="yd">피하면 좋은 기운</div></div>`+
         `</div>`;})()+
       sinYongStory(pr)+
       (()=>{const Zs=ziwei(pr); if(!Zs||Zs.noTime) return ''; const ms=Zs.mingStars.filter(s=>ZW_STAR[s])[0]; if(!ms) return '';
@@ -4672,7 +4672,7 @@ function shadowReport(pr){
   (excess.length?`<p class="body"><b>③ 넘치는 기운, ${excess.map(e=>EL[e].name).join('·')}</b>: 반대로 과한 쪽도 있어. ${excess.map(e=>`${EL[e].name} 기운이 넘치면 ${EL_EXCESS_RISK[e]}`).join(' ')} 오행은 부족해도 문제, 넘쳐도 문제라, 과한 기운은 ‘쓸 곳’을 만들어 주는 게 답이야(운동·창작·일로 배출).</p>`:`<p class="body"><b>③ 넘치는 기운</b>: 특별히 과한 오행은 없어. 치우침이 적다는 건 큰 강점인데, 대신 위 ②의 빈 기운이 상대적으로 더 도드라지니 거기에 집중해.</p>`)+
   `<p class="body"><b>④ 십성의 함정, ${SIPSUNG[s1grp].label.split(', ')[0]} 과다 주의</b>: 네 명식은 ${s1grp} 기운이 제일 강해(${s1pct}%). 강한 기운은 곧 자주 쓰는 패턴이라, 함정도 여기서 나와. ${SIP_TRAP[s1grp]}</p>`+
   `<p class="body"><b>⑤ ${pr.sinLevel} 사주의 실패 공식</b>: ${SINLV_FAIL[grp]}</p>`+
-  `<p class="body"><b>⑥ 기신(忌神) ${EL[Y.gi].name}, 너를 갉아먹는 것들</b>: 용신이 ‘채우면 좋은 기운’이라면 기신은 <b>피해야 할 기운</b>이야. 너한텐 ${EL[Y.gi].name}${iga(EL[Y.gi].name.charAt(0))} 그 자리라, ${GI_EFFECT[Y.gi]}${weakGiNote(pr,'luck')}</p>`+
+  `<p class="body"><b>⑥ ${EL[Y.gi].name}, 너를 갉아먹는 것들</b>: 앞에서 본 ‘채우면 좋은 기운’과 반대로 기신은 <b>피해야 할 기운</b>이야. 너한텐 ${EL[Y.gi].name}${iga(EL[Y.gi].name.charAt(0))} 그 자리라, ${GI_EFFECT[Y.gi]}${weakGiNote(pr,'luck')}</p>`+
   (badYears.length?`<p class="body"><b>⑦ 미리 알아 둘 해</b>: 세운(그 해의 기운)이 네 기신 ${EL[Y.gi].name}${eul(EL[Y.gi].name.charAt(0))} 강하게 띠는 해는 <b>${badYears.join(', ')}</b>${iya(badYears[badYears.length-1])}. 나쁜 일이 ‘반드시 생긴다’가 아니라, 이 해엔 위 ⑥의 유혹·소모가 커지기 쉬우니 <b>큰 계약·이직·투자 같은 결정은 평소보다 한 번 더 검토</b>하라는 뜻이야.</p>`
    /* ⑦ 이 조건부라 비면 ⑥ 다음이 곧장 ⑧ 이 돼 번호에 구멍이 났다(15인 중 J·K·L).
       없으면 없다고 쓴다. 맺음말은 여기서 뺐다 — ⑧⑨⑩ 앞에 결론이 끼어 있었다. */
@@ -5073,7 +5073,7 @@ function avoidHTML(pr){
   const aeReason=yong!=null
     ? `<b>네 편이 돼 줄 ${yn}(용신) 기운을 꺾어 버리는 자리</b>야. ${JOSA(AE_REL[aeSip]||'네 균형을 흔드는 식','이라','라')}, 끌리더라도 오래 함께하면 네 ${EL[pr.dayEl].kw[0]}${iga(EL[pr.dayEl].kw[0])} 서서히 소진돼`
     : (AE_REL[aeSip]||'균형을 흔드는 자리')+`라, 끌리더라도 오래 함께하면 네 ${EL[pr.dayEl].kw[0]}${iga(EL[pr.dayEl].kw[0])} 소진되기 쉬워`;
-  const desc=`나쁜 사람이란 뜻이 절대 아니야. 다만 <b>네 균형을 흔드는 기신(忌神)</b> 결의 사람이야. ${EL[ae].desc} 명리에서 이 기운은 너(${EL[pr.dayEl].name})한테 ${aeReason}. 별자리로는 <b>${zs.join('·')}</b>${PJ(zs[zs.length-1],'이랑','랑')} 부딪히기 쉽고.${zs.includes(pr.zod)?` 네 별자리(<b>${pr.zod}</b>)도 이 안에 들었는데, 이건 <b>기운의 결</b> 얘기지 그 별자리 사람이 나쁘다는 게 아니야. 같은 결끼리는 닮아서 편한 대신 <b>같은 약점을 같이 지녀</b>서 서로 받쳐 주지 못한다는 뜻이야.`:''}`;
+  const desc=`나쁜 사람이란 뜻이 절대 아니야. 다만 <b>네 균형을 흔드는</b> 결의 사람이야. ${EL[ae].desc} 명리에서 이 기운은 너(${EL[pr.dayEl].name})한테 ${aeReason}. 별자리로는 <b>${zs.join('·')}</b>${PJ(zs[zs.length-1],'이랑','랑')} 부딪히기 쉽고.${zs.includes(pr.zod)?` 네 별자리(<b>${pr.zod}</b>)도 이 안에 들었는데, 이건 <b>기운의 결</b> 얘기지 그 별자리 사람이 나쁘다는 게 아니야. 같은 결끼리는 닮아서 편한 대신 <b>같은 약점을 같이 지녀</b>서 서로 받쳐 주지 못한다는 뜻이야.`:''}`;
   const scenario=`시기로 보면 <b>${avoidPeriod(pr)}</b> 즈음, 마음 상태로는 ‘${avoidTiming(pr)}’ 이럴 때 이런 상대가 훅 들어오기 쉬워. <b>그럴 땐 새 사람을 찾기 전에 네 컨디션부터 돌보는 게 먼저야</b>. 채워지지 않은 상태에서 시작한 관계일수록 이쪽에 걸리기 쉽거든. 장소는 <b>${JOSA(P.places[0],'이나','나')}</b><b>${P.places[2]}</b> 같은 데. 이 유형이 위험한 건 성격이 나빠서가 아니라, 네 기신 ${EL[ae].name} 기운을 진하게 둘러서 <b>같이 있으면 네 페이스가 무너지기 때문</b>이야. 구별하는 법은 간단해. <b>만나고 온 뒤의 나</b>를 보면 돼. 채워지고 편안하면 좋은 인연, 이상하게 소모되고 눈치 본 기억이 남으면 이쪽이야. 한두 번으로 단정하지 말고 <b>세 번쯤 만나 보고 그 뒤의 컨디션</b>으로 판단해. (나이대는 아래 <b>한눈에 보기</b>에 있어.)`;
   const X=PARTNER_EXTRA[ae];
   const Za=ziwei(pr); let zwAvoidFused='', zwASt1=null, AS=null;
@@ -5939,7 +5939,15 @@ function glossFirstUse(root){
     const walker=document.createTreeWalker(root, NodeFilter.SHOW_TEXT, null);
     const nodes=[]; let n; while((n=walker.nextNode())) nodes.push(n);
     for(const node of nodes){
-      if(!node.parentNode || node.parentNode.classList && node.parentNode.classList.contains('gl')) continue;
+      if(!node.parentNode) continue;
+      /* ★제목·라벨엔 붙이지 않는다. 「신강신약」에서 '신약'만 잡아
+         「신강신약(타고난 기운이 여린 편)」이 됐다. 뜻이 반대로 달린 셈이다. */
+      const _pc=node.parentNode.classList;
+      if(_pc && (_pc.contains('gl')||_pc.contains('rsec-t')||_pc.contains('yl')||_pc.contains('ch-t')||_pc.contains('lab')||_pc.contains('mc-section')||_pc.contains('sin7'))) continue;
+      if(node.parentNode.closest && node.parentNode.closest('.rsec-t,.ch-h,.sin7,h1,h2,h3,h4,summary')) continue;
+      /* ★이미 괄호 안에 있는 자리엔 또 붙이지 않는다(괄호 안 괄호 방지). */
+      { const _s=node.nodeValue, _o=_s.lastIndexOf('('), _c=_s.lastIndexOf(')');
+        if(_o>=0 && _o>_c) continue; }
       for(const w of terms){
         if(done[w]) continue;
         const s=node.nodeValue; const i=s.indexOf(w);
