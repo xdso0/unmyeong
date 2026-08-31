@@ -20,7 +20,7 @@
 /* ============================================================
    사주 × 별자리 운명 분석, 전부 로컬, 외부통신 없음
    ============================================================ */
-const BUILD='2026-08-31.16';   // 날짜=빌드일, .N=그날 배포 순번. 재배포마다 갱신 → 자동 새로고침 트리거
+const BUILD='2026-08-31.17';   // 날짜=빌드일, .N=그날 배포 순번. 재배포마다 갱신 → 자동 새로고침 트리거
 /* 자동 업데이트: ①켜질 때 최신 BUILD 확인 → 다르면 캐시버스트 이동 ②탭이 다시 보일 때도 확인 → 읽던 중이면 강제 리로드 대신 배너
    (폰 브라우저는 옛 탭을 리로드 없이 복원하므로 ②가 없으면 며칠 전 버전이 계속 보임 — 오너 "어떤 건 배포됐고 어떤 건 안 됐던데" 원인) */
 (function(){try{
@@ -6443,6 +6443,83 @@ function yongFitHTML(me, op, rawName, rel){
       </div><p class="body sub" style="font-size:12.5px;margin-top:10px;color:var(--muted)">개수는 <b>겉 여덟 글자</b>를 센 값이야. 그리고 용신을 무엇으로 잡느냐는 <b>유파마다 다르고</b>, 여기 값은 이 앱이 정한 규칙(억부 기준)을 따른 거야. 다른 곳에서 다른 오행을 들었다면 틀린 게 아니라 <b>기준이 다른 것</b>일 수 있어.</p></div>`;
   }catch(e){ return ''; }
 }
+/* ★궁합 12궁 교차 (2026-08-31, 궁합 확대 7단계).
+   상대의 명궁 주성이 <내 명반에서는 어느 궁에 앉아 있나>. 자미두수 궁합의 정통 기법인데
+   앱에 없었다. 11장은 명궁·부부궁·천이궁·복덕궁 넷만 쓰고 나머지 여덟 궁은 미사용이었다.
+   조합 14주성 x 12궁 x 2방향으로 궁합에서 제일 종수가 크다.
+   ⚠️양쪽 다 시를 알아야 한다 - ziwei() 가 시 미상이면 {noTime:true} 뿐이다. */
+const PAL_ROLE={
+  명궁:{k:'너 자신의 자리',
+    me:'이 사람은 너한테 <b>남이 아니라 너 자신처럼</b> 들어와. 좋을 땐 제일 편하고, 나쁠 땐 제일 아파. 거리 두기가 유난히 안 되는 배치야.',
+    op:'너는 상대한테 <b>상대 자신처럼</b> 들어가. 네 말이 남의 말이 아니라 자기 생각처럼 들려서, 무심코 던진 말이 오래 남아.'},
+  형제궁:{k:'나란히 가는 자리',
+    me:'이 사람은 너한테 <b>옆에서 나란히 가는 사람</b>으로 들어와. 위아래가 아니라 어깨를 맞추는 관계라 편한 대신, 서로 기대기보다 <b>각자 걷는</b> 결이야.',
+    op:'너는 상대한테 <b>동료·전우</b> 자리로 들어가. 챙겨 주는 사람보다 <b>같이 싸워 주는 사람</b>일 때 상대가 더 고마워해.'},
+  부부궁:{k:'가장 가까운 자리',
+    me:'이 사람은 너한테 <b>가장 가까운 자리</b>에 바로 들어와. 소개받자마자 익숙한 느낌이 들었다면 이 배치야. 다만 그만큼 <b>기대도 처음부터 커</b>.',
+    op:'너는 상대한테 <b>가장 가까운 자리</b>로 들어가. 상대가 너를 빨리 특별하게 여기는 건 성격이 급해서가 아니라 자리가 그래.'},
+  자녀궁:{k:'같이 만드는 자리',
+    me:'이 사람은 너한테 <b>뭔가를 같이 만드는 사람</b>으로 들어와. 일이든 취미든 <b>결과물이 있을 때</b> 관계가 살아나고, 아무것도 안 만들면 심심해져.',
+    op:'너는 상대한테 <b>같이 만들자고 이끄는</b> 자리로 들어가. 상대가 너와 있을 때 새 걸 벌이고 싶어진다면 그래서야.'},
+  재백궁:{k:'현실과 돈의 자리',
+    me:'이 사람은 너한테 <b>현실·돈과 엮이는 자리</b>로 들어와. 좋게 풀리면 실질적인 도움이 되고, 어긋나면 <b>계산이 감정을 덮어</b>. 돈 얘기를 미루지 않는 게 이 관계엔 특히 중요해.',
+    op:'너는 상대한테 <b>현실적인 사람</b>으로 들어가. 상대는 네게서 위로보다 <b>해결</b>을 기대하기 쉬워.'},
+  질액궁:{k:'몸과 컨디션의 자리',
+    me:'이 사람은 너한테 <b>몸으로 먼저 오는 자리</b>야. 이 관계가 힘들면 감정보다 <b>컨디션이 먼저</b> 무너져. 잠·소화가 흐트러지면 관계 신호로 읽어도 돼.',
+    op:'너는 상대한테 <b>컨디션에 영향을 주는</b> 자리로 들어가. 네가 무심코 지치게 만들 수 있으니, 상대가 피곤해 보이면 일정부터 봐.'},
+  천이궁:{k:'바깥에서 만나는 자리',
+    me:'이 사람은 너한테 <b>바깥에서 만나는 자리</b>야. 집 안보다 <b>같이 나가서 뭘 할 때</b> 훨씬 잘 맞아. 여행·이사·이직 같은 이동에서 인연이 진해져.',
+    op:'너는 상대한테 <b>세상으로 데려가는</b> 자리로 들어가. 상대가 너를 만나고 활동 반경이 넓어졌다면 우연이 아니야.'},
+  교우궁:{k:'친구의 자리',
+    me:'이 사람은 너한테 <b>친구 자리</b>로 들어와. 연인이어도 밑바탕은 우정이라 편한데, <b>특별대우를 기대하면 서운해지기</b> 쉬워.',
+    op:'너는 상대한테 <b>친구</b>로 들어가. 상대가 너를 편하게 대하는 건 소홀해서가 아니라 자리가 그래.'},
+  관록궁:{k:'일과 성취의 자리',
+    me:'이 사람은 너한테 <b>일·성취와 엮이는 자리</b>야. 같이 일하거나 서로의 커리어에 영향을 주기 쉽고, 반대로 <b>쉬는 시간엔 할 말이 줄어들</b> 수 있어.',
+    op:'너는 상대한테 <b>일을 떠올리게 하는</b> 자리로 들어가. 상대는 네 앞에서 자기도 모르게 <b>잘 해내려고</b> 해.'},
+  전택궁:{k:'집과 가정의 자리',
+    me:'이 사람은 너한테 <b>집·가정의 자리</b>로 들어와. 밖보다 <b>안에서</b> 진가가 나오는 관계라, 같이 사는 얘기가 빨리 나올 수 있어.',
+    op:'너는 상대한테 <b>정착을 떠올리게 하는</b> 자리로 들어가. 상대가 미래를 먼저 말한다면 그래서야.'},
+  복덕궁:{k:'마음의 자리',
+    me:'이 사람은 너한테 <b>마음이 쉬는 자리</b>야. 대단한 걸 안 해도 같이 있으면 편한 배치라, 이 관계의 값은 <b>사건이 아니라 상태</b>에 있어.',
+    op:'너는 상대한테 <b>안심시키는</b> 자리로 들어가. 상대가 너한테 속마음을 유난히 잘 꺼낸다면 그 자리야.'},
+  부모궁:{k:'윗사람의 자리',
+    me:'이 사람은 너한테 <b>보호자·윗사람처럼</b> 들어와. 기대게 되는 대신, <b>대등해지고 싶을 때</b> 답답해질 수 있어.',
+    op:'너는 상대한테 <b>보호자</b>로 들어가. 상대가 너한테 어리광을 부린다면 그건 자리 탓이지 철이 없어서가 아니야.'}};
+function palCrossHTML(me, op, rawName, rel){
+  try{
+    if(typeof ziwei!=='function'||typeof zwStarsAtPal!=='function') return '';
+    const Zm=ziwei(me), Zo=ziwei(op);
+    if(!Zm||Zm.noTime||!Zo||Zo.noTime) return '';          /* 양쪽 다 시를 알아야 한다 */
+    if(!Zm.star||!Zm.palByBranch||!Zo.star||!Zo.palByBranch) return '';
+    const oname=(typeof escapeHtml==='function')?escapeHtml(rawName||'상대'):(rawName||'상대');
+    const main=Z=>{const a=zwStarsAtPal(Z,'명궁'); return ((a&&a.stars)||[]).filter(s=>ZW_STAR[s])[0]||null;};
+    const mS=main(Zm), oS=main(Zo);
+    if(!mS||!oS) return '';
+    /* 별 S 가 명반 Z 에서 어느 궁에 앉아 있나 */
+    const palOf=(Z,S)=>{ for(const b in Z.star){ if((Z.star[b]||[]).includes(S)) return Z.palByBranch[b]||null; } return null; };
+    const pOfOpInMe=palOf(Zm,oS);      /* 상대 명궁 별이 내 명반에서 */
+    const pOfMeInOp=palOf(Zo,mS);      /* 내 명궁 별이 상대 명반에서 */
+    if(!pOfOpInMe||!pOfMeInOp) return '';
+    const R1=PAL_ROLE[pOfOpInMe], R2=PAL_ROLE[pOfMeInOp];
+    if(!R1||!R2) return '';
+    /* 12궁 중 같은 별이 같은 자리에 앉은 곳 */
+    const overlap=[];
+    ZW_PAL.forEach(pal=>{
+      const a=((zwStarsAtPal(Zm,pal)||{}).stars)||[], b=((zwStarsAtPal(Zo,pal)||{}).stars)||[];
+      const same=a.filter(s=>ZW_STAR[s]&&b.includes(s));
+      if(same.length) overlap.push({pal:pal, stars:same});
+    });
+    const ov=overlap.length;
+    const ovTxt = ov===0
+      ? `12궁 중 <b>같은 별이 같은 자리에 앉은 곳은 한 곳도 없어</b>. 인생의 무대 배치가 통째로 다르다는 뜻이야. 대화가 겉돌 때가 있는 건 성의 문제가 아니라 <b>기준점이 다른</b> 거고, 대신 <b>서로 안 겹치니 자리 다툼도 없어</b>.`
+      : (ov<=3
+        ? `12궁 중 <b>${ov}곳</b>에서 같은 별이 같은 자리에 앉아 있어(${overlap.slice(0,3).map(x=>`<b>${x.pal}</b>`).join('·')}). 딱 그 영역에서만 말이 빨리 통하고, 나머지는 설명이 필요한 사이야. <b>겹치는 데를 알고 쓰면</b> 대화가 훨씬 수월해져.`
+        : `12궁 중 <b>${ov}곳</b>이나 같은 별이 같은 자리에 앉아 있어(${overlap.slice(0,4).map(x=>`<b>${x.pal}</b>`).join('·')} 등). 인생 배치가 상당히 닮았다는 뜻이라 <b>설명 없이 통하는 게 많아</b>. 대신 닮은 만큼 <b>약점도 같은 자리</b>라, 힘든 시기가 겹치면 둘 다 같은 데서 무너져.`);
+    return `<div class="chapter"><div class="ch-h"><span class="ch-n">장</span><div class="ch-tt"><div class="ch-t">서로의 무대 어디에 서 있나</div><div class="ch-s">상대의 별이 내 12궁 중 어디에 앉는지</div></div></div><p class="body" style="font-size:14.5px">자미두수는 한 사람의 인생을 <b>12개의 무대</b>로 나눠 봐. 궁합에서 진짜 재미있는 건 여기서부터야. <b>상대를 대표하는 별이 내 명반에서는 어느 무대에 앉아 있는지</b>를 보는 거지. 같은 사람이라도 내 명반에서 <b>돈의 자리</b>에 앉으면 현실로 들어오고, <b>마음의 자리</b>에 앉으면 안식으로 들어와. 그래서 이 배치는 <b>내가 이 사람을 어떤 자리에 놓고 있는지</b>를 말해 줘.</p><div class="info-grid"><div class="info-card"><div class="lab">${oname}${neun(oname)} 네 <b>${pOfOpInMe}</b>에 · ${R1.k}</div><div class="val" style="font-weight:500">${oname}의 대표 별 <b>${oS}</b>${iga(oS)} 네 명반에서는 <b>${pOfOpInMe}</b>에 앉아. ${R1.me}</div></div><div class="info-card"><div class="lab">너는 ${oname}의 <b>${pOfMeInOp}</b>에 · ${R2.k}</div><div class="val" style="font-weight:500">네 대표 별 <b>${mS}</b>${iga(mS)} ${oname}의 명반에서는 <b>${pOfMeInOp}</b>에 앉아. ${R2.op}</div></div><div class="info-card wide"><div class="lab" style="color:${pOfOpInMe===pOfMeInOp?'var(--good)':'var(--muted)'}">두 자리를 겹치면</div><div class="val" style="font-weight:500">${pOfOpInMe===pOfMeInOp
+            ? `서로를 <b>같은 자리</b>(${pOfOpInMe})에 놓고 있어. 드문 배치야. 원하는 것도 서운한 것도 같은 곳에서 나오니까 <b>오해가 적은 대신, 어긋나면 둘 다 같은 데를 다쳐</b>.`
+            : `너는 상대를 <b>${pOfOpInMe}</b>에, 상대는 너를 <b>${pOfMeInOp}</b>에 놓고 있어. <b>서로를 두는 자리가 달라.</b> 이게 흔한 서운함의 정체야. 한쪽이 소홀한 게 아니라 <b>기대하는 종류가 처음부터 다른</b> 거고, 이걸 알면 「왜 나만큼 안 해 주지」가 「아, 다른 걸 주고 있었구나」로 바뀌어.`}</div></div></div><p class="body" style="font-size:14.5px;margin-top:12px">${ovTxt}</p><p class="body sub" style="font-size:12.5px;color:var(--muted)">이 장은 <b>양쪽 다 태어난 시를 알아야</b> 나와. 시를 모르면 명반의 시작점이 정해지지 않아서 12궁 배치를 아예 그릴 수 없거든. 다른 장들은 시가 없어도 사주로 볼 수 있지만 이 장만은 그래.</p></div>`;
+  }catch(e){ return ''; }
+}
 let _reportBuilders={};   // cid → ()=>chaptersHTML. 무거운 9장 보고서를 '열 때' 만들기 위한 지연 빌더(로컬 카운슬 성능 2026-07-21)
 function renderCompatList(){
   const box=document.getElementById('compList');box.innerHTML='';
@@ -6592,7 +6669,9 @@ function renderCompatList(){
         ${daeunCrossHTML(me,op,c.name,rel)}
         <div class="chapter"><div class="ch-h"><span class="ch-n">여덟</span><div class="ch-tt"><div class="ch-t">자미두수 관계운</div><div class="ch-s">${rel==='love'?'서로의 부부궁·명궁을 겹쳐 본 인연':'서로의 명궁을 겹쳐 본 기본 케미, 연인이 아니어도 관계의 결은 여기서 보여'}</div></div></div>
           ${renderZwCompat(me,op,rel)}
-          ${chZwMoreNote(me,op,c.name,rel)}</div><div class="chapter"><div class="ch-h"><span class="ch-n">아홉</span><div class="ch-tt"><div class="ch-t">위기 리포트</div><div class="ch-s">흔들릴 때를 위한 정직한 시나리오</div></div></div><p class="body sub" style="font-size:13.5px">${r.crisisIntro}</p><p class="body" style="font-size:14.5px"><b>🔥 둘이 싸우면 이런 모양이 돼</b>, ${r.fightNote}</p><p class="body" style="font-size:14.5px"><b>🧱 이 관계가 깨진다면, 여기서부터야</b>, ${r.breakPoint} ${r.jiCrisis}</p><p class="body" style="font-size:14.5px"><b>⏳ 위기가 오기 쉬운 때</b>, ${r.crisis}</p>
+          ${chZwMoreNote(me,op,c.name,rel)}</div>
+        ${palCrossHTML(me,op,c.name,rel)}
+        <div class="chapter"><div class="ch-h"><span class="ch-n">아홉</span><div class="ch-tt"><div class="ch-t">위기 리포트</div><div class="ch-s">흔들릴 때를 위한 정직한 시나리오</div></div></div><p class="body sub" style="font-size:13.5px">${r.crisisIntro}</p><p class="body" style="font-size:14.5px"><b>🔥 둘이 싸우면 이런 모양이 돼</b>, ${r.fightNote}</p><p class="body" style="font-size:14.5px"><b>🧱 이 관계가 깨진다면, 여기서부터야</b>, ${r.breakPoint} ${r.jiCrisis}</p><p class="body" style="font-size:14.5px"><b>⏳ 위기가 오기 쉬운 때</b>, ${r.crisis}</p>
           ${anv}
           ${r.badYears.length?`<div class="info-card wide" style="margin:4px 0 10px"><div class="lab">📅 특히 조심할 해 (그 해에 들어오는 기운, 세운 기준)</div><div class="val" style="font-weight:500">${r.badYears.join('<br>')}</div></div>`:''}
           ${calCard?`<div class="info-card wide" style="margin:4px 0 10px"><div class="lab">🗓 두 사람의 달력 (올해 기준)</div><div class="val" style="font-weight:500">${calCard}</div></div>`:''}
