@@ -20,7 +20,7 @@
 /* ============================================================
    사주 × 별자리 운명 분석, 전부 로컬, 외부통신 없음
    ============================================================ */
-const BUILD='2026-08-31.10';   // 날짜=빌드일, .N=그날 배포 순번. 재배포마다 갱신 → 자동 새로고침 트리거
+const BUILD='2026-08-31.12';   // 날짜=빌드일, .N=그날 배포 순번. 재배포마다 갱신 → 자동 새로고침 트리거
 /* 자동 업데이트: ①켜질 때 최신 BUILD 확인 → 다르면 캐시버스트 이동 ②탭이 다시 보일 때도 확인 → 읽던 중이면 강제 리로드 대신 배너
    (폰 브라우저는 옛 탭을 리로드 없이 복원하므로 ②가 없으면 며칠 전 버전이 계속 보임 — 오너 "어떤 건 배포됐고 어떤 건 안 됐던데" 원인) */
 (function(){try{
@@ -6136,6 +6136,133 @@ function daeunCrossHTML(me, op, rawName, rel){
       <p class="body" style="font-size:14.5px;margin-top:10px">${tail}</p></div>`;
   }catch(e){ return ''; }
 }
+/* ★궁합 기운 배합 (2026-08-31, 궁합 분량 확대 2단계).
+   ① 두 사람 겉 여덟 글자를 합산(16글자) ② 십성 상호를 양방향으로.
+   둘 다 기존 궁합에 없던 계산이다. 시가 없어도 나온다(사주만 쓴다).
+   십성 구조는 5종뿐이라 그대로 쓰면 반복이 필연이다. 정/편 + 각자 신강약으로
+   축을 벌린다 - 같은 구조도 신강이냐 신약이냐로 뜻이 뒤집히는 게 명리 규칙이다. */
+function elemMixHTML(me, op, rawName, rel){
+  try{
+    if(typeof rawElementCount!=='function') return '';
+    const oname = (typeof escapeHtml==='function') ? escapeHtml(rawName||'상대') : (rawName||'상대');
+    const A=rawElementCount(me.p), B=rawElementCount(op.p);
+    if(!A||!B) return '';
+    const sum={}; EL_ORDER.forEach(e=>{ sum[e]=(A[e]||0)+(B[e]||0); });
+    /* 신강약 키: 문자열을 어림짐작하지 않는다. '강'/'약' 포함 여부로 판정. */
+    const lv = pr => { const s=String(pr.sinLevel||''); return s.indexOf('강')>=0?'강':(s.indexOf('약')>=0?'약':'중'); };
+    const myLv=lv(me), opLv=lv(op);
+    /* ── ① 오행 합산 ───────────────────────────────────────── */
+    const bothNone = EL_ORDER.filter(e=>sum[e]===0);
+    const heFills  = EL_ORDER.filter(e=>(A[e]||0)===0 && (B[e]||0)>0);
+    const iFill    = EL_ORDER.filter(e=>(B[e]||0)===0 && (A[e]||0)>0);
+    const tooMuch  = EL_ORDER.filter(e=>sum[e]>=6);
+    const cell = e => {
+      const v=sum[e], tone = v===0?'var(--care)':(v>=6?'var(--ok)':'var(--ink)');
+      return `<div style="text-align:center;padding:9px 2px;border:1px solid var(--line2);border-radius:11px;background:var(--pearl);min-width:0">`
+        + `<div style="font-size:12px;color:var(--muted)">${EL[e].name}</div>`
+        + `<div style="font-size:19px;font-weight:700;color:${tone};line-height:1.25">${v}</div>`
+        + `<div style="font-size:11px;color:var(--muted)">${A[e]||0}+${B[e]||0}</div></div>`;
+    };
+    const grid = `<div style="display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:7px;margin:12px 0 4px">`
+      + EL_ORDER.map(cell).join('') + `</div>`
+      + `<p class="body sub" style="font-size:12.5px;margin-top:2px;color:var(--muted)">아래 작은 숫자는 <b>네 것 + ${oname} 것</b>이야. 지지 속에 숨은 기운은 빼고 <b>겉 여덟 글자</b>만 센 값이라, 지장간까지 더한 비율과는 답이 조금 달라.</p>`;
+    const cards=[];
+    if(bothNone.length){
+      const e=bothNone[0];
+      const risk=(typeof EL_LACK_RISK!=='undefined'&&EL_LACK_RISK[e])?EL_LACK_RISK[e].life:'';
+      cards.push(`<div class="info-card wide"><div class="lab" style="color:var(--care)">둘 다 비어 있는 자리 · ${EL[e].name}</div>`
+        + `<div class="val" style="font-weight:500">열여섯 글자를 다 세도 <b>${JOSA(EL[e].name,'이','가')}</b> 한 자도 없어. 혼자면 주변에서 빌려 쓰면 되는데, <b>둘 다 없으면 서로에게서도 못 빌려</b>. ${risk}<br>`
+        + `이게 나쁜 궁합이라는 뜻은 아니야. 다만 이 자리는 <b>둘 중 누구도 자연스럽게 못 맡으니</b>, 셋째 사람이나 규칙으로 메우기로 미리 정해 두는 게 나아.`
+        + `${bothNone.length>1?` (${bothNone.slice(1).map(x=>EL[x].name).join('·')}도 같이 비어 있어.)`:''}</div></div>`);
+    }else if(heFills.length||iFill.length){
+      cards.push(`<div class="info-card wide"><div class="lab" style="color:var(--good)">서로가 메우는 배치</div>`
+        + `<div class="val" style="font-weight:500">둘을 합치면 <b>다섯 기운이 하나도 안 비어</b>. 각자 혼자일 땐 빈 자리가 있었는데 <b>그 자리를 서로가 메워</b>. 같이 일을 벌일 때 둘 중 누군가는 그 몫을 할 수 있다는 뜻이고, 이게 이 관계의 실질적인 힘이야.</div></div>`);
+    }else{
+      /* ★빈 자리가 애초에 없는 쌍. 「혼자일 땐 빈 자리가 있었는데」는 <거짓>이라 못 쓴다.
+         초안에서 이 문장이 전원에게 나갔다. 어색한 게 아니라 사실이 아닌 문장이었다. */
+      cards.push(`<div class="info-card wide"><div class="lab" style="color:var(--good)">둘 다 고르게 갖췄어</div>`
+        + `<div class="val" style="font-weight:500">드문 경우야. <b>둘 다 다섯 기운을 하나씩은 갖고</b> 있어서, 서로 메워 줄 자리도 없고 크게 빌 자리도 없어. 부딪힐 일이 적은 대신 <b>관계에서 새로 생기는 힘도 적어</b>. 각자 원래 하던 대로 흘러가기 쉬우니까, 같이 하는 일은 <b>일부러 만들어야</b> 생겨.</div></div>`);
+    }
+    const fillLine=(who, list, isMe)=>{
+      if(!list.length) return '';
+      const e=list[0];
+      const risk=(typeof EL_LACK_RISK!=='undefined'&&EL_LACK_RISK[e])?EL_LACK_RISK[e].life:'';
+      /* ★'너'는 iga() 를 태우면 안 된다. 너+가는 <네가>다. 헬퍼가 틀린 게 아니라
+         이 자리에 헬퍼를 쓰면 안 되는 것이다. 초안에서 「너가 채우는 자리」로 나갔다. */
+      const subj = (who==='너') ? '네가' : who+iga(who);
+      return `<div class="info-card"><div class="lab">${subj} 채우는 자리 · ${EL[e].name}</div>`
+        + `<div class="val" style="font-weight:500">${isMe
+            ? `${oname}에겐 <b>${JOSA(EL[e].name,'이','가')}</b> 없는데 너한텐 있어. ${risk} 이걸 ${oname}${neun(oname)} 혼자선 잘 못 해서, 네가 맡으면 관계가 편해져.`
+            : `너한텐 <b>${JOSA(EL[e].name,'이','가')}</b> 없는데 ${oname}한텐 있어. ${risk} 네가 계속 안 되던 그 자리를 상대가 자연스럽게 하니까, <b>맡기는 게 이기는 것</b>이야.`}</div></div>`;
+    };
+    const fills = fillLine('상대', heFills, false) + fillLine('너', iFill, true);
+    if(tooMuch.length){
+      const e=tooMuch[0];
+      const ex=(typeof EL_EXCESS_RISK!=='undefined'&&EL_EXCESS_RISK[e])?EL_EXCESS_RISK[e]:'';
+      cards.push(`<div class="info-card wide"><div class="lab" style="color:var(--ok)">둘이 합치면 넘치는 자리 · ${EL[e].name} ${sum[e]}자</div>`
+        + `<div class="val" style="font-weight:500">열여섯 중 <b>${sum[e]}자</b>가 ${JOSA(EL[e].name,'이야','야')}. 혼자였으면 특기였을 게 둘이 모이면 <b>브레이크가 없어져</b>. ${ex}<br>같은 성향끼리라 말은 잘 통하는데, 말리는 사람이 없다는 게 이 조합의 진짜 약점이야.</div></div>`);
+    }
+    /* ── ② 십성 상호(양방향) ────────────────────────────────── */
+    const gOf = s => /견|겁/.test(s)?'비겁':(/식|상관/.test(s)?'식상':(/재/.test(s)?'재성':(/관/.test(s)?'관성':'인성')));
+    const toMe = tenGodName(me.p.ds, op.dayEl, op.p.ds%2===0);   /* 상대가 나에게 */
+    const toOp = tenGodName(op.p.ds, me.dayEl, me.p.ds%2===0);   /* 내가 상대에게 */
+    const gM=gOf(toMe), gO=gOf(toOp);
+    const BASE={
+      비겁:'같은 기운이라 말이 빨리 통해. 설명 안 해도 아는 대신, <b>같은 걸 원해서 겹쳐</b>.',
+      식상:'쏟게 되는 자리야. 챙기고 표현하고 먼저 움직이게 돼.',
+      재성:'다루고 책임지고 싶어지는 자리야. 현실적으로 챙기려 들어.',
+      관성:'자세를 고치게 만드는 자리야. 눌리기도 하고 기준이 서기도 해.',
+      인성:'기대고 배우게 되는 자리야. 받는 쪽이 돼.'};
+    const BYLV={
+      비겁:{강:'그런데 네 기운이 이미 센 편이라, 같은 기운이 더해지면 <b>둘이 같이 과속해</b>. 말리는 역할을 누가 할지 정해 둬야 해.',
+            약:'네 기운이 여린 편이라 <b>같은 편이 하나 생기는 게 실제로 큰 힘</b>이 돼. 이 관계가 너한텐 버팀목이야.',
+            중:'네 기운이 치우치지 않은 편이라 무난히 굴러가. 다만 겹치는 영역은 미리 나눠 두는 게 좋아.'},
+      식상:{강:'네 기운이 센 편이라 쏟을 힘이 넉넉해. 이 관계가 <b>네 배출구</b>가 돼서 오히려 네가 편해져.',
+            약:'네 기운이 여린 편이라 계속 쏟으면 <b>네가 먼저 비어</b>. 잘해 주고 지치는 패턴이 반복되면 그건 마음 문제가 아니라 배치 문제야.',
+            중:'쏟는 만큼 돌아오는지만 가끔 확인하면 돼. 한쪽으로 오래 기울면 그때부터 지쳐.'},
+      재성:{강:'네 기운이 센 편이라 <b>감당할 힘이 있어</b>. 챙기는 구조가 무리 없이 굴러가는 쪽이야.',
+            약:'네 기운이 여린 편이라 챙기려다 <b>네가 먼저 지쳐</b>. 책임지고 싶은 마음과 감당할 수 있는 양은 다른 문제야.',
+            중:'챙기되 다 떠안지만 않으면 돼. 선을 그어도 관계가 안 깨지는 배치야.'},
+      관성:{강:'네 기운이 센 편이라 <b>눌러 주는 사람이 있는 게 오히려 약</b>이야. 혼자면 과속했을 걸 이 관계가 잡아 줘.',
+            약:'네 기운이 여린 편인데 여기서 더 눌리면 <b>관계가 애정이 아니라 의무로 변해</b>. 참는 게 길어지고 있으면 그건 성격이 아니라 구조야.',
+            중:'적당히 긴장이 생기는 정도야. 기준이 서는 쪽으로 쓰면 도움이 돼.'},
+      인성:{강:'네 기운이 이미 든든한 편이라 여기서 더 받으면 <b>움직임이 굼떠져</b>. 편한 게 길어지면 그게 정체야.',
+            약:'네 기운이 여린 편이라 <b>기댈 데가 생기는 것</b> 자체가 회복이야. 이 관계가 너한테 실제로 힘이 돼.',
+            중:'받는 게 자연스러운 배치야. 다 맡기지만 않으면 편하게 굴러가.'}};
+    const shape = (me.dayEl===op.dayEl) ? 'same'
+      : (SHENG[me.dayEl]===op.dayEl || SHENG[op.dayEl]===me.dayEl) ? 'sheng' : 'ke';
+    const SHAPE={
+      same:`둘의 본질이 <b>같은 기운</b>이라 이 관계는 거울에 가까워. 상대를 보면 네가 보이고, 그래서 <b>상대의 단점이 유난히 거슬려</b>. 남 얘기가 아니라서 그래.`,
+      sheng:`한쪽이 주고 한쪽이 받는 <b>한 방향 흐름</b>이야. 이런 배치는 편한 대신 <b>기울기가 굳어지기 쉬워</b>. 주는 쪽이 당연해지고 받는 쪽이 당연해지면, 어느 날 주는 쪽이 먼저 지쳐.`,
+      ke:`한쪽이 다루고 한쪽이 눌리는 <b>맞물린 구조</b>야. 긴장이 있는 대신 <b>서로를 실제로 움직이게 해</b>. 편한 관계는 아닌데 성장은 이쪽에서 더 나와.`};
+    /* ★같은 구조 + 같은 신강약이면 두 카드가 <글자까지> 같아진다(실측: 2001×1999).
+       길이는 늘고 내용은 그대로인 것, 그게 패딩이다. 합치거나 반복을 뺀다. */
+    const sameSlot = (gM===gO), sameBoth = sameSlot && (myLv===opLv);
+    let sipCards;
+    if(sameBoth){
+      const both = (toMe===toOp) ? toMe : (toMe+'·'+toOp);
+      sipCards = `<div class="info-card wide"><div class="lab">서로에게 같은 자리 · ${both}</div>`
+        + `<div class="val" style="font-weight:500">드물게도 <b>둘이 서로를 같은 자리로 보고</b> 있어. ${BASE[gM]} ${BYLV[gM][myLv]}<br>`
+        + `한쪽만 그런 게 아니라 <b>양쪽 다</b> 그래서, 이 관계에선 같은 장점도 같은 함정도 두 배로 커져.</div></div>`;
+    }else if(sameSlot){
+      sipCards = `<div class="info-card"><div class="lab">${oname}${neun(oname)} 너에게 · ${toMe}</div>`
+        + `<div class="val" style="font-weight:500">${BASE[gM]} ${BYLV[gM][myLv]}</div></div>`
+        + `<div class="info-card"><div class="lab">너는 ${oname}에게 · ${toOp}</div>`
+        + `<div class="val" style="font-weight:500">너도 ${oname}에게 <b>같은 자리</b>야. 그런데 받는 쪽 사정이 달라. ${BYLV[gO][opLv]}</div></div>`;
+    }else{
+      sipCards = `<div class="info-card"><div class="lab">${oname}${neun(oname)} 너에게 · ${toMe}</div>`
+        + `<div class="val" style="font-weight:500">${BASE[gM]} ${BYLV[gM][myLv]}</div></div>`
+        + `<div class="info-card"><div class="lab">너는 ${oname}에게 · ${toOp}</div>`
+        + `<div class="val" style="font-weight:500">${BASE[gO]} ${BYLV[gO][opLv]}</div></div>`;
+    }
+    sipCards += `<div class="info-card wide"><div class="lab">두 자리를 겹치면</div><div class="val" style="font-weight:500">${SHAPE[shape]}`
+      + `${(sameSlot&&!sameBoth)?` 게다가 둘 다 상대를 <b>같은 자리</b>로 보고 있어서, 서로 같은 걸 기대하다 같은 데서 서운해져.`:''}`
+      + `${heFills.length?` 앞의 오행 합산에서 <b>${EL[heFills[0]].name}</b>${eul(EL[heFills[0]].name)} ${oname}${iga(oname)} 채운다고 했지. 십성으로 보면 ${oname}${neun(oname)} 너에게 <b>${toMe}</b>${jong(toMe)?'이라':'라'}, 그 자리를 맡기는 게 억지가 아니라 <b>원래 방향</b>이야.`:(iFill.length?` 앞의 오행 합산에서 <b>${EL[iFill[0]].name}</b>${eul(EL[iFill[0]].name)} 네가 채운다고 했지. 십성으로도 너는 ${oname}에게 <b>${toOp}</b>${jong(toOp)?'이라':'라'}, 그 몫이 네게 오는 게 자연스러워.`:'')}</div></div>`;
+    return `<div class="chapter"><div class="ch-h"><span class="ch-n">장</span><div class="ch-tt"><div class="ch-t">기운 배합</div><div class="ch-s">둘을 합치면 무엇이 차고 무엇이 비나</div></div></div><p class="body" style="font-size:14.5px">사주 여덟 글자를 각자 세면 여덟, 둘을 합치면 <b>열여섯</b>이야. 혼자일 땐 비어 있던 자리를 상대가 채우기도 하고, <b>둘 다 없어서 그 자리가 계속 비는</b> 수도 있어. 관계에서 실제로 겪는 건 각자의 여덟이 아니라 <b>합쳐진 열여섯</b>이야.</p>
+      ${grid}
+      <div class="info-grid">${cards.join('')}${fills}</div><p class="body" style="font-size:14.5px;margin-top:14px">기운의 양을 봤으니 이번엔 <b>방향</b>이야. 명리에선 상대가 내 일간에게 어떤 자리인지를 <b>십성</b>으로 불러. 중요한 건 이게 <b>서로 다르다</b>는 거야. 내가 상대를 챙기는 자리인데 상대는 나를 누르는 자리일 수 있고, 그 어긋남이 관계에서 그대로 나타나.</p><div class="info-grid">${sipCards}</div><p class="body" style="font-size:14.5px;margin-top:12px">이 장은 <b>좋고 나쁨</b>이 아니라 <b>배치</b>야. 비어 있는 자리는 채우면 되고, 넘치는 자리는 누가 말릴지 정하면 돼. 십성 구조도 마찬가지라서, <b>어느 쪽이 어떤 몫을 맡는 게 덜 힘든지</b>를 알려 주는 것뿐이야. 사람을 바꾸라는 말이 아니라 <b>역할을 바꾸라</b>는 말에 가까워.</p></div>`;
+  }catch(e){ return ''; }
+}
 let _reportBuilders={};   // cid → ()=>chaptersHTML. 무거운 9장 보고서를 '열 때' 만들기 위한 지연 빌더(로컬 카운슬 성능 2026-07-21)
 function renderCompatList(){
   const box=document.getElementById('compList');box.innerHTML='';
@@ -6258,7 +6385,9 @@ function renderCompatList(){
       let ch=`<div class="chapter"><div class="ch-h"><span class="ch-n">하나</span><div class="ch-tt"><div class="ch-t">두 사람의 사주</div><div class="ch-s">나란히 펼쳐 본 우리</div></div></div><p class="body" style="font-size:14.5px">${r.storyTwoCharts}</p><p class="body sub" style="font-size:13.5px">${SIPSUNG[op.sipTop[0]].story}</p><div class="info-grid"><div class="info-card"><div class="lab">${escapeHtml(myName)} (나)</div><div class="val">${me.dayStem}${BRANCHES[me.p.db]}일주 · ${me.animal}띠 · ${me.zod} ${ZODIAC[me.zod].sym}<br>본질 ${EL[me.dayEl].name} · 대표 ${SIPSUNG[me.sipTop[0]].label.split(', ')[0]}</div></div><div class="info-card"><div class="lab">${escapeHtml(c.name)}</div><div class="val">${op.dayStem}${BRANCHES[op.p.db]}일주 · ${op.animal}띠 · ${op.zod} ${ZODIAC[op.zod].sym}<br>본질 ${EL[op.dayEl].name} · 대표 ${SIPSUNG[op.sipTop[0]].label.split(', ')[0]}</div></div></div>
           ${chTwoCharts(me,op,c.name)}
           <div class="mc-section" style="margin-top:14px">📜 ${escapeHtml(c.name)} 님 사주 원국</div>
-          ${renderMyeongsik(op)}</div><div class="chapter"><div class="ch-h"><span class="ch-n">둘</span><div class="ch-tt"><div class="ch-t">성격궁합</div><div class="ch-s">닮은 결, 부딪히는 결</div></div></div><p class="body" style="font-size:14.5px">${r.storyPersonality}</p><div class="info-grid"><div class="info-card wide"><div class="lab">${M.styleLab}</div><div class="val" style="font-weight:500">${M.styleVal}</div></div><div class="info-card wide"><div class="lab">💬 잘 통하는 대화 주제</div><div class="val" style="font-weight:500">${r.talk}</div></div></div><div class="twocol" style="margin-top:10px"><div><div class="mc-section" style="color:var(--good)">💚 잘 맞는 결</div><ul class="clean">${r.goods.map(x=>`<li>${x}</li>`).join('')}</ul></div><div><div class="mc-section" style="color:var(--bad)">💔 부딪히는 결</div><ul class="clean">${r.cautions.map(x=>`<li>${x}</li>`).join('')}</ul></div></div>
+          ${renderMyeongsik(op)}</div>
+        ${elemMixHTML(me,op,c.name,rel)}
+        <div class="chapter"><div class="ch-h"><span class="ch-n">둘</span><div class="ch-tt"><div class="ch-t">성격궁합</div><div class="ch-s">닮은 결, 부딪히는 결</div></div></div><p class="body" style="font-size:14.5px">${r.storyPersonality}</p><div class="info-grid"><div class="info-card wide"><div class="lab">${M.styleLab}</div><div class="val" style="font-weight:500">${M.styleVal}</div></div><div class="info-card wide"><div class="lab">💬 잘 통하는 대화 주제</div><div class="val" style="font-weight:500">${r.talk}</div></div></div><div class="twocol" style="margin-top:10px"><div><div class="mc-section" style="color:var(--good)">💚 잘 맞는 결</div><ul class="clean">${r.goods.map(x=>`<li>${x}</li>`).join('')}</ul></div><div><div class="mc-section" style="color:var(--bad)">💔 부딪히는 결</div><ul class="clean">${r.cautions.map(x=>`<li>${x}</li>`).join('')}</ul></div></div>
           ${chPersonMore(me,op,c.name,rel)}</div><div class="chapter"><div class="ch-h"><span class="ch-n">셋</span><div class="ch-tt"><div class="ch-t">${M.emoT}</div><div class="ch-s">${rel==='work'?'의사소통과 감정 처리 방식':rel==='friend'?'마음을 주고받는 방식':'마음을 주고받는 방식'}</div></div></div><p class="body" style="font-size:14.5px">${r.storyEmotion}</p>
           ${chEmoMore(me,op,c.name)}
           <div class="info-grid"><div class="info-card wide"><div class="lab">🚫 서운할 때, 이 말만은 금지</div><div class="val" style="font-weight:500">${nowordCard}</div></div></div></div><div class="chapter"><div class="ch-h"><span class="ch-n">넷</span><div class="ch-tt"><div class="ch-t">인연궁합</div><div class="ch-s">${M.fateS}</div></div></div><p class="body" style="font-size:14.5px"><b style="color:${scoreColor(r.total)}">‘${r.verdict}’.</b> ${r.storyInyeon}</p><p class="body sub">${r.dynamic}</p>
