@@ -20,7 +20,7 @@
 /* ============================================================
    사주 × 별자리 운명 분석, 전부 로컬, 외부통신 없음
    ============================================================ */
-const BUILD='2026-08-31.15';   // 날짜=빌드일, .N=그날 배포 순번. 재배포마다 갱신 → 자동 새로고침 트리거
+const BUILD='2026-08-31.16';   // 날짜=빌드일, .N=그날 배포 순번. 재배포마다 갱신 → 자동 새로고침 트리거
 /* 자동 업데이트: ①켜질 때 최신 BUILD 확인 → 다르면 캐시버스트 이동 ②탭이 다시 보일 때도 확인 → 읽던 중이면 강제 리로드 대신 배너
    (폰 브라우저는 옛 탭을 리로드 없이 복원하므로 ②가 없으면 며칠 전 버전이 계속 보임 — 오너 "어떤 건 배포됐고 어떤 건 안 됐던데" 원인) */
 (function(){try{
@@ -6409,7 +6409,38 @@ function yongFitHTML(me, op, rawName, rel){
       ? `<b>${oname}${neun(oname)} 받는데 너는 이 관계에서 그걸 못 받아.</b> 나쁜 뜻이 아니라 기울어 있다는 뜻이야. 이런 배치에서 지치는 건 늘 주는 쪽이고, 지금은 네가 그쪽이야. 네게 필요한 <b>${EL[Y1.yong].name}</b>${eul(EL[Y1.yong].name)} <b>관계 밖에서 채워도 되는 것</b>으로 정해 둬. 그게 이 관계를 오래 가게 해.`
       : `<b>서로의 약을 서로가 안 갖고 있어.</b> 이건 나쁜 궁합이라는 뜻이 아니야. <b>보완하는 관계가 아니라 나누는 관계</b>라는 뜻이야. 서로를 채워 주려고 애쓸수록 둘 다 없는 걸 짜내게 되니까, 각자 필요한 건 각자 밖에서 채우고 <b>이 관계에서는 다른 걸 기대하는 편</b>이 훨씬 편해.`;
     const sumFull = sumTxt + sameTxt;
-    return `<div class="chapter"><div class="ch-h"><span class="ch-n">장</span><div class="ch-tt"><div class="ch-t">서로에게 약이 되나</div><div class="ch-s">각자에게 필요한 기운을 상대가 갖고 있는지</div></div></div><p class="body" style="font-size:14.5px">명리에선 사람마다 <b>약이 되는 기운</b>이 따로 있다고 봐. 같은 오행이어도 누구에겐 보약이고 누구에겐 과잉이야. 앞 장에서 <b>둘을 합치면 무엇이 차고 비는지</b>를 봤다면, 이번엔 <b>각자에게 필요한 걸 상대가 들고 있는지</b>를 봐. 총량이 아니라 <b>처방</b>이야.</p><div class="info-grid"><div class="info-card"><div class="lab">너에게 약이 되는 기운 · ${EL[Y1.yong].name}</div><div class="val" style="font-weight:500">${WHY[lv(me)]} 그래서 네 약은 <b>${EL[Y1.yong].name}</b>${jong(EL[Y1.yong].name)?'이야':'야'}.<br>${verdict(toMe, Y1.yong, oname, true)}${giNote(giMe, Y1.gi, `${oname}${iga(oname)}`)}</div></div><div class="info-card"><div class="lab">${oname}에게 약이 되는 기운 · ${EL[Y2.yong].name}</div><div class="val" style="font-weight:500">${WHY[lv(op)]} 그래서 ${oname}의 약은 <b>${EL[Y2.yong].name}</b>${jong(EL[Y2.yong].name)?'이야':'야'}.<br>${verdict(toOp, Y2.yong, '네', false)}${giNoteOp(giOp, Y2.gi)}</div></div><div class="info-card wide"><div class="lab" style="color:${both?'var(--good)':((onlyMe||onlyOp)?'var(--ok)':'var(--muted)')}">두 방향을 겹치면</div><div class="val" style="font-weight:500">${sumFull}</div></div></div><p class="body sub" style="font-size:12.5px;margin-top:10px;color:var(--muted)">개수는 <b>겉 여덟 글자</b>를 센 값이야. 그리고 용신을 무엇으로 잡느냐는 <b>유파마다 다르고</b>, 여기 값은 이 앱이 정한 규칙(억부 기준)을 따른 거야. 다른 곳에서 다른 오행을 들었다면 틀린 게 아니라 <b>기준이 다른 것</b>일 수 있어.</p></div>`;
+    return `<div class="chapter"><div class="ch-h"><span class="ch-n">장</span><div class="ch-tt"><div class="ch-t">서로에게 약이 되나</div><div class="ch-s">각자에게 필요한 기운을 상대가 갖고 있는지</div></div></div><p class="body" style="font-size:14.5px">명리에선 사람마다 <b>약이 되는 기운</b>이 따로 있다고 봐. 같은 오행이어도 누구에겐 보약이고 누구에겐 과잉이야. 앞 장에서 <b>둘을 합치면 무엇이 차고 비는지</b>를 봤다면, 이번엔 <b>각자에게 필요한 걸 상대가 들고 있는지</b>를 봐. 총량이 아니라 <b>처방</b>이야.</p><div class="info-grid"><div class="info-card"><div class="lab">너에게 약이 되는 기운 · ${EL[Y1.yong].name}</div><div class="val" style="font-weight:500">${WHY[lv(me)]} 그래서 네 약은 <b>${EL[Y1.yong].name}</b>${jong(EL[Y1.yong].name)?'이야':'야'}.<br>${verdict(toMe, Y1.yong, oname, true)}${giNote(giMe, Y1.gi, `${oname}${iga(oname)}`)}</div></div><div class="info-card"><div class="lab">${oname}에게 약이 되는 기운 · ${EL[Y2.yong].name}</div><div class="val" style="font-weight:500">${WHY[lv(op)]} 그래서 ${oname}의 약은 <b>${EL[Y2.yong].name}</b>${jong(EL[Y2.yong].name)?'이야':'야'}.<br>${verdict(toOp, Y2.yong, '네', false)}${giNoteOp(giOp, Y2.gi)}</div></div><div class="info-card wide"><div class="lab" style="color:${both?'var(--good)':((onlyMe||onlyOp)?'var(--ok)':'var(--muted)')}">두 방향을 겹치면</div><div class="val" style="font-weight:500">${sumFull}</div></div>
+        ${(()=>{ try{
+          /* ★희신은 yongsin 이 이미 돌려주는데 궁합이 한 곳도 안 썼다 (2026-08-31).
+             개인 리포트는 24곳에서 쓴다. 있는 계산을 안 쓰고 있었다.
+             네 방향(희신 둘, 기신 둘)을 다 세면 <구조가 같고 오행만 다른> 쌍도 값이 갈린다. */
+          if(!Y1.hee||!Y2.hee) return '';
+          const heeMe=B[Y1.hee]||0, heeOp=A[Y2.hee]||0;
+          const giMe2=B[Y1.gi]||0,  giOp2=A[Y2.gi]||0;
+          const rescue = (toMe===0&&heeMe>=1)
+            ? `<br><b>여기가 중요해.</b> 1순위인 <b>${EL[Y1.yong].name}</b>${eul(EL[Y1.yong].name)} ${oname}${neun(oname)} 못 주는데 <b>2순위 ${EL[Y1.hee].name}</b>${neun(EL[Y1.hee].name)} 갖고 있어. <b>아주 못 얻는 건 아니라는 뜻</b>이야. 이 관계에서 기대할 건 ${EL[Y1.yong].name} 쪽이 아니라 <b>${EL[Y1.hee].name} 쪽</b>이라고 방향만 바꾸면 돼.`
+            : ((toMe===0&&heeMe===0)
+              ? `<br>1순위도 2순위도 ${oname}에겐 없어. 이 관계는 <b>기운을 받는 자리가 아니라 다른 걸 나누는 자리</b>로 두는 게 서로 편해.`
+              : '');
+          /* ★나열이 아니라 판단으로 쓴다. 초안은 네 줄 목록이라 값만 갈리고 뼈대가
+             글의 대부분이었고, 그래서 분량은 늘었는데 개인화가 <내려갔다>(0.537 -> 0.559).
+             1순위와 2순위 중 어느 쪽이 실제로 열려 있나를 비교하면 결론 자체가 갈린다. */
+          const open=(y,h,yEl,hEl,who)=>{
+            if(y===0&&h===0) return `${who} 1순위 <b>${EL[yEl].name}</b>도 2순위 <b>${EL[hEl].name}</b>도 못 얻어.`;
+            if(h>y) return `${who} 실제로 열려 있는 건 1순위 <b>${EL[yEl].name}</b>(${y}자)이 아니라 <b>2순위 ${EL[hEl].name}</b>(${h}자) 쪽이야. 기대할 방향을 여기로 잡는 게 맞아.`;
+            if(y>h) return `${who} 1순위 <b>${EL[yEl].name}</b>(${y}자)이 2순위 <b>${EL[hEl].name}</b>(${h}자)보다 두껍게 열려 있어. 순위대로 받는 셈이야.`;
+            return `${who} 1순위 <b>${EL[yEl].name}</b>${wa_gwa(EL[yEl].name)} 2순위 <b>${EL[hEl].name}</b>${iga(EL[hEl].name)} ${y}자씩으로 같아. 어느 쪽으로도 치우치지 않은 배치야.`;
+          };
+          const giLine = (n,el,who)=>n<3?'':`${who} <b>${EL[el].name}</b>${eul(EL[el].name)} ${n}자 갖고 있어서, 과하면 독이 되는 쪽도 같이 들어와.`;
+          const gl=[giLine(giMe2,Y1.gi,`${oname}${iga(oname)}`), giLine(giOp2,Y2.gi,'네가')].filter(Boolean);
+          return `<div class="info-card wide"><div class="lab">1순위가 막히면 2순위</div><div class="val" style="font-weight:500">`
+            + `명리에선 약이 되는 기운을 <b>용신(1순위)</b>과 <b>희신(2순위)</b> 둘로 봐. 1순위가 안 들어와도 2순위가 있으면 <b>길이 아주 막힌 건 아니야</b>.<br>`
+            + open(toMe, heeMe, Y1.yong, Y1.hee, `${oname}에게서`) + ` `
+            + open(toOp, heeOp, Y2.yong, Y2.hee, `${oname}${neun(oname)} 너에게서`)
+            + (gl.length?`<br><span style="color:var(--care)">${gl.join(' ')}</span>`:'')
+            + rescue + `</div></div>`;
+        }catch(e){ return ''; } })()}
+      </div><p class="body sub" style="font-size:12.5px;margin-top:10px;color:var(--muted)">개수는 <b>겉 여덟 글자</b>를 센 값이야. 그리고 용신을 무엇으로 잡느냐는 <b>유파마다 다르고</b>, 여기 값은 이 앱이 정한 규칙(억부 기준)을 따른 거야. 다른 곳에서 다른 오행을 들었다면 틀린 게 아니라 <b>기준이 다른 것</b>일 수 있어.</p></div>`;
   }catch(e){ return ''; }
 }
 let _reportBuilders={};   // cid → ()=>chaptersHTML. 무거운 9장 보고서를 '열 때' 만들기 위한 지연 빌더(로컬 카운슬 성능 2026-07-21)
