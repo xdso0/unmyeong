@@ -20,7 +20,7 @@
 /* ============================================================
    사주 × 별자리 운명 분석, 전부 로컬, 외부통신 없음
    ============================================================ */
-const BUILD='2026-08-31.14';   // 날짜=빌드일, .N=그날 배포 순번. 재배포마다 갱신 → 자동 새로고침 트리거
+const BUILD='2026-08-31.15';   // 날짜=빌드일, .N=그날 배포 순번. 재배포마다 갱신 → 자동 새로고침 트리거
 /* 자동 업데이트: ①켜질 때 최신 BUILD 확인 → 다르면 캐시버스트 이동 ②탭이 다시 보일 때도 확인 → 읽던 중이면 강제 리로드 대신 배너
    (폰 브라우저는 옛 탭을 리로드 없이 복원하므로 ②가 없으면 며칠 전 버전이 계속 보임 — 오너 "어떤 건 배포됐고 어떤 건 안 됐던데" 원인) */
 (function(){try{
@@ -5276,7 +5276,7 @@ function compatibility(me,other){
     total>=70?`${oname}${neun(oname)} 서로를 채워 주는 좋은 인연이야. 솔직함만 안 잃으면 오래가.`:
     total>=55?`${oname}${neun(oname)} 노력으로 충분히 좋아지는 사이야. 표현이랑 배려가 열쇠야.`:
     `${oname}${neun(oname)} 다른 만큼 배울 것도 많은 사이야. 속도 늦추고 서로 선 존중해.`)+
-    ` ${oname}의 ${other.zod}다운 ‘${oTrait}’ 한 면을 네가 알아봐 줄 때, 이 인연은 한층 더 깊어져. `+
+    ` ${oname}의 ${other.zod}다운 ‘${oTrait}’한 면을 네가 알아봐 줄 때, 이 인연은 한층 더 깊어져. `+
     `딱 하나만 기억해. ${total>=70?'지금처럼 자주 마음 표현하기':'다름을 틀림으로 보지 않기'}.`;
   /* ── 두 명식을 나란히 펼친 근거 문단 ── */
   const ubCh=BRANCHES[me.p.db], vbCh=BRANCHES[other.p.db];
@@ -5814,7 +5814,12 @@ function openCompatReport(cid){
   let chapters='';
   if(builder){
     const tmp=document.createElement('div'); tmp.innerHTML=builder();
-    [...tmp.querySelectorAll('.chapter')].forEach((ch,i)=>{ const n=ch.querySelector('.ch-n'); if(n) n.textContent='제'+(i+1)+'장'; });
+    (()=>{ const chs=[...tmp.querySelectorAll('.chapter')];
+      chs.forEach((ch,i)=>{ const n=ch.querySelector('.ch-n'); if(n) n.textContent='제'+(i+1)+'장'; });
+      /* ★장 수를 본문에 손으로 박으면 장을 더할 때마다 틀린다. 실제로 「열 개의 장」이
+         13장이 된 뒤에도 그대로 나갔다. 여기서 세는 김에 채운다. */
+      tmp.querySelectorAll('.ch-total').forEach(el=>{ el.textContent=String(chs.length); });
+    })();
     chapters=tmp.innerHTML;
   }
   const d=det.dataset;
@@ -6101,8 +6106,41 @@ function chZwMoreNote(me,op,oname,rel){
   const tm=ZW_STAR[sm].tags.slice(0,2).join('·'), to=ZW_STAR[so].tags.slice(0,2).join('·');
   return concept+`<p class="body">너의 무대는 <b>${sm}</b>(${tm})의 톤이고, ${escapeHtml(oname)}의 무대는 <b>${so}</b>(${to})의 톤이야. 위 카드들이 이 두 조명이 겹칠 때 생기는 그림이고. 읽는 요령은 하나야, 잘 맞는 부분은 그냥 누리고, 안 맞는다고 나온 부분은 <b>둘 중 하나가 연기해야 하는 장면</b>이라고 생각하면 돼. 무대가 다른 배우끼리도 명작을 만들잖아, 서로의 조명을 알고 서기만 하면. 그리고 이 케미는 고정값이 아니라 기본값이야. 시작점이 어디든, 서로를 아는 만큼 무대는 넓어져.</p>`;
 }
-function chClosingMore(me,op,oname,rel){
-  return `<p class="body" style="margin-top:8px">여기까지 열 개의 장을 같이 읽었네. 마지막으로 이 보고서를 쓰는 법을 말해 줄게. 점수는 성적표가 아니라 날씨 예보야. 비 온다는 예보를 보고 소풍을 취소하는 사람도 있지만, 우산을 챙기는 사람도 있잖아. 이 보고서의 모든 장은 우산 얘기야. 어느 달에 비가 오기 쉬운지, 서운함이 어떤 모양으로 오는지, 돈 얘기는 언제 꺼내야 하는지.</p><p class="body">그러니 딱 두 가지만 가져가. 하나, 위기 리포트의 <b>조심할 달</b>을 달력에 적어 둘 것. 둘, 감정궁합의 <b>서운함 신호</b>를 기억할 것. 이 둘만 알아도 이 관계에서 만날 파도의 절반은 미리 보여. 나머지 절반은 사주가 아니라 두 사람의 다정함이 결정하는 거고, 그건 어느 명식에도 안 적혀 있어.</p><p class="body sub">이 보고서는 한 번 읽고 덮는 용도가 아니야. 관계가 흔들리는 날, 상대가 이해 안 되는 날, 그리고 기념일처럼 마음이 말랑한 날 다시 열어 봐. 같은 문장이 그때마다 다르게 읽힐 거야. ${escapeHtml(oname)}${wa_gwa(oname)} 너의 앞날이 예보보다 맑기를.</p>`;
+function chClosingMore(me,op,oname,rel,r){
+  return `<p class="body" style="margin-top:8px">여기까지 <span class="ch-total">열</span>개의 장을 같이 읽었네. 마지막으로 이 보고서를 쓰는 법을 말해 줄게. 점수는 성적표가 아니라 날씨 예보야. 비 온다는 예보를 보고 소풍을 취소하는 사람도 있지만, 우산을 챙기는 사람도 있잖아. 이 보고서의 모든 장은 우산 얘기야. 어느 달에 비가 오기 쉬운지, 서운함이 어떤 모양으로 오는지, 돈 얘기는 언제 꺼내야 하는지.</p>
+  ${(()=>{ try{
+    /* ★마무리 장인데 이 리포트를 하나도 요약하지 않았다(2026-08-31).
+       「조심할 달을 적어 둬」라고만 하고 그 달이 언제인지는 안 말했다.
+       앞 장들이 쓴 계산을 <다시 불러> 실제 값을 넣는다. 결정적이라 값이 같고,
+       클로저에서 꺼내려고 리팩터링하지 않는다(전에 그러다 R20 을 깨뜨렸다). */
+    const items=[];
+    const by=(r&&r.badYears)||[];
+    items.push(by.length
+      ? `<b>시기.</b> 조심할 해는 <b>${by[0].replace(/\(.*/,'')}</b>이야. 달력에 적어 두고, 그 해엔 큰 결정을 한 템포 늦춰.`
+      : `<b>시기.</b> 앞으로 10년 안에 특별히 조심할 해로 잡히는 건 없어. 그만큼 이 관계는 <b>시기보다 습관</b>이 변수야.`);
+    if(typeof rawElementCount==='function'){
+      const A=rawElementCount(me.p), B=rawElementCount(op.p);
+      const none=EL_ORDER.filter(e=>((A[e]||0)+(B[e]||0))===0);
+      const fill=EL_ORDER.filter(e=>(A[e]||0)===0 && (B[e]||0)>0);
+      items.push(none.length
+        ? `<b>기운.</b> 둘을 합쳐도 <b>${EL[none[0]].name}</b>${iga(EL[none[0]].name)} 한 자도 없어. 서로에게서 못 빌리는 자리라 <b>관계 밖에서</b> 채우기로 정해 둬.`
+        : (fill.length
+          ? `<b>기운.</b> 네게 없는 <b>${EL[fill[0]].name}</b>${eul(EL[fill[0]].name)} ${oname}${iga(oname)} 갖고 있어. 그 자리는 <b>맡기는 게 이기는 것</b>이야.`
+          : `<b>기운.</b> 둘 다 다섯 기운을 고르게 갖췄어. 메워 줄 것도 빌 것도 없으니, 같이 하는 일은 <b>일부러 만들어야</b> 생겨.`));
+    }
+    if(typeof yongsin==='function'&&typeof rawElementCount==='function'){
+      const Y=yongsin(me), B=rawElementCount(op.p), n=B[Y.yong]||0;
+      items.push(n>=3
+        ? `<b>처방.</b> 네게 약이 되는 <b>${EL[Y.yong].name}</b>${eul(EL[Y.yong].name)} ${oname}${iga(oname)} 두껍게 갖고 있어. 이 사람 옆에서 편한 건 <b>기분 탓이 아니야</b>.`
+        : (n>=1
+          ? `<b>처방.</b> 네게 약이 되는 건 <b>${EL[Y.yong].name}</b>${jong(EL[Y.yong].name)?'이고':'고'}, ${oname}${iga(oname)} 조금 갖고 있어. 없는 것과는 다르니 그쪽으로 기대는 건 괜찮아.`
+          : `<b>처방.</b> 네게 약이 되는 <b>${EL[Y.yong].name}</b>${eul(EL[Y.yong].name)} ${oname}${neun(oname)} 안 갖고 있어. 상대 탓이 아니라 <b>없는 것</b>이니, 그건 밖에서 채우기로 하고 이 관계엔 다른 걸 기대해.`));
+    }
+    return `<p class="body">그러니 이 리포트에서 <b>딱 세 가지만</b> 가져가.</p><ul class="clean">`
+      + items.map(x=>`<li>${x}</li>`).join('')
+      + `</ul><p class="body">이 셋만 알아도 이 관계에서 만날 파도의 절반은 미리 보여. 나머지 절반은 사주가 아니라 <b>두 사람의 다정함</b>이 결정하는 거고, 그건 어느 명식에도 안 적혀 있어.</p>`;
+  }catch(e){ return `<p class="body">이 관계에서 만날 파도의 절반은 앞 장들에 미리 적혀 있어. 나머지 절반은 사주가 아니라 <b>두 사람의 다정함</b>이 결정하는 거고, 그건 어느 명식에도 안 적혀 있어.</p>`; } })()}
+  <p class="body sub">이 보고서는 한 번 읽고 덮는 용도가 아니야. 관계가 흔들리는 날, 상대가 이해 안 되는 날, 그리고 기념일처럼 마음이 말랑한 날 다시 열어 봐. 같은 문장이 그때마다 다르게 읽힐 거야. ${escapeHtml(oname)}${wa_gwa(oname)} 너의 앞날이 예보보다 맑기를.</p>`;
 }
 /* ★궁합 대운 교차 (2026-08-31, 오너 지시로 궁합 분량 확대).
    두 사람의 대운 8칸을 연도축에 겹친다. 시작 나이가 다르면 구간이 어긋나고,
@@ -6527,8 +6565,13 @@ function renderCompatList(){
           ${anv}
           ${r.badYears.length?`<div class="info-card wide" style="margin:4px 0 10px"><div class="lab">📅 특히 조심할 해 (그 해에 들어오는 기운, 세운 기준)</div><div class="val" style="font-weight:500">${r.badYears.join('<br>')}</div></div>`:''}
           ${calCard?`<div class="info-card wide" style="margin:4px 0 10px"><div class="lab">🗓 두 사람의 달력 (올해 기준)</div><div class="val" style="font-weight:500">${calCard}</div></div>`:''}
-          <div class="mc-section" style="color:var(--good)">🛟 ${rel==='love'?'그래도 지키고 싶다면, 처방전':rel==='friend'?'그래도 오래 보고 싶다면, 처방전':'그래도 같이 일해야 한다면, 처방전'}</div><ul class="clean">${r.rescue.map(x=>`<li>${x}</li>`).join('')}</ul><p class="body sub" style="color:var(--muted);font-size:12.5px">위기 시나리오는 ‘예언’이 아니라 두 명식의 구조에서 나온 ‘경향’이야. 같은 구조라도 아는 쪽은 웃으며 넘기고, 모르는 쪽은 정면으로 맞아. 그 차이를 만들려고 이 장을 쓴 거야.</p></div><div class="chapter"><div class="ch-h"><span class="ch-n">끝</span><div class="ch-tt"><div class="ch-t">두 사람에게</div><div class="ch-s">마지막으로 건네는 이야기</div></div></div><p class="body">${r.closing}</p><div class="mc-section">🌊 ${M.dates}</div><ul class="clean">${r.dates.map(x=>`<li>${x}</li>`).join('')}</ul><div class="mc-section" style="margin-top:10px">🤝 오래가려면, 각자의 몫</div><ul class="clean"><li>${r.effortMe}</li><li>${r.effortOther}</li></ul>
-          ${chClosingMore(me,op,c.name,rel)}
+          <div class="mc-section" style="color:var(--good)">🛟 ${rel==='love'?'그래도 지키고 싶다면, 처방전':rel==='friend'?'그래도 오래 보고 싶다면, 처방전':'그래도 같이 일해야 한다면, 처방전'}</div><ul class="clean">${r.rescue.map(x=>`<li>${x}</li>`).join('')}</ul><p class="body sub" style="color:var(--muted);font-size:12.5px">위기 시나리오는 ‘예언’이 아니라 두 명식의 구조에서 나온 ‘경향’이야. 같은 구조라도 아는 쪽은 웃으며 넘기고, 모르는 쪽은 정면으로 맞아. 그 차이를 만들려고 이 장을 쓴 거야.</p></div><div class="chapter"><div class="ch-h"><span class="ch-n">끝</span><div class="ch-tt"><div class="ch-t">두 사람에게</div><div class="ch-s">마지막으로 건네는 이야기</div></div></div><p class="body">${r.closing}</p><div class="mc-section">🌊 ${M.dates}</div><ul class="clean">${r.dates.map(x=>`<li>${x}</li>`).join('')}</ul><div class="mc-section" style="margin-top:10px">🤝 오래가려면, 각자의 몫</div><ul class="clean">${
+            /* ★같은 오행이면 두 줄이 글자까지 같아진다(실측). 그럼 한 줄로 합친다. */
+            /* 접두어(너(목(木)형): )가 달라 전체 비교는 항상 false 다. 콜론 뒤만 본다. */
+            String(r.effortMe).split(': ').slice(1).join(': ')===String(r.effortOther).split(': ').slice(1).join(': ')
+              ? `<li>${r.effortMe}</li><li style="color:var(--muted)">둘의 기운이 같은 결이라 <b>지킬 것도 똑같아</b>. 한쪽만 하면 티가 나니까 같이 정해 둬.</li>`
+              : `<li>${r.effortMe}</li><li>${r.effortOther}</li>`}</ul>
+          ${chClosingMore(me,op,c.name,rel,r)}
           <details style="margin-top:12px"><summary style="cursor:pointer;color:var(--muted);font-size:12.5px">📜 사주·별자리 근거 자세히 보기</summary><div style="padding:8px 0"><div class="mc-section">사주로 본 궁합</div><ul class="clean">${r.saju.reasons.map(x=>`<li>${x}</li>`).join('')}</ul><div class="mc-section" style="margin-top:10px">별자리로 본 궁합</div><ul class="clean">${r.zodiac.reasons.map(x=>`<li>${x}</li>`).join('')}</ul></div></details></div>
 `;
     /* 카드 전체에 관계 유형 재해석층 적용(2026-07-20).
