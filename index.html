@@ -20,7 +20,7 @@
 /* ============================================================
    사주 × 별자리 운명 분석, 전부 로컬, 외부통신 없음
    ============================================================ */
-const BUILD='2026-08-31.3';   // 날짜=빌드일, .N=그날 배포 순번. 재배포마다 갱신 → 자동 새로고침 트리거
+const BUILD='2026-08-31.4';   // 날짜=빌드일, .N=그날 배포 순번. 재배포마다 갱신 → 자동 새로고침 트리거
 /* 자동 업데이트: ①켜질 때 최신 BUILD 확인 → 다르면 캐시버스트 이동 ②탭이 다시 보일 때도 확인 → 읽던 중이면 강제 리로드 대신 배너
    (폰 브라우저는 옛 탭을 리로드 없이 복원하므로 ②가 없으면 며칠 전 버전이 계속 보임 — 오너 "어떤 건 배포됐고 어떤 건 안 됐던데" 원인) */
 (function(){try{
@@ -412,7 +412,21 @@ function personaSpec(elKey,role,pr,refY){
     +EL_PHOTO[elKey]+look+', '+(ROLE_SCENE[role]||'')+', '+PHOTO_BASE;
   return {prompt:prompt, seed:(seed%100000), age:age};
 }
-function personaImg(elKey,role,pr,refY){
+/* lazy=true 면 src 대신 data-src 로 내보낸다. 닫힌 details 안이라도 src 가 있으면
+   브라우저가 받아오므로, 지연 로드는 이 방법이라야 실제로 요청이 안 나간다. */
+/* <펼쳐 보기>를 열면 그때 받아온다. 한 번만 옮기고 data-src 는 지운다. */
+function fateLazyOpen(det){
+  try{
+    if(!det||!det.open) return;
+    det.querySelectorAll('img[data-src]').forEach(function(im){
+      const u=im.getAttribute('data-src'); if(!u) return;
+      im.removeAttribute('data-src');
+      const w=im.closest('.ph-wrap'); if(w) w.classList.add('ph-loading');
+      im.src=u;
+    });
+  }catch(e){}
+}
+function personaImg(elKey,role,pr,refY,lazy){
   /* 시드는 refY 를 안 탄다 — 운명의 상대는 한 사람이고 두 창은 그 사람을 만날 두 시점이다.
      시드를 바꾸면 <다른 사람 둘>로 읽힌다(2026-08-31). */
   const sp=personaSpec(elKey,role,pr,refY);
@@ -421,6 +435,9 @@ function personaImg(elKey,role,pr,refY){
   const url=IMG_SERVER.replace(/\/+$/,'')+'/img?prompt='+encodeURIComponent(sp.prompt)
     +'&neg='+encodeURIComponent(PHOTO_NEG)+'&seed='+sp.seed
     +(IMG_TOKEN?('&token='+encodeURIComponent(IMG_TOKEN)):'');
+  if(lazy) return '<span class="ph-wrap"><img alt="" data-src="'+url+'" data-el="'+elKey+'" data-seed="'+sp.seed+'" data-base="'+url+'" data-try="0" '
+    +'onload="this.parentNode.classList.remove(\'ph-loading\')" '
+    +'onerror="persoImgErr(this)"><i class="ph-bar"></i></span>';
   return '<span class="ph-wrap ph-loading"><img alt="" src="'+url+'" data-el="'+elKey+'" data-seed="'+sp.seed+'" data-base="'+url+'" data-try="0" '
     +'onload="this.parentNode.classList.remove(\'ph-loading\')" '
     +'onerror="persoImgErr(this)"><i class="ph-bar"></i></span>';
@@ -4908,7 +4925,7 @@ function fateHTML(pr){
   const prob = Math.round(Math.max(45, Math.min(95, 55 + _imb*0.7 + _def*0.8)));
   const ae=avoidElement(pr), Lf=LUCKY[fe];
   return `<div class="hero-card fate"><div class="hero-img">${personaImg(fe,'fate',pr,(function(){try{const _p=fatePick(pr);return _p&&_p.past?_p.past.y:null;}catch(e){return null;}})())}</div><div class="hero-ov"><div class="role good">♥ 운명의 상대</div><h3 class="mc-title">${EL[fe].name}의 기운을 지닌 사람</h3><div class="prob-badge">💞 인연 신호 <b>${prob}%</b></div><div class="body sub" style="font-size:11px;color:var(--muted);margin-top:2px">※ 미래 예측이 아니라 <b>사주 궁합의 세기</b>를 눈금으로 나타낸 값이야</div></div></div><p class="img-note">🎨 위 이미지는 오행 분위기를 표현한 ‘느낌’ 예시일 뿐, 실제 특정 인물이 아니야.</p><div class="mc-zodtags" style="margin-top:14px">${zs.map(n=>`<span class="tag gold">${n} ${ZODIAC[n].sym}</span>`).join('')}</div><p class="body sub" style="font-size:12px;color:var(--muted);margin-top:6px">※ 이 별자리들은 <b>사주 오행(${EL[fe].name})에 대응하는 계절</b>로 고른 거야. 궁합 장에서 쓰는 <b>서양 4원소</b>(불·흙·바람·물)와는 다른 기준이라, 같은 별자리가 두 곳에서 다르게 분류될 수 있어. 아래에서 짚는 <b>생월</b>과도 계절이 안 맞아 보일 수 있는데, 그쪽은 <b>띠에서 좁혀 낸 자리</b>고 이 별자리 넷은 <b>오행으로 고른 넓은 후보</b>야. 겹치면 제일 강하고, 안 겹쳐도 어긋난 게 아니라 <b>그물 크기가 다른 거야</b>.</p><p class="mc-desc">${desc}</p><div class="mc-section">💘 어떻게 만나게 될까</div><p class="body">${scenario}</p>
-     ${(function(){try{const _p=fatePick(pr); if(!_p||!_p.past) return '';const _bA=_p.past.y-pr.y+1, _nA=_p.win.y-pr.y+1;if(_p.none) return '';return `<div class="hero-card fate" style="margin-top:14px"><div class="hero-img">${personaImg(fe,'fate',pr,_p.win.y)}</div><div class="hero-ov"><div class="role good">⏳ 가장 가까운 강한 인연</div><h3 class="mc-title">${_p.win.y}년 · 네 ${_nA}세 무렵</h3><p class="body sub" style="margin-top:6px">위는 <b>가장 셀던 창</b>(${_p.past.y}년 · ${_bA}세) 무렵의 결이고, 이건 <b>앞으로 가장 가까운 강한 창</b>의 결이야. 다른 사람 둘이 아니라 <b>같은 결을 만날 두 시점</b>이라고 보면 돼.</p></div></div>`;}catch(e){return '';}})()}${fatePassedNote(pr)}
+     ${(function(){try{const _p=fatePick(pr); if(!_p||!_p.past) return '';const _bA=_p.past.y-pr.y+1, _nA=_p.win.y-pr.y+1;if(_p.none) return '';return `<details class="fate-more" style="margin-top:14px" ontoggle="fateLazyOpen(this)"><summary style="cursor:pointer;font-weight:800;color:var(--violet);padding:11px 4px;min-height:44px;display:flex;align-items:center;gap:7px;flex-wrap:wrap">⏳ 가장 가까운 강한 인연도 보기<span style="font-weight:600;font-size:12px;color:var(--muted)">${_p.win.y}년 · 네 ${_nA}세 무렵</span></summary><div class="hero-card fate" style="margin-top:8px"><div class="hero-img">${personaImg(fe,'fate',pr,_p.win.y,true)}</div><div class="hero-ov"><div class="role good">⏳ 가장 가까운 강한 인연</div><h3 class="mc-title">${_p.win.y}년 · 네 ${_nA}세 무렵</h3><p class="body sub" style="margin-top:6px">위는 <b>가장 셀던 창</b>(${_p.past.y}년 · ${_bA}세) 무렵의 결이고, 이건 <b>앞으로 가장 가까운 강한 창</b>의 결이야. 다른 사람 둘이 아니라 <b>같은 결을 만날 두 시점</b>이라고 보면 돼.</p></div></div></details>`;}catch(e){return '';}})()}${fatePassedNote(pr)}
      ${meetRadius(pr)}
      <div class="mc-section">한눈에 보기</div><div class="kv">${kvRows(kv)}</div>
      ${zwFused}
