@@ -20,7 +20,7 @@
 /* ============================================================
    사주 × 별자리 운명 분석, 전부 로컬, 외부통신 없음
    ============================================================ */
-const BUILD='2026-08-31.9';   // 날짜=빌드일, .N=그날 배포 순번. 재배포마다 갱신 → 자동 새로고침 트리거
+const BUILD='2026-08-31.10';   // 날짜=빌드일, .N=그날 배포 순번. 재배포마다 갱신 → 자동 새로고침 트리거
 /* 자동 업데이트: ①켜질 때 최신 BUILD 확인 → 다르면 캐시버스트 이동 ②탭이 다시 보일 때도 확인 → 읽던 중이면 강제 리로드 대신 배너
    (폰 브라우저는 옛 탭을 리로드 없이 복원하므로 ②가 없으면 며칠 전 버전이 계속 보임 — 오너 "어떤 건 배포됐고 어떤 건 안 됐던데" 원인) */
 (function(){try{
@@ -6055,6 +6055,87 @@ function chZwMoreNote(me,op,oname,rel){
 function chClosingMore(me,op,oname,rel){
   return `<p class="body" style="margin-top:8px">여기까지 열 개의 장을 같이 읽었네. 마지막으로 이 보고서를 쓰는 법을 말해 줄게. 점수는 성적표가 아니라 날씨 예보야. 비 온다는 예보를 보고 소풍을 취소하는 사람도 있지만, 우산을 챙기는 사람도 있잖아. 이 보고서의 모든 장은 우산 얘기야. 어느 달에 비가 오기 쉬운지, 서운함이 어떤 모양으로 오는지, 돈 얘기는 언제 꺼내야 하는지.</p><p class="body">그러니 딱 두 가지만 가져가. 하나, 위기 리포트의 <b>조심할 달</b>을 달력에 적어 둘 것. 둘, 감정궁합의 <b>서운함 신호</b>를 기억할 것. 이 둘만 알아도 이 관계에서 만날 파도의 절반은 미리 보여. 나머지 절반은 사주가 아니라 두 사람의 다정함이 결정하는 거고, 그건 어느 명식에도 안 적혀 있어.</p><p class="body sub">이 보고서는 한 번 읽고 덮는 용도가 아니야. 관계가 흔들리는 날, 상대가 이해 안 되는 날, 그리고 기념일처럼 마음이 말랑한 날 다시 열어 봐. 같은 문장이 그때마다 다르게 읽힐 거야. ${escapeHtml(oname)}${wa_gwa(oname)} 너의 앞날이 예보보다 맑기를.</p>`;
 }
+/* ★궁합 대운 교차 (2026-08-31, 오너 지시로 궁합 분량 확대).
+   두 사람의 대운 8칸을 연도축에 겹친다. 시작 나이가 다르면 구간이 어긋나고,
+   그 어긋남이 「한쪽만 순풍인 구간」이다. 개인 리포트엔 대운표가 있지만 겹치진 않는다.
+   예언이 아니라 <리듬이 어긋나는 구간>으로 쓴다. */
+function daeunCrossHTML(me, op, rawName, rel){
+  try{
+    if(typeof sajuDaeun!=='function') return '';
+    const oname = (typeof escapeHtml==='function') ? escapeHtml(rawName||'상대') : (rawName||'상대');
+    const A=sajuDaeun(me), B=sajuDaeun(op);
+    if(!A||!A.list||!A.list.length||!B||!B.list||!B.list.length) return '';
+    const at=(D,pr,y)=>{ const a=y-pr.y+1; let cur=null;
+      D.list.forEach(d=>{ if(a>=d.age) cur=d; }); return cur; };
+    const NOW=(typeof nowSajuYear==='function')?nowSajuYear(new Date()):new Date().getFullYear();
+    const bounds=new Set([NOW]);
+    A.list.forEach(d=>{ const y=me.y+d.age-1; if(y>NOW&&y<=NOW+40) bounds.add(y); });
+    B.list.forEach(d=>{ const y=op.y+d.age-1; if(y>NOW&&y<=NOW+40) bounds.add(y); });
+    const ys=[...bounds].sort((x,z)=>x-z);
+    let segs=[];
+    for(let i=0;i<ys.length;i++){
+      const s=ys[i], e=(i+1<ys.length)?ys[i+1]-1:s+9;
+      const da=at(A,me,s), db=at(B,op,s);
+      if(!da||!db) continue;
+      segs.push({s:s,e:e,a:da,b:db});
+    }
+    /* ★연속 구간이 tone·오행 모두 같으면 <원래 한 구간>이다. 병합한다.
+       안 하면 같은 문장을 두세 번 반복하게 되고, 그게 곧 패딩이다(초안에서 실제로 그랬다). */
+    const merged=[];
+    segs.forEach(sg=>{
+      const last=merged[merged.length-1];
+      if(last && last.a.tone===sg.a.tone && last.b.tone===sg.b.tone
+             && last.a.el===sg.a.el && last.b.el===sg.b.el){ last.e=sg.e; return; }
+      merged.push(sg);
+    });
+    segs=merged.slice(0,5);
+    if(!segs.length) return '';
+    const TONE={good:'순풍',flat:'평',bad:'역풍'};
+    const kindOf=(x,z)=>{
+      if(x==='good'&&z==='good') return 'both';
+      if(x==='bad'&&z==='bad') return 'neither';
+      if(x==='good'||z==='good') return 'one';
+      return 'flat';
+    };
+    const line = sg => {
+      const k=kindOf(sg.a.tone,sg.b.tone);
+      const meUp=sg.a.tone==='good';
+      const lead = meUp ? '너' : oname;
+      const base = k==='both'
+        ? `둘 다 밀 수 있는 구간이야. 같이 벌이는 일은 여기에 놓는 게 제일 덜 힘들어.`
+        : k==='neither'
+        ? `둘 다 힘을 아껴야 하는 구간이야. 이때 크게 벌이면 서로 탓하기 쉬우니, 판을 키우기보다 지키는 쪽으로 합의해 둬.`
+        : k==='one'
+        ? `${lead} 쪽만 흐름이 열리는 구간이야. ${meUp
+            ? `네가 앞장서고 ${oname}${neun(oname)} 받쳐 주는 배치가 자연스러워. 이때 상대가 굼떠 보여도 게으른 게 아니라 구간이 다른 거야.`
+            : `${oname}${iga(oname)} 앞장서고 네가 받쳐 주는 배치가 자연스러워. 네가 뒤처진 것 같아도 게으른 게 아니라 구간이 다른 거야.`}`
+        : `둘 다 크게 밀지도 눌리지도 않는 구간이야. 큰 결정보다 쌓아 두기에 맞아.`;
+      const an=EL[sg.a.el].name, bn=EL[sg.b.el].name;
+      const el = sg.a.el===sg.b.el
+        ? ` 이 구간엔 둘의 대운 오행이 <b>${JOSA(an,'으로')}</b> 같아서, 관심사와 속도가 자연스럽게 겹쳐.`
+        : (SHENG[sg.a.el]===sg.b.el
+          ? ` 네 <b>${an}</b>${iga(an)} ${oname}의 <b>${bn}</b>${eul(bn)} 살리는 흐름이라, 네가 쓰는 힘이 상대에게 그대로 가.`
+          : (SHENG[sg.b.el]===sg.a.el
+            ? ` ${oname}의 <b>${bn}</b>${iga(bn)} 네 <b>${an}</b>${eul(an)} 살리는 흐름이라, 이 구간엔 기대도 괜찮아.`
+            : ` 대운 오행이 <b>${an}</b>${wa_gwa(an)} <b>${bn}</b>${euro(bn)} 갈려서, 같은 일을 봐도 우선순위가 다를 수 있어.`));
+      return base+el;
+    };
+    const rows = segs.map(sg=>{
+      const k=kindOf(sg.a.tone,sg.b.tone);
+      const col = k==='both'?'var(--good)':k==='neither'?'var(--care)':k==='one'?'var(--ok)':'var(--muted)';
+      return `<div class="info-card wide"><div class="lab" style="color:${col}">${sg.s}~${sg.e}년 · 너 ${sg.s-me.y+1}세 / ${oname} ${sg.s-op.y+1}세</div>`
+        + `<div class="val" style="font-weight:500">너 <b>${TONE[sg.a.tone]||'평'}</b>(${sg.a.gz} ${EL[sg.a.el].name}) · ${oname} <b>${TONE[sg.b.tone]||'평'}</b>(${sg.b.gz} ${EL[sg.b.el].name})<br>${line(sg)}</div></div>`;
+    }).join('');
+    const best = segs.filter(x=>kindOf(x.a.tone,x.b.tone)==='both')[0];
+    const worst= segs.filter(x=>kindOf(x.a.tone,x.b.tone)==='neither')[0];
+    const tail = `${best?`둘 다 열리는 구간은 <b>${best.s}~${best.e}년</b>이야. 이사·계약·개업처럼 같이 밀어야 하는 일은 여기 놓으면 힘이 덜 들어. `:`앞으로 40년 안에 둘이 동시에 순풍인 구간은 안 나와. 그건 나쁜 궁합이라는 뜻이 아니라, <b>같이 밀기보다 번갈아 받쳐 주는 관계</b>라는 뜻이야. `}`
+      + `${worst?`반대로 <b>${worst.s}~${worst.e}년</b>은 둘 다 힘을 아껴야 해. 이 구간에 큰 결정을 몰면 서로 지쳐서 관계 문제로 오해하기 쉬워. `:``}`
+      + `대운은 <b>10년 단위로 바뀌는 배경</b>이야. 사건을 정하는 게 아니라 <b>같은 일이 얼마나 힘든지</b>를 정해. 그래서 이 표는 <b>언제 무엇을 하자</b>를 정할 때 쓰는 거지, 좋고 나쁨을 점치는 게 아니야.`;
+    return `<div class="chapter"><div class="ch-h"><span class="ch-n">장</span><div class="ch-tt"><div class="ch-t">시기 궁합</div><div class="ch-s">두 사람의 10년 흐름을 겹쳐 보면</div></div></div><p class="body" style="font-size:14.5px">사주에서 <b>대운</b>은 10년마다 바뀌는 배경이야. 두 사람은 시작 나이가 달라서 이 배경이 <b>어긋나게</b> 흘러. 한 사람이 밀어붙일 때 다른 사람은 쉬어야 하는 구간이 생기는 건 그래서고, 그걸 미리 알면 <b>서로를 오해하지 않아</b>.</p>
+      ${rows}
+      <p class="body" style="font-size:14.5px;margin-top:10px">${tail}</p></div>`;
+  }catch(e){ return ''; }
+}
 let _reportBuilders={};   // cid → ()=>chaptersHTML. 무거운 9장 보고서를 '열 때' 만들기 위한 지연 빌더(로컬 카운슬 성능 2026-07-21)
 function renderCompatList(){
   const box=document.getElementById('compList');box.innerHTML='';
@@ -6197,7 +6278,9 @@ function renderCompatList(){
             ${rel==='love'?`<div class="info-card wide"><div class="lab">💍 ${isQueer()?'동반':'결혼'} 적정 시기</div><div class="val" style="font-weight:500">${r.marriageWhen}</div></div><div class="info-card wide"><div class="lab">🏠 가족·가정운</div><div class="val" style="font-weight:500">${r.familyNote}</div></div>
             ${isQueer()?'':`<div class="info-card wide"><div class="lab">👶 자녀운</div><div class="val" style="font-weight:500">${r.childNote}</div></div>`}`:''}
             <div class="info-card wide"><div class="lab">✅ 오래가려면</div><div class="val" style="font-weight:500">${r.todo}</div></div></div>
-          ${chFutureMore(me,op,c.name,rel)}</div><div class="chapter"><div class="ch-h"><span class="ch-n">여덟</span><div class="ch-tt"><div class="ch-t">자미두수 관계운</div><div class="ch-s">${rel==='love'?'서로의 부부궁·명궁을 겹쳐 본 인연':'서로의 명궁을 겹쳐 본 기본 케미, 연인이 아니어도 관계의 결은 여기서 보여'}</div></div></div>
+          ${chFutureMore(me,op,c.name,rel)}</div>
+        ${daeunCrossHTML(me,op,c.name,rel)}
+        <div class="chapter"><div class="ch-h"><span class="ch-n">여덟</span><div class="ch-tt"><div class="ch-t">자미두수 관계운</div><div class="ch-s">${rel==='love'?'서로의 부부궁·명궁을 겹쳐 본 인연':'서로의 명궁을 겹쳐 본 기본 케미, 연인이 아니어도 관계의 결은 여기서 보여'}</div></div></div>
           ${renderZwCompat(me,op,rel)}
           ${chZwMoreNote(me,op,c.name,rel)}</div><div class="chapter"><div class="ch-h"><span class="ch-n">아홉</span><div class="ch-tt"><div class="ch-t">위기 리포트</div><div class="ch-s">흔들릴 때를 위한 정직한 시나리오</div></div></div><p class="body sub" style="font-size:13.5px">${r.crisisIntro}</p><p class="body" style="font-size:14.5px"><b>🔥 둘이 싸우면 이런 모양이 돼</b>, ${r.fightNote}</p><p class="body" style="font-size:14.5px"><b>🧱 이 관계가 깨진다면, 여기서부터야</b>, ${r.breakPoint} ${r.jiCrisis}</p><p class="body" style="font-size:14.5px"><b>⏳ 위기가 오기 쉬운 때</b>, ${r.crisis}</p>
           ${anv}
