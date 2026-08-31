@@ -20,7 +20,7 @@
 /* ============================================================
    사주 × 별자리 운명 분석, 전부 로컬, 외부통신 없음
    ============================================================ */
-const BUILD='2026-08-31.17';   // 날짜=빌드일, .N=그날 배포 순번. 재배포마다 갱신 → 자동 새로고침 트리거
+const BUILD='2026-08-31.18';   // 날짜=빌드일, .N=그날 배포 순번. 재배포마다 갱신 → 자동 새로고침 트리거
 /* 자동 업데이트: ①켜질 때 최신 BUILD 확인 → 다르면 캐시버스트 이동 ②탭이 다시 보일 때도 확인 → 읽던 중이면 강제 리로드 대신 배너
    (폰 브라우저는 옛 탭을 리로드 없이 복원하므로 ②가 없으면 며칠 전 버전이 계속 보임 — 오너 "어떤 건 배포됐고 어떤 건 안 됐던데" 원인) */
 (function(){try{
@@ -6520,6 +6520,63 @@ function palCrossHTML(me, op, rawName, rel){
             : `너는 상대를 <b>${pOfOpInMe}</b>에, 상대는 너를 <b>${pOfMeInOp}</b>에 놓고 있어. <b>서로를 두는 자리가 달라.</b> 이게 흔한 서운함의 정체야. 한쪽이 소홀한 게 아니라 <b>기대하는 종류가 처음부터 다른</b> 거고, 이걸 알면 「왜 나만큼 안 해 주지」가 「아, 다른 걸 주고 있었구나」로 바뀌어.`}</div></div></div><p class="body" style="font-size:14.5px;margin-top:12px">${ovTxt}</p><p class="body sub" style="font-size:12.5px;color:var(--muted)">이 장은 <b>양쪽 다 태어난 시를 알아야</b> 나와. 시를 모르면 명반의 시작점이 정해지지 않아서 12궁 배치를 아예 그릴 수 없거든. 다른 장들은 시가 없어도 사주로 볼 수 있지만 이 장만은 그래.</p></div>`;
   }catch(e){ return ''; }
 }
+/* ★궁합 올해 열두 달 (2026-08-31, 궁합 확대 8단계).
+   monthLv 는 사람별·월별 good/bad/flat 을 이미 준다. coupleCal 이 그걸 쓰지만
+   결과가 위기 리포트 안 <한 문장>으로만 나갔다. 열두 달을 두 사람분 나란히 본 적이 없다.
+   격자로 보여주고, 이번 달과 <한쪽만 순풍인 달>을 짚는다. 뒤엣것은 지금 어디에도 없다. */
+function monthGridHTML(me, op, rawName, rel){
+  try{
+    if(typeof monthLv!=='function'||typeof pillarsFromDate!=='function') return '';
+    const oname=(typeof escapeHtml==='function')?escapeHtml(rawName||'상대'):(rawName||'상대');
+    const now=new Date(), ty=now.getFullYear(), tm=now.getMonth()+1;
+    const cb1=(me.p.db+6)%12, cb2=(op.p.db+6)%12;     /* 각자의 일지 충 */
+    const rows=[];
+    for(let m=1;m<=12;m++){
+      const a=(monthLv(me,ty,m)||{}).lv, b=(monthLv(op,ty,m)||{}).lv;
+      const p2=pillarsFromDate(ty,m,15,-1,false);
+      const chung=(p2.mb===cb1||p2.mb===cb2);
+      rows.push({m:m, a:a, b:b, chung:chung,
+                 both:(a==='good'&&b==='good'&&!chung),
+                 one:(!chung && ((a==='good')!==(b==='good'))),
+                 bad:(chung || (a==='bad'&&b==='bad'))});
+    }
+    const mark=v=>v==='good'?'▲':(v==='bad'?'▽':'·');
+    const col=r=>r.both?'var(--good)':(r.bad?'var(--care)':(r.one?'var(--ok)':'var(--muted)'));
+    const cell=r=>`<div style="text-align:center;padding:7px 2px;border:1px solid ${r.m===tm?'var(--gold)':'var(--line2)'};border-radius:10px;background:var(--pearl);min-width:0">`
+      + `<div style="font-size:11px;color:var(--muted)">${r.m}월${r.m===tm?' ●':''}</div>`
+      + `<div style="font-size:15px;font-weight:700;color:${col(r)};line-height:1.3">${mark(r.a)}${mark(r.b)}</div>`
+      + `${r.chung?`<div style="font-size:10px;color:var(--care)">충</div>`:`<div style="font-size:10px;color:transparent">.</div>`}</div>`;
+    const grid=`<div style="display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:6px;margin:12px 0 4px">`
+      + rows.map(cell).join('') + `</div>`
+      + `<p class="body sub" style="font-size:12px;color:var(--muted);margin-top:2px">칸마다 <b>왼쪽이 너, 오른쪽이 ${oname}</b>야. ▲ 순풍 · ▽ 역풍 · · 평. <b>충</b>은 둘 중 한 명의 속마음 자리가 정면으로 흔들리는 달이야. 금테는 이번 달.</p>`;
+    const both=rows.filter(r=>r.both).map(r=>r.m);
+    const oneMe=rows.filter(r=>r.one&&r.a==='good').map(r=>r.m);
+    const oneOp=rows.filter(r=>r.one&&r.b==='good').map(r=>r.m);
+    const bad=rows.filter(r=>r.bad).map(r=>r.m);
+    const cur=rows[tm-1];
+    const curTxt = cur.chung
+      ? `<b>이번 달(${tm}월)은 충이 걸린 달</b>이야. 둘 중 한 명의 속마음 자리가 흔들려서 사소한 말에도 날이 서. 돈·이사·부모님 같은 큰 얘기는 <b>다음 달로 미루는</b> 게 나아.`
+      : (cur.both
+        ? `<b>이번 달(${tm}월)은 둘 다 순풍</b>이야. 미뤄 둔 일이 있으면 지금 꺼내. 열두 달 중 이런 달이 ${both.length}번${both.length<=3?'뿐이야':'이나 돼'}.`
+        : (cur.one
+          ? `<b>이번 달(${tm}월)은 ${cur.a==='good'?'너만':oname+'만'} 순풍</b>이야. ${cur.a==='good'?`네가 끌고 가는 달이라, 상대가 굼떠 보여도 재촉하지 마.`:`${oname}${iga(oname)} 끌고 가는 달이라, 이번 달은 받쳐 주는 쪽이 편해.`}`
+          : (cur.a==='bad'&&cur.b==='bad'
+            ? `<b>이번 달(${tm}월)은 둘 다 역풍</b>이야. 힘을 아껴. 이런 달에 큰 결정을 몰면 결정이 아니라 <b>서로에 대한 감정</b>이 남아.`
+            : `<b>이번 달(${tm}월)은 크게 밀지도 눌리지도 않는 달</b>이야. 큰 일보다 미뤄 둔 잔일을 치우기 좋아.`)));
+    const bothTxt = both.length
+      ? `둘 다 순풍인 달은 <b>${both.join('·')}월</b>이야. 여행·계약·이사·고백처럼 <b>같이 밀어야 하는 일</b>은 여기에 놓으면 힘이 덜 들어.`
+      : `올해는 <b>둘의 순풍이 겹치는 달이 없어</b>. 나쁜 해라는 뜻이 아니라, 큰 일을 <b>각자의 좋은 달에 번갈아</b> 잡아야 하는 해라는 뜻이야.`;
+    const oneTxt = (oneMe.length||oneOp.length)
+      ? `<b>한쪽만 순풍인 달</b>도 있어. ${oneMe.length?`<b>${oneMe.join('·')}월</b>은 네가 앞장설 달${oneOp.length?'이고':'이야'}`:''}${(oneMe.length&&oneOp.length)?', ':''}${oneOp.length?`<b>${oneOp.join('·')}월</b>은 ${oname}${iga(oname)} 앞장설 달이야`:''}. 이런 달에 <b>서로 속도를 맞추라고 요구하면</b> 둘 다 지쳐. 앞장선 쪽이 정하고 다른 쪽은 받치는 게 그 달엔 제일 편해.`
+      : `올해는 한쪽만 순풍인 달이 없어서, 둘의 리듬이 대체로 같이 움직여.`;
+    const badTxt = bad.length
+      ? `<b>${bad.join('·')}월</b>은 조심할 달이야. ${(()=>{const ch=rows.filter(r=>r.bad&&r.chung).length; if(!ch) return ''; return ch===bad.length?`충이 걸려 있어서 <b>말이 세게 나가는</b> 달이야. `:`그중 충이 걸린 달은 특히 <b>말이 세게 나가</b>. `;})()}이 달에 몰린 약속이 있으면 미리 여유를 잡아 둬.`
+      : `올해는 둘 다 크게 눌리는 달이 없어. 그만큼 <b>시기보다 습관이 변수</b>인 해야.`;
+    return `<div class="chapter"><div class="ch-h"><span class="ch-n">장</span><div class="ch-tt"><div class="ch-t">올해 열두 달</div><div class="ch-s">${ty}년, 두 사람의 달을 나란히</div></div></div><p class="body" style="font-size:14.5px">앞 장이 <b>10년 단위 배경</b>을 봤다면 여기는 <b>올해 열두 달</b>이야. 같은 달이라도 한 사람에겐 순풍이고 다른 사람에겐 역풍일 수 있어서, 나란히 놓고 봐야 <b>왜 이 달따라 안 맞았는지</b>가 보여.</p>
+      ${grid}
+      <div class="info-grid"><div class="info-card wide"><div class="lab" style="color:${cur.both?'var(--good)':(cur.bad?'var(--care)':'var(--ok)')}">이번 달</div><div class="val" style="font-weight:500">${curTxt}</div></div><div class="info-card wide"><div class="lab">같이 밀 달, 번갈아 밀 달</div><div class="val" style="font-weight:500">${bothTxt}<br>${oneTxt}</div></div><div class="info-card wide"><div class="lab" style="color:var(--care)">조심할 달</div><div class="val" style="font-weight:500">${badTxt}</div></div></div><p class="body sub" style="font-size:12.5px;color:var(--muted);margin-top:8px">이 표는 <b>${ty}년 기준</b>이야. 해가 바뀌면 배치도 바뀌니까 새해에 다시 열어 봐.</p></div>`;
+  }catch(e){ return ''; }
+}
 let _reportBuilders={};   // cid → ()=>chaptersHTML. 무거운 9장 보고서를 '열 때' 만들기 위한 지연 빌더(로컬 카운슬 성능 2026-07-21)
 function renderCompatList(){
   const box=document.getElementById('compList');box.innerHTML='';
@@ -6635,8 +6692,10 @@ function renderCompatList(){
       const nowordCard=op.dayEl===me.dayEl
         ?`둘 다 같은 기질이라 급소도 같아. 서로에게: ${NO_WORD[me.dayEl]}`
         :`너는 ${escapeHtml(c.name)}에게: ${NO_WORD[op.dayEl]}<br>${escapeHtml(c.name)}${neun(c.name)} 너에게: ${NO_WORD[me.dayEl]}`;
-      const calCard=(cc.good.length||cc.risk.length)
-        ? `${cc.good.length?`함께 큰 일(여행·계약·이사·고백)을 벌이기 좋은 달은 <b>${cc.good.join('·')}월</b>(둘 다 순풍). `:'둘의 순풍이 겹치는 달은 없어서, 큰 일은 각자의 좋은 달에 번갈아 잡는 게 나아. '}${cc.risk.length?`반대로 <b>${[...new Set(cc.risk)].join('·')}월</b>은 둘 중 한 명의 속마음 자리가 정면으로 흔들리는 달이라 서로 예민해지기 쉬워. 돈·이사·부모님 같은 큰 얘기는 이 달을 피해서 꺼내.`:''}`
+      /* ★<좋은 달>은 「올해 열두 달」 장이 격자로 가져갔다(2026-08-31). 여기선 충월 경고만 남긴다.
+         궁합 중복을 149건 -> 3건으로 줄인 적이 있다. 장을 늘리면서 다시 늘리지 않는다. */
+      const calCard=cc.risk.length
+        ? `<b>${[...new Set(cc.risk)].join('·')}월</b>은 둘 중 한 명의 속마음 자리가 정면으로 흔들리는 달이라 서로 예민해지기 쉬워. 돈·이사·부모님 같은 큰 얘기는 이 달을 피해서 꺼내.`
         : '';
       const anv=(rel==='love'&&c.anniv)?annivReport(c.anniv,r,me,op):'';
       let ch=`<div class="chapter"><div class="ch-h"><span class="ch-n">하나</span><div class="ch-tt"><div class="ch-t">두 사람의 사주</div><div class="ch-s">나란히 펼쳐 본 우리</div></div></div><p class="body" style="font-size:14.5px">${r.storyTwoCharts}</p><p class="body sub" style="font-size:13.5px">${SIPSUNG[op.sipTop[0]].story}</p><div class="info-grid"><div class="info-card"><div class="lab">${escapeHtml(myName)} (나)</div><div class="val">${me.dayStem}${BRANCHES[me.p.db]}일주 · ${me.animal}띠 · ${me.zod} ${ZODIAC[me.zod].sym}<br>본질 ${EL[me.dayEl].name} · 대표 ${SIPSUNG[me.sipTop[0]].label.split(', ')[0]}</div></div><div class="info-card"><div class="lab">${escapeHtml(c.name)}</div><div class="val">${op.dayStem}${BRANCHES[op.p.db]}일주 · ${op.animal}띠 · ${op.zod} ${ZODIAC[op.zod].sym}<br>본질 ${EL[op.dayEl].name} · 대표 ${SIPSUNG[op.sipTop[0]].label.split(', ')[0]}</div></div></div>
@@ -6667,6 +6726,7 @@ function renderCompatList(){
             <div class="info-card wide"><div class="lab">✅ 오래가려면</div><div class="val" style="font-weight:500">${r.todo}</div></div></div>
           ${chFutureMore(me,op,c.name,rel)}</div>
         ${daeunCrossHTML(me,op,c.name,rel)}
+        ${monthGridHTML(me,op,c.name,rel)}
         <div class="chapter"><div class="ch-h"><span class="ch-n">여덟</span><div class="ch-tt"><div class="ch-t">자미두수 관계운</div><div class="ch-s">${rel==='love'?'서로의 부부궁·명궁을 겹쳐 본 인연':'서로의 명궁을 겹쳐 본 기본 케미, 연인이 아니어도 관계의 결은 여기서 보여'}</div></div></div>
           ${renderZwCompat(me,op,rel)}
           ${chZwMoreNote(me,op,c.name,rel)}</div>
