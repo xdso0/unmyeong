@@ -20,7 +20,7 @@
 /* ============================================================
    사주 × 별자리 운명 분석, 전부 로컬, 외부통신 없음
    ============================================================ */
-const BUILD='2026-08-31.18';   // 날짜=빌드일, .N=그날 배포 순번. 재배포마다 갱신 → 자동 새로고침 트리거
+const BUILD='2026-08-31.19';   // 날짜=빌드일, .N=그날 배포 순번. 재배포마다 갱신 → 자동 새로고침 트리거
 /* 자동 업데이트: ①켜질 때 최신 BUILD 확인 → 다르면 캐시버스트 이동 ②탭이 다시 보일 때도 확인 → 읽던 중이면 강제 리로드 대신 배너
    (폰 브라우저는 옛 탭을 리로드 없이 복원하므로 ②가 없으면 며칠 전 버전이 계속 보임 — 오너 "어떤 건 배포됐고 어떤 건 안 됐던데" 원인) */
 (function(){try{
@@ -1114,7 +1114,7 @@ function renderZwCompat(me,op,rel){
     `<p class="body sub" style="font-size:13px;color:var(--muted);margin:6px 0 10px">자미두수에선 <b>${JOSA(relPalLabel(rel),'이','가')}</b> ‘${rel==='friend'?'내가 사람들과 맺는 결':rel==='work'?'내가 일에서 쓰는 결':'내가 끌리는 배우자상'}’, <b>명궁</b>이 ‘나라는 사람’이야. 내 ${relPal(rel)} 별이 상대 명궁 별이랑 맞물리면 ‘${rel==='love'?'이상형이 눈앞에 있는':'서로가 원하던 짝이 맞아떨어지는'}’ 셈이지.</p>`+
     `<div class="info-grid">`+
     `<div class="info-card"><div class="lab">${rel==='love'?'💞':rel==='friend'?'🤝':'💼'} 너의 ${relPal(rel)}</div><div class="val" style="font-weight:500">${starTxt(Z.mB)}<br><span style="color:var(--sub)">→ ${zwPartnerLine(Z.mB)}한테 끌려</span></div></div>`+
-    `<div class="info-card"><div class="lab">${rel==='love'?'💞':rel==='friend'?'🤝':'💼'} ${oname} ${relPal(rel)}</div><div class="val" style="font-weight:500">${starTxt(Z.oB)}<br><span style="color:var(--sub)">→ ${zwPartnerLine(Z.oB)}한테 끌려</span></div></div>`+
+    `<div class="info-card"><div class="lab">${rel==='love'?'💞':rel==='friend'?'🤝':'💼'} ${oname} ${relPal(rel)}</div><div class="val" style="font-weight:500">${starTxt(Z.oB)}<br><span style="color:var(--sub)">→ ${zwPartnerLine(Z.mB)===zwPartnerLine(Z.oB)?`<b>너와 똑같은 결</b>에 끌려`:`${zwPartnerLine(Z.oB)}한테 끌려`}</span></div></div>`+
     `<div class="info-card"><div class="lab">🧭 너의 명궁(나)</div><div class="val" style="font-weight:500">${starTxt(Z.mM)}</div></div>`+
     `<div class="info-card"><div class="lab">🧭 ${oname} 명궁</div><div class="val" style="font-weight:500">${starTxt(Z.oM)}</div></div>`+
     `</div>`+
@@ -1680,7 +1680,7 @@ const RHYTHM_PAIR={
  '여름|여름':'둘 다 화력이 세서 좋을 땐 최고인데 <b>같이 과열</b>돼. 싸움이 커지기 전에 자리를 뜨는 규칙 하나가 이 조합엔 필수야.',
  '여름|가을':'한쪽은 감정이 먼저 끓고 한쪽은 말이 정확해. <b>뜨거운 말 vs 맞는 말</b>이 부딪히니, 화날 땐 판단을 잠깐 미루기로 약속해.',
  '여름|겨울':'온도 차가 가장 큰 조합이야. 한쪽은 지금 풀고 싶고 한쪽은 시간이 필요해. <b>“몇 시간 뒤에 얘기하자”</b>고 시각을 못 박는 게 이 조합의 특효약이야.',
- '가을|가을':'둘 다 냉정해서 싸움이 조용한 대신 <b>오래 간다</b>. 옳고 그름을 따지기 전에 감정을 한 줄 말하는 습관이 필요해.',
+ '가을|가을':'둘 다 냉정해서 싸움이 조용한 대신 <b>오래 가</b>. 옳고 그름을 따지기 전에 감정을 한 줄 말하는 습관이 필요해.',
  '가을|겨울':'둘 다 표현이 적어서 편한데, <b>아무도 먼저 손 내밀지 않아</b> 냉전이 길어져. 화해 담당을 미리 정해 두면 웃으면서 넘어가.',
  '겨울|겨울':'둘 다 데워지는 데 시간이 걸려서 <b>서로 식었다고 오해</b>하기 쉬워. 애정 표현의 총량이 적은 게 정상인 조합이니 그 기준을 서로 인정해 줘.'};
 function rhythmPairLine(me,op){
@@ -5767,7 +5767,9 @@ function pickRel(btn){
 }
 function addCompat(){
   if(!STATE.me){toast("먼저 내 분석을 해주세요");return;}
-  const name=document.getElementById('cName').value.trim(),birth=document.getElementById('cBirth').value;
+  /* ★이름은 여기서 자른다 (2026-08-31). maxlength=20 은 타이핑·붙여넣기만 막고,
+     addCompat 은 모든 경로가 지나는 깔데기다. 실측: 200자면 카드가 2,760px 로 부푼다. */
+  const name=document.getElementById('cName').value.trim().slice(0,20),birth=document.getElementById('cBirth').value;
   if(!name){toast("상대 이름을 입력해 주세요"); focusField('cName'); return;}
   const cberr=birthError(birth); if(cberr){toast("상대 "+cberr); focusField('cBirth'); return;}   /* ★상대 생년월일도 검증(로컬 카운슬 QA) */
   const time=document.getElementById('cBirthTime').value, tmin=timeToMin(time);
@@ -6126,7 +6128,7 @@ function chClosingMore(me,op,oname,rel,r){
         ? `<b>기운.</b> 둘을 합쳐도 <b>${EL[none[0]].name}</b>${iga(EL[none[0]].name)} 한 자도 없어. 서로에게서 못 빌리는 자리라 <b>관계 밖에서</b> 채우기로 정해 둬.`
         : (fill.length
           ? `<b>기운.</b> 네게 없는 <b>${EL[fill[0]].name}</b>${eul(EL[fill[0]].name)} ${oname}${iga(oname)} 갖고 있어. 그 자리는 <b>맡기는 게 이기는 것</b>이야.`
-          : `<b>기운.</b> 둘 다 다섯 기운을 고르게 갖췄어. 메워 줄 것도 빌 것도 없으니, 같이 하는 일은 <b>일부러 만들어야</b> 생겨.`));
+          : `<b>기운.</b> 둘 다 다섯 기운을 고르게 갖췄어. <b>서로 메워 줄 자리가 없다</b>는 뜻이라, 관계의 값은 보완이 아니라 <b>같이 쌓은 시간</b>에서 나와.`));
     }
     if(typeof yongsin==='function'&&typeof rawElementCount==='function'){
       const Y=yongsin(me), B=rawElementCount(op.p), n=B[Y.yong]||0;
@@ -6207,11 +6209,22 @@ function daeunCrossHTML(me, op, rawName, rel){
             : ` 대운 오행이 <b>${an}</b>${wa_gwa(an)} <b>${bn}</b>${euro(bn)} 갈려서, 같은 일을 봐도 우선순위가 다를 수 있어.`));
       return base+el;
     };
+    /* ★같은 분류 구간이 여럿이면 설명이 그대로 반복된다(실측: 최대 4회).
+       두 번째부터는 분류만 남기고 설명을 뺀다. 설명을 두 번 하는 건 정보가 아니라 소음이다. */
+    const saidKind={};
     const rows = segs.map(sg=>{
       const k=kindOf(sg.a.tone,sg.b.tone);
       const col = k==='both'?'var(--good)':k==='neither'?'var(--care)':k==='one'?'var(--ok)':'var(--muted)';
       return `<div class="info-card wide"><div class="lab" style="color:${col}">${sg.s}~${sg.e}년 · 너 ${sg.s-me.y+1}세 / ${oname} ${sg.s-op.y+1}세</div>`
-        + `<div class="val" style="font-weight:500">너 <b>${TONE[sg.a.tone]||'평'}</b>(${sg.a.gz} ${EL[sg.a.el].name}) · ${oname} <b>${TONE[sg.b.tone]||'평'}</b>(${sg.b.gz} ${EL[sg.b.el].name})<br>${line(sg)}</div></div>`;
+        + `<div class="val" style="font-weight:500">너 <b>${TONE[sg.a.tone]||'평'}</b>(${sg.a.gz} ${EL[sg.a.el].name}) · ${oname} <b>${TONE[sg.b.tone]||'평'}</b>(${sg.b.gz} ${EL[sg.b.el].name})<br>${(()=>{
+            const seen=saidKind[k]; saidKind[k]=1;
+            if(!seen) return line(sg);
+            const SHORT={both:'앞의 순풍 구간과 같은 배치야.',neither:'앞의 역풍 구간과 같은 배치야.',one:(sg.a.tone==='good'?'다시 너만 열리는 구간이야.':`다시 ${oname}만 열리는 구간이야.`),flat:'다시 평이한 구간이야.'};
+            const an=EL[sg.a.el].name, bn=EL[sg.b.el].name;
+            return (SHORT[k]||'') + (sg.a.el===sg.b.el
+              ? ` 다만 이번엔 둘의 대운 오행이 <b>${an}</b>${euro(an)} 같아.`
+              : ` 다만 이번엔 오행이 <b>${an}</b>${wa_gwa(an)} <b>${bn}</b>${euro(bn)} 갈려.`);
+          })()}</div></div>`;
     }).join('');
     const best = segs.filter(x=>kindOf(x.a.tone,x.b.tone)==='both')[0];
     const worst= segs.filter(x=>kindOf(x.a.tone,x.b.tone)==='neither')[0];
@@ -6409,7 +6422,7 @@ function yongFitHTML(me, op, rawName, rel){
       ? `<b>${oname}${neun(oname)} 받는데 너는 이 관계에서 그걸 못 받아.</b> 나쁜 뜻이 아니라 기울어 있다는 뜻이야. 이런 배치에서 지치는 건 늘 주는 쪽이고, 지금은 네가 그쪽이야. 네게 필요한 <b>${EL[Y1.yong].name}</b>${eul(EL[Y1.yong].name)} <b>관계 밖에서 채워도 되는 것</b>으로 정해 둬. 그게 이 관계를 오래 가게 해.`
       : `<b>서로의 약을 서로가 안 갖고 있어.</b> 이건 나쁜 궁합이라는 뜻이 아니야. <b>보완하는 관계가 아니라 나누는 관계</b>라는 뜻이야. 서로를 채워 주려고 애쓸수록 둘 다 없는 걸 짜내게 되니까, 각자 필요한 건 각자 밖에서 채우고 <b>이 관계에서는 다른 걸 기대하는 편</b>이 훨씬 편해.`;
     const sumFull = sumTxt + sameTxt;
-    return `<div class="chapter"><div class="ch-h"><span class="ch-n">장</span><div class="ch-tt"><div class="ch-t">서로에게 약이 되나</div><div class="ch-s">각자에게 필요한 기운을 상대가 갖고 있는지</div></div></div><p class="body" style="font-size:14.5px">명리에선 사람마다 <b>약이 되는 기운</b>이 따로 있다고 봐. 같은 오행이어도 누구에겐 보약이고 누구에겐 과잉이야. 앞 장에서 <b>둘을 합치면 무엇이 차고 비는지</b>를 봤다면, 이번엔 <b>각자에게 필요한 걸 상대가 들고 있는지</b>를 봐. 총량이 아니라 <b>처방</b>이야.</p><div class="info-grid"><div class="info-card"><div class="lab">너에게 약이 되는 기운 · ${EL[Y1.yong].name}</div><div class="val" style="font-weight:500">${WHY[lv(me)]} 그래서 네 약은 <b>${EL[Y1.yong].name}</b>${jong(EL[Y1.yong].name)?'이야':'야'}.<br>${verdict(toMe, Y1.yong, oname, true)}${giNote(giMe, Y1.gi, `${oname}${iga(oname)}`)}</div></div><div class="info-card"><div class="lab">${oname}에게 약이 되는 기운 · ${EL[Y2.yong].name}</div><div class="val" style="font-weight:500">${WHY[lv(op)]} 그래서 ${oname}의 약은 <b>${EL[Y2.yong].name}</b>${jong(EL[Y2.yong].name)?'이야':'야'}.<br>${verdict(toOp, Y2.yong, '네', false)}${giNoteOp(giOp, Y2.gi)}</div></div><div class="info-card wide"><div class="lab" style="color:${both?'var(--good)':((onlyMe||onlyOp)?'var(--ok)':'var(--muted)')}">두 방향을 겹치면</div><div class="val" style="font-weight:500">${sumFull}</div></div>
+    return `<div class="chapter"><div class="ch-h"><span class="ch-n">장</span><div class="ch-tt"><div class="ch-t">서로에게 약이 되나</div><div class="ch-s">각자에게 필요한 기운을 상대가 갖고 있는지</div></div></div><p class="body" style="font-size:14.5px">명리에선 사람마다 <b>약이 되는 기운</b>이 따로 있다고 봐. 같은 오행이어도 누구에겐 보약이고 누구에겐 과잉이야. 앞 장에서 <b>둘을 합치면 무엇이 차고 비는지</b>를 봤다면, 이번엔 <b>각자에게 필요한 걸 상대가 들고 있는지</b>를 봐. 총량이 아니라 <b>처방</b>이야.</p><div class="info-grid"><div class="info-card"><div class="lab">너에게 약이 되는 기운 · ${EL[Y1.yong].name}</div><div class="val" style="font-weight:500">${WHY[lv(me)]} 그래서 네 약은 <b>${EL[Y1.yong].name}</b>${jong(EL[Y1.yong].name)?'이야':'야'}.<br>${verdict(toMe, Y1.yong, oname, true)}${giNote(giMe, Y1.gi, `${oname}${iga(oname)}`)}</div></div><div class="info-card"><div class="lab">${oname}에게 약이 되는 기운 · ${EL[Y2.yong].name}</div><div class="val" style="font-weight:500">${lv(me)===lv(op)?`${oname}${neun(oname)} <b>너와 같은 이유</b>야.`:WHY[lv(op)]} 그래서 ${oname}의 약은 <b>${EL[Y2.yong].name}</b>${jong(EL[Y2.yong].name)?'이야':'야'}.<br>${verdict(toOp, Y2.yong, '네', false)}${giNoteOp(giOp, Y2.gi)}</div></div><div class="info-card wide"><div class="lab" style="color:${both?'var(--good)':((onlyMe||onlyOp)?'var(--ok)':'var(--muted)')}">두 방향을 겹치면</div><div class="val" style="font-weight:500">${sumFull}</div></div>
         ${(()=>{ try{
           /* ★희신은 yongsin 이 이미 돌려주는데 궁합이 한 곳도 안 썼다 (2026-08-31).
              개인 리포트는 24곳에서 쓴다. 있는 계산을 안 쓰고 있었다.
@@ -6435,8 +6448,13 @@ function yongFitHTML(me, op, rawName, rel){
           const gl=[giLine(giMe2,Y1.gi,`${oname}${iga(oname)}`), giLine(giOp2,Y2.gi,'네가')].filter(Boolean);
           return `<div class="info-card wide"><div class="lab">1순위가 막히면 2순위</div><div class="val" style="font-weight:500">`
             + `명리에선 약이 되는 기운을 <b>용신(1순위)</b>과 <b>희신(2순위)</b> 둘로 봐. 1순위가 안 들어와도 2순위가 있으면 <b>길이 아주 막힌 건 아니야</b>.<br>`
-            + open(toMe, heeMe, Y1.yong, Y1.hee, `${oname}에게서`) + ` `
-            + open(toOp, heeOp, Y2.yong, Y2.hee, `${oname}${neun(oname)} 너에게서`)
+            + (()=>{ /* ★양방향 결론이 같으면 두 번째는 문장이 통째로 겹친다(실측 x6). 줄인다. */
+                const a=open(toMe, heeMe, Y1.yong, Y1.hee, `${oname}에게서`);
+                const sameShape=((heeMe>toMe)===(heeOp>toOp))&&((toMe===0&&heeMe===0)===(toOp===0&&heeOp===0));
+                const b=sameShape
+                  ? ` 반대 방향도 <b>모양이 같아</b>. ${oname}${iga(oname)} 너에게서 받는 것도 ${heeOp>toOp?`<b>2순위 ${EL[Y2.hee].name}</b> 쪽`:(toOp===0&&heeOp===0?'<b>어느 쪽도 아니야</b>':`<b>1순위 ${EL[Y2.yong].name}</b> 쪽`)}이야.`
+                  : ` ` + open(toOp, heeOp, Y2.yong, Y2.hee, `${oname}${neun(oname)} 너에게서`);
+                return a + b; })()
             + (gl.length?`<br><span style="color:var(--care)">${gl.join(' ')}</span>`:'')
             + rescue + `</div></div>`;
         }catch(e){ return ''; } })()}
@@ -6548,14 +6566,14 @@ function monthGridHTML(me, op, rawName, rel){
       + `${r.chung?`<div style="font-size:10px;color:var(--care)">충</div>`:`<div style="font-size:10px;color:transparent">.</div>`}</div>`;
     const grid=`<div style="display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:6px;margin:12px 0 4px">`
       + rows.map(cell).join('') + `</div>`
-      + `<p class="body sub" style="font-size:12px;color:var(--muted);margin-top:2px">칸마다 <b>왼쪽이 너, 오른쪽이 ${oname}</b>야. ▲ 순풍 · ▽ 역풍 · · 평. <b>충</b>은 둘 중 한 명의 속마음 자리가 정면으로 흔들리는 달이야. 금테는 이번 달.</p>`;
+      + `<p class="body sub" style="font-size:12px;color:var(--muted);margin-top:2px">칸마다 <b>왼쪽이 너, 오른쪽이 ${oname}</b>야. ▲ 순풍 · ▽ 역풍 · · 평. <b>충</b>은 둘 중 한 명이 유난히 예민해지는 달이야(위기 리포트에서 자세히 다뤄). 금테는 이번 달.</p>`;
     const both=rows.filter(r=>r.both).map(r=>r.m);
     const oneMe=rows.filter(r=>r.one&&r.a==='good').map(r=>r.m);
     const oneOp=rows.filter(r=>r.one&&r.b==='good').map(r=>r.m);
     const bad=rows.filter(r=>r.bad).map(r=>r.m);
     const cur=rows[tm-1];
     const curTxt = cur.chung
-      ? `<b>이번 달(${tm}월)은 충이 걸린 달</b>이야. 둘 중 한 명의 속마음 자리가 흔들려서 사소한 말에도 날이 서. 돈·이사·부모님 같은 큰 얘기는 <b>다음 달로 미루는</b> 게 나아.`
+      ? `<b>이번 달(${tm}월)은 충이 걸린 달</b>이야. 둘 중 한 명의 속마음 자리가 흔들려서 사소한 말에도 날이 서. 중요한 얘기는 <b>다음 달로 미루는</b> 게 나아(어떤 얘기인지는 위기 리포트에 있어).`
       : (cur.both
         ? `<b>이번 달(${tm}월)은 둘 다 순풍</b>이야. 미뤄 둔 일이 있으면 지금 꺼내. 열두 달 중 이런 달이 ${both.length}번${both.length<=3?'뿐이야':'이나 돼'}.`
         : (cur.one
@@ -6712,7 +6730,7 @@ function renderCompatList(){
           ${sinsalCompat(me,op,c.name)}
           ${sihwaCross(me,op,c.name)}
           ${gongmangCross(me,op,c.name)}
-          ${chInyeonMore(me,op,c.name)}</div><div class="chapter"><div class="ch-h"><span class="ch-n">다섯</span><div class="ch-tt"><div class="ch-t">${rel==='love'?'재물궁합':'현실 감각'}</div><div class="ch-s">${rel==='work'?'일에서의 판단과 씀씀이':'현실 감각과 씀씀이'}</div></div></div><p class="body" style="font-size:14.5px">${r.storyWealth}</p><div class="info-grid"><div class="info-card"><div class="lab">나의 재테크</div><div class="val" style="font-weight:500">${WEALTH_INVEST[me.dayEl]}</div></div><div class="info-card"><div class="lab">${escapeHtml(c.name)} 님 재테크</div><div class="val" style="font-weight:500">${WEALTH_INVEST[op.dayEl]}</div></div>
+          ${chInyeonMore(me,op,c.name)}</div><div class="chapter"><div class="ch-h"><span class="ch-n">다섯</span><div class="ch-tt"><div class="ch-t">${rel==='love'?'재물궁합':'현실 감각'}</div><div class="ch-s">${rel==='work'?'일에서의 판단과 씀씀이':'현실 감각과 씀씀이'}</div></div></div><p class="body" style="font-size:14.5px">${r.storyWealth}</p><div class="info-grid"><div class="info-card"><div class="lab">나의 재테크</div><div class="val" style="font-weight:500">${WEALTH_INVEST[me.dayEl]}${me.dayEl===op.dayEl?`<br><span style="color:var(--muted)">둘 다 같은 기운이라 <b>권하는 방식이 똑같아</b>. 편한 대신 <b>둘 다 같은 데서 물릴</b> 수 있으니, 한 명은 일부러 반대편을 들어 봐.</span>`:''}</div></div><div class="info-card"><div class="lab">${escapeHtml(c.name)} 님 재테크</div><div class="val" style="font-weight:500">${me.dayEl===op.dayEl?`위와 <b>같아</b>. 같은 일간 오행이라 돈을 대하는 기본값이 같거든.`:WEALTH_INVEST[op.dayEl]}</div></div>
             ${rel==='love'?`<div class="info-card wide"><div class="lab">💡 둘만의 돈 규칙 (오행 조합 처방)</div><div class="val" style="font-weight:500">${moneyRule}</div></div>`:`<div class="info-card wide"><div class="lab">💡 ${rel==='work'?'돈이 얽힐 때의 원칙':'돈 얘기가 나올 때의 원칙'}</div><div class="val" style="font-weight:500">${rel==='work'?'업무로 만난 사이라 <b>금전은 기록으로</b> 남겨. 정산·비용은 말이 아니라 문서로 주고받는 게 관계를 지켜.':'친구 사이에 돈은 <b>빌려주는 순간 관계가 바뀐다</b>는 걸 서로 알고 있으면 돼. 빌려줄 거면 돌려받지 못해도 괜찮은 금액까지만.'}</div></div>`}</div>
           ${chWealthMore(me,op,c.name)}</div><div class="chapter"><div class="ch-h"><span class="ch-n">여섯</span><div class="ch-tt"><div class="ch-t">${rel==='love'?'체질궁합':'에너지 궁합'}</div><div class="ch-s">${rel==='love'?'에너지와 케미':'기운의 속도와 리듬'}</div></div></div><p class="body" style="font-size:14.5px">${r.storyPhys}</p><div class="info-grid">
             ${rel==='love'?((STATE.me&&STATE.me.orient==='ace')
