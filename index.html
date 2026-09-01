@@ -20,7 +20,7 @@
 /* ============================================================
    사주 × 별자리 운명 분석, 전부 로컬, 외부통신 없음
    ============================================================ */
-const BUILD='2026-09-01.21';   // 날짜=빌드일, .N=그날 배포 순번. 재배포마다 갱신 → 자동 새로고침 트리거
+const BUILD='2026-09-01.22';   // 날짜=빌드일, .N=그날 배포 순번. 재배포마다 갱신 → 자동 새로고침 트리거
 /* 자동 업데이트: ①켜질 때 최신 BUILD 확인 → 다르면 캐시버스트 이동 ②탭이 다시 보일 때도 확인 → 읽던 중이면 강제 리로드 대신 배너
    (폰 브라우저는 옛 탭을 리로드 없이 복원하므로 ②가 없으면 며칠 전 버전이 계속 보임 — 오너 "어떤 건 배포됐고 어떤 건 안 됐던데" 원인) */
 (function(){try{
@@ -1186,6 +1186,35 @@ function renderZwCompat(me,op,rel){
     `<div class="info-card"><div class="lab">🧭 너의 명궁(나)</div><div class="val" style="font-weight:500">${starTxt(Z.mM)}</div></div>`+
     `<div class="info-card"><div class="lab">🧭 ${oname} 명궁</div><div class="val" style="font-weight:500">${starTxt(Z.oM)}</div></div>`+
     `</div>`+
+    /* ★위 문단이 「내 부부궁 별이 상대 명궁 별이랑 맞물리면 이상형이 눈앞에 있는 셈」
+       이라고 말해 놓고, 정작 <맞물리는지 확인을 안 했다>(2026-09-01).
+       값은 이미 다 있다. 양방향으로 실제로 대 본다. */
+    (()=>{
+      const S=b=>((b&&b.stars)||[]).filter(x=>ZW_STAR[x]);
+      const myWant=S(Z.mB), opIs=S(Z.oM), opWant=S(Z.oB), meIs=S(Z.mM);
+      if(!myWant.length||!opIs.length||!opWant.length||!meIs.length) return '';
+      const hit=(want,is)=>want.filter(x=>is.includes(x));
+      /* 별 이름만 말하면 뼈대가 된다. <결>로 말하면 정보도 늘고 쌍마다 갈린다. */
+      const kw=a=>[...new Set(a.flatMap(x=>(ZW_STAR[x].tags||[]).slice(0,2)))].slice(0,3).join('·');
+      const tagHit=(want,is)=>{
+        const tw=new Set(want.flatMap(x=>ZW_STAR[x].tags||[]));
+        return [...new Set(is.flatMap(x=>ZW_STAR[x].tags||[]))].filter(x=>tw.has(x));
+      };
+      const a=hit(myWant,opIs), b=hit(opWant,meIs);
+      const at=tagHit(myWant,opIs), bt=tagHit(opWant,meIs);
+      let _said=0;
+      const one=(w,i,h,ht,who,other)=>h.length
+        ? `${who} 끌리는 결(<b>${kw(w)}</b>)이 ${other} 그대로야. <b>${h.join('·')}</b>${iga(h[h.length-1])} 겹쳐. 말 그대로 <b>이상형이 눈앞에 있는</b> 배치야.`
+        : ht.length
+        ? `${who} 끌리는 결(<b>${kw(w)}</b>)과 ${other} 별은 다른데, <b>${ht.slice(0,2).join('·')}</b>${iga(ht[Math.min(1,ht.length-1)])} 겹쳐. 별 이름은 달라도 <b>결은 통하는</b> 배치야.`
+        : (_said++ ? `${who} 끌리는 건 <b>${kw(w)}</b> 쪽인데 ${other} 별은 <b>${kw(i)}</b> 쪽이라 역시 안 겹쳐.` : `${who} 끌리는 건 <b>${kw(w)}</b> 쪽(${w.join('·')})인데, ${other} 별은 <b>${kw(i)}</b> 쪽(${i.join('·')})이야. 겹치는 데가 없어. <b>끌린 이유와 실제 그 사람이 다른</b> 쪽이라, 시간이 갈수록 <b>기대를 고쳐 잡는</b> 게 관건이야.`);
+      const lines=[one(myWant,opIs,a,at,'네가',`${oname}의`), one(opWant,meIs,b,bt,`${oname}${iga(oname)}`,'네')];
+      const both=(a.length||at.length)&&(b.length||bt.length);
+      const tail=both?` 양쪽 다 통하는 배치라 <b>서로가 서로의 이상형</b>에 가까워. 이런 조합은 초반이 빠른 대신, 기대가 클수록 사소한 어긋남이 크게 보여.`
+        :(!a.length&&!at.length&&!b.length&&!bt.length)?` 양쪽 다 안 겹쳐. <b>끌림이 이상형에서 온 게 아니라</b>는 뜻이라, 이 관계가 이어지는 이유는 다른 데 있어. 그게 뭔지 아는 쪽이 오래 가.`
+        :` 한쪽만 통해. <b>한 사람은 이상형을 만났고 한 사람은 아니야.</b> 이 비대칭이 서운함의 자리가 되기 쉬우니, 덜 설레는 쪽을 탓하지 마.`;
+      return `<p class="body"><b>실제로 맞물리나</b>. ${lines.join(' ')}${tail}</p>`;
+    })() +
     (()=>{const m0=Z.mM.stars.filter(s=>ZW_STAR[s])[0], o0=Z.oM.stars.filter(s=>ZW_STAR[s])[0];
       if(!m0||!o0) return '';
       /* ★두 명궁 별을 tend 4축 수치로 읽는다 (2026-08-31).
@@ -1229,7 +1258,7 @@ function renderZwCompat(me,op,rel){
         : `네 축 모두 크게 안 갈려. 성향으로는 부딪힐 일이 적은 조합이야.`;
       const intro = (m0===o0)
         ? `너랑 ${oname}, 명궁에 똑같이 <b>${m0}</b>${iga(m0)} 앉아 있어. 성향 네 축이 그대로 같다는 뜻이라, 닮은 만큼 <b>같은 데서 강하고 같은 데서 같이 약해</b>.`
-        : `너의 명궁은 <b>${m0}</b>(${ZW_STAR[m0].tags[0]}), ${oname}의 명궁은 <b>${o0}</b>(${ZW_STAR[o0].tags[0]})이야. 별 이름보다 <b>성향 네 축</b>을 겹쳐 보는 게 빨라.`;
+        : `너의 명궁은 <b>${m0}</b>(${ZW_STAR[m0].tags[0]}), ${oname}의 명궁은 <b>${o0}</b>(${ZW_STAR[o0].tags[0]})${iya(ZW_STAR[o0].tags[0])}. 별 이름보다 <b>성향 네 축</b>을 겹쳐 보는 게 빨라.`;
       const rows=lines.map((L,i)=>`<div style="margin-top:7px"><b style="color:var(--gold)">${L.n}</b><span style="color:var(--muted);font-size:12px">너 ${T1[i]} · ${oname} ${T2[i]}</span><br>${L.txt}</div>`).join('');
       return `<div class="zwfuse" style="margin-top:10px"><span class="fh">🧭 두 명궁 별의 성향 네 축</span>${intro} ${head}${rows}</div>`;})()+
     `<div class="info-grid" style="margin-top:10px">`+
