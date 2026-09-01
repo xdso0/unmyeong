@@ -20,7 +20,7 @@
 /* ============================================================
    사주 × 별자리 운명 분석, 전부 로컬, 외부통신 없음
    ============================================================ */
-const BUILD='2026-09-01.13';   // 날짜=빌드일, .N=그날 배포 순번. 재배포마다 갱신 → 자동 새로고침 트리거
+const BUILD='2026-09-01.14';   // 날짜=빌드일, .N=그날 배포 순번. 재배포마다 갱신 → 자동 새로고침 트리거
 /* 자동 업데이트: ①켜질 때 최신 BUILD 확인 → 다르면 캐시버스트 이동 ②탭이 다시 보일 때도 확인 → 읽던 중이면 강제 리로드 대신 배너
    (폰 브라우저는 옛 탭을 리로드 없이 복원하므로 ②가 없으면 며칠 전 버전이 계속 보임 — 오너 "어떤 건 배포됐고 어떤 건 안 됐던데" 원인) */
 (function(){try{
@@ -3363,30 +3363,35 @@ function myMBTI(pr){ return (STATE.me&&STATE.me.mbtiInput)?STATE.me.mbtiInput:es
 /* 십성 성격 심층 */
 const SIPSUNG={
   비겁:{label:"비겁, 주체·독립", one:"자존심 강하고 주관 뚜렷한 독립가",
+    story3:(who)=>`${who}${neun(who)} 누가 시켜서 하는 걸 제일 싫어해. 자기 일은 자기가 정하고 제 힘으로 해내야 직성이 풀리는 쪽이지. 지기 싫어하는 승부 기질이 있어서 경쟁 앞에선 오히려 눈빛이 살아나고, 한번 마음먹으면 끝장을 봐. 사람 좋아하고 의리 깊어서 제 사람한텐 아낌없이 주는데, 선 넘는 상대한텐 뒤도 안 돌아볼 만큼 단호해.`,
     story:"너는 누가 시켜서 하는 걸 제일 싫어해. 내 일은 내가 정하고 내 힘으로 해내야 직성이 풀리지. 지기 싫어하는 승부 기질이 있어서 경쟁 앞에선 오히려 눈빛이 살아나고, 한번 마음먹으면 끝장을 봐. 사람 좋아하고 의리 깊어서 ‘내 사람’한텐 아낌없이 주는데, 선 넘는 상대한텐 뒤도 안 돌아볼 만큼 단호해.",
     light:"강한 추진력과 배짱, 독립심, 깊은 의리, 위기에 강한 멘탈",
     shadow:"꺾이지 않는 고집, 욱하는 자존심, 남의 말을 흘려듣는 면, 모으기 전에 나가는 씀씀이",
     love:"연애에서도 끌려다니는 걸 못 견뎌서, 나를 존중하되 만만하진 않은 ‘맞수 같은’ 상대한테 끌려.",
     work:"조직의 부속품보다 내 이름 건 일, 창업·프리랜서·전문직이 잘 맞고, 동업은 신중히 해야 해."},
   식상:{label:"식상, 표현·재능", one:"끼와 아이디어가 넘치는 표현의 자유인",
+    story3:(who)=>`${who}의 머릿속은 늘 하고 싶은 말이랑 새 아이디어로 가득해. 표현 욕구가 강해서 말·글·이미지 뭐로든 자기를 드러낼 때 살아 있음을 느끼지. 눈치 빠르고 분위기 잘 읽어서 사람을 편하게 만들고, 베푸는 거 좋아해서 정이 많아. 다만 틀에 갇히는 걸 답답해해서 권위랑 규칙 앞에선 반항심이 슬그머니 올라와.`,
     story:"네 머릿속은 늘 하고 싶은 말이랑 새 아이디어로 가득해. 표현 욕구가 강해서 말·글·이미지 뭐로든 자기를 드러낼 때 살아 있음을 느끼지. 눈치 빠르고 분위기 잘 읽어서 사람을 편하게 만들고, 베푸는 거 좋아해서 정이 많아. 다만 틀에 갇히는 걸 답답해해서 권위랑 규칙 앞에선 반항심이 슬그머니 올라와.",
     light:"창의력과 화술, 뛰어난 공감력, 자유로운 발상, 베푸는 따뜻함",
     shadow:"쉽게 찾아오는 싫증, 약한 마무리, 권위에 대한 반항, 말이 앞서는 것",
     love:"표현이 풍부해서 연애 초반이 화려해. 내 재능이랑 매력을 ‘알아봐 주는’ 사람한테 단번에 빠져.",
     work:"창작·기획·방송·교육·콘텐츠처럼 ‘나를 표현하는’ 일에서 제일 빛나."},
   재성:{label:"재성, 현실·재물", one:"현실 감각 뛰어난 부지런한 실속파",
+    story3:(who)=>`${who}${neun(who)} 뜬구름보다 손에 잡히는 결과를 믿는 현실주의자야. 돈 흐름이랑 일 효율을 빠르게 계산하고, 부지런히 움직여서 실리를 챙기지. 사교적이고 분위기 잘 맞춰서 어디서나 두루 어울리고 이성한테도 인기 많은 편이야. 다만 바쁘게 달리다 보면 정작 제 마음은 뒷전이 돼서, 어느 날 문득 허전함이 찾아오기도 해.`,
     story:"너는 뜬구름보다 손에 잡히는 결과를 믿는 현실주의자야. 돈 흐름이랑 일 효율을 빠르게 계산하고, 부지런히 움직여서 실리를 챙기지. 사교적이고 분위기 잘 맞춰서 어디서나 두루 어울리고 이성한테도 인기 많은 편이야. 다만 바쁘게 달리다 보면 정작 내 마음은 뒷전이 돼서, 어느 날 문득 허전함이 찾아오기도 해.",
     light:"탁월한 현실감각과 재물운, 부지런함, 사교성, 실행력",
     shadow:"일·돈에 치여 부족한 여유, 계산적으로 비칠 위험, 끝없는 욕심",
     love:"연애 상대를 고를 땐 능력이랑 다정함을 같이 봐. 조건도 보지만 결국 ‘나를 편하게 해주는’ 사람을 택해.",
     work:"영업·사업·금융·유통·마케팅처럼 돈이랑 사람 다루는 일에 강해."},
   관성:{label:"관성, 책임·명예", one:"반듯하고 자기관리 철저한 책임가",
+    story3:(who)=>`${who}${neun(who)} 해야 할 일을 끝까지 해내는 사람이야. 책임감 강하고 약속이랑 규칙을 중히 여겨서 주변에서 믿고 맡기지. 체면이랑 평판을 소중히 해서 함부로 행동 안 하고, 자기 관리가 철저해. 다만 그만큼 스스로한테 엄격해서, 어깨에 보이지 않는 무게를 늘 지고 사는 쪽이야.`,
     story:"너는 ‘해야 할 일’을 끝까지 해내는 사람이야. 책임감 강하고 약속이랑 규칙을 중히 여겨서 주변에서 믿고 맡기지. 체면이랑 평판을 소중히 해서 함부로 행동 안 하고, 자기 관리가 철저해. 다만 그만큼 스스로한테 엄격해서, 어깨에 보이지 않는 무게를 늘 지고 사는 사람이야. 가끔은 내려놔도 괜찮아.",
     light:"강한 책임감, 성실함, 철저한 자기관리, 명예, 두터운 신뢰",
     shadow:"완벽주의 스트레스, 부족한 융통성, 눈치와 압박감, 감정을 억누르는 습관",
     love:"진지하고 책임 있는 연애를 하는 편이야. 가볍게 만나기보다 미래까지 그리고, 듬직하고 예의 있는 상대를 원해.",
     work:"조직·공직·대기업·전문직처럼 체계랑 명예가 분명한 데서 인정받아."},
   인성:{label:"인성, 사유·수용", one:"생각 깊고 배우기 좋아하는 사유가",
+    story3:(who)=>`${who}${neun(who)} 행동하기 전에 충분히 생각하는 사람이야. 배움 욕구가 크고, 지식이랑 의미를 통해 세상을 이해하려 하지. 마음 따뜻하고 수용적이라 사람을 잘 품는데, 직접 부딪히기보다 한 발 물러나 관조하는 편이야. 안정이랑 인정을 깊이 원해서, 마음 기댈 곳이 있을 때 비로소 제일 편안해져.`,
     story:"너는 행동하기 전에 충분히 생각하는 사람이야. 배움 욕구가 크고, 지식이랑 의미를 통해 세상을 이해하려 하지. 마음 따뜻하고 수용적이라 사람을 잘 품는데, 직접 부딪히기보다 한 발 물러나 관조하는 편이야. 안정이랑 인정을 깊이 원해서, 마음 기댈 곳이 있을 때 비로소 제일 편안해져.",
     light:"깊은 사고력과 학습력, 인내심, 따뜻한 수용성, 예리한 직관",
     shadow:"생각만 많고 늦는 실행, 기대려는 의존성, 게을러 보일 수 있는 면",
@@ -3535,7 +3540,7 @@ function myeongsikStory(pr){
   ${(()=>{const gm=gongmang(pr);if(!gm)return '';
     const hits=gm.맞은자리.filter(h=>GONGMANG_MEAN[h]);
     return `<p class="body">마지막으로, 네 태어난 날(${pr.dayStem}${BRANCHES[pr.p.db]}) 기준으로 <b>${gm.지지.join('·')}</b> 두 자리가 비어 있어. 이걸 빈 자리라고 봐(공망이라고 불러). 없다는 뜻은 아니고 <b>그 자리에선 힘이 그대로 쌓이지 않고 한 번 흩어진다</b>는 뜻이야. 돈이나 물건으로 채우려 하면 헛돌고, 배우거나 전문성으로 쓰면 오히려 강해져.<br>
-    ${hits.length?`네 경우는 <b>${JOSA(hits.join('·'),'이','가')}</b> 여기 걸렸어. ${hits.map(h=>GONGMANG_MEAN[h]).join(' 그리고 ')}.`:`다행히 네 연·월·시지는 공망을 피했어. 타고난 자리들이 제 힘을 그대로 쓰는 구조야.`}</p>`;})()}
+    ${hits.length?`네 경우는 <b>${JOSA(hits.join('·'),'이','가')}</b> 여기 걸렸어. ${hits.map(h=>GONGMANG_MEAN[h]).join(' 그리고 ')}.`:`다행히 네 연·월·시의 아래 글자는 그 자리를 피했어. 타고난 자리들이 제 힘을 그대로 쓰는 구조야.`}</p>`;})()}
   ${(()=>{try{const sl=sinsalList(pr)||[];const ex=elemExtremes(pr);if(!sl.length&&!ex)return '';
     return `<p class="body">${ex?`오행 분포로 보면 <b>${ex.strong}(${ex.strongV}%)</b>${iga(ex.strong)} 세고 <b>${ex.weak}(${ex.weakV}%)</b>${iga(ex.weak)} 옅어(<b>글자 속에 숨은 기운</b>까지 더한 비율이야. 겉 여덟 자만 세는 10장·15장과 답이 조금 다를 수 있어). 판단이 ${JOSA(ex.strong==='토'||ex.strong==='금'||ex.strong==='수'?'신중한 쪽':'빠른 쪽','으로','로')} 기울기 쉬운 구조야.`:''}${sl.length?` 여기에 <b>${sl.slice(0,2).join('·')}</b> 같은 신살(타고난 기운의 무늬)이 얹혀서, 같은 사주라도 결이 한 번 더 갈려.`:''}</p>`;}catch(e){return '';}})()}
   ${(()=>{const J=johu(pr);if(!J)return '';
@@ -4809,7 +4814,7 @@ function fateAge(pr,withHint){
 }
 function avoidAge(pr){
   const cb=(pr.p.db+6)%12;
-  return ageGapText(pr,cb).replace('인연이 강해','확 끌리기 쉬워')+` (네 일지 ${BRANCHES[pr.p.db]}${wa_gwa(BRANCHES[pr.p.db])} 정면충인 띠, 끌림도 세지만 소모도 세)`;
+  return ageGapText(pr,cb).replace('인연이 강해','확 끌리기 쉬워')+` (네가 태어난 날의 아래 글자 ${BRANCHES[pr.p.db]}${wa_gwa(BRANCHES[pr.p.db])} 정면으로 부딪히는 띠라, 끌림도 세지만 소모도 세)`;
 }
 /* 일지 기준 형(刑)·해(害) 띠 — 충 외에 갈등이 생기기 쉬운 관계 띠(피해야 할 상대 보강, 오너 2026-07-24) */
 function hyungHaeAnimals(db){
@@ -5097,7 +5102,7 @@ function avoidHTML(pr){
   /* 명궁(나의 약한 틈)·오행분포·신강도·띠(충) 축 추가 — 기신·부부궁이 겹쳐도 갈라짐(오너 지시 2026-07-16 17축 전부 반영) */
   const myoStarA=myeongStar(pr); const MA=myoStarA?MYUNG_AVOID[myoStarA]:null;
   const extA=elemExtremes(pr);
-  const bodyA=/신약|태약|극약/.test(pr.sinLevel)?`너는 <b>${JOSA(pr.sinLevel,'이라','라')}</b> 기운이 여린 편. 기대고 싶은 마음이 클수록 이 결의 상대에게 끌려가기 쉬우니 더 조심해`:/신강|태강|극왕/.test(pr.sinLevel)?`너는 <b>${JOSA(pr.sinLevel,'이라','라')}</b> 힘이 넘치는 편. 그 힘을 눌러 “네가 문제”라고 만드는 상대를 특히 경계해`:`너는 <b>${JOSA(pr.sinLevel,'이라','라')}</b> 균형이 잡힌 편이지만, 지친 시기엔 누구나 틈이 생겨`;
+  const bodyA=/신약|태약|극약/.test(pr.sinLevel)?`너는 <b>${JOSA(pr.sinLevel,'이라','라')}</b> 기운이 여린 편. 기대고 싶은 마음이 클수록 이 결의 상대에게 끌려가기 쉬우니 더 조심해`:/신강|태강|극왕/.test(pr.sinLevel)?`너는 <b>${JOSA(pr.sinLevel,'이라','라')}</b> 힘이 넘치는 편. 그 힘을 눌러 “네가 문제”라고 만드는 상대를 특히 경계해`:`너는 <b>${pr.sinLevel}</b>, 그러니까 어느 쪽으로도 크게 안 기울어서 균형이 잡힌 편이지만, 지친 시기엔 누구나 틈이 생겨`;
   const chungB=(pr.p.yb+6)%12; const chungAnimal=BRANCH_ANIMAL[chungB];
   const SPa=stemPersona(pr);
   const kv=[
@@ -5106,7 +5111,7 @@ function avoidHTML(pr){
     ...((()=>{const hh=hyungHaeAnimals(pr.p.db);const parts=[];
       if(hh.hyung.length)parts.push(`형은 <b>${hh.hyung.map(a=>a+'띠').join('·')}</b> (가까울수록 신경전·간섭이 생기기 쉬워)`);
       if(hh.hae.length)parts.push(`해는 <b>${hh.hae.map(a=>a+'띠').join('·')}</b> (사소한 오해가 조용히 쌓이기 쉬워)`);
-      return parts.length?[["특히 조심할 띠 (일지 형·해)", parts.join('<br>')]]:[];})()),
+      return parts.length?[["특히 조심할 띠 (서로 깎거나 어긋나는 짝)", parts.join('<br>')]]:[];})()),
     ...(gaps.length?[["파고드는 틈", gaps.map(g=>'· '+g[1]).join('<br>')]]:[]),
     ["MBTI", (()=>{/* ★본인 추정 MBTI 가 피할 상대 MBTI 목록에 그대로 들어가는 경우가 있다 (2026-08-26). 본인은 오행 배분에서, 상대는 기신 오행에서 뽑는데 두 결과가 겹치면 독자는 "나를 피하라"로 읽는다. 감추지 말고 왜 그런지 적는다 — 같은 편향끼리 만나면 서로를 증폭한다는 게 이 장의 논지 그대로다. */ try{ const me=(typeof estimateMBTI==='function')?estimateMBTI(pr):''; if(me && String(X.mbti).indexOf(me)>=0) return X.mbti+`<br><span style="color:var(--muted)">. 공교롭게 <b>네 추정 MBTI(${me})와 같아</b>. 자기랑 닮은 사람에게 끌리는데, <b>같은 편향끼리 만나면 서로를 증폭</b>하거든. 이 장이 말하는 소모가 바로 그거야.</span>`; }catch(e){} return X.mbti; })()],
     ...(SPa?[["나의 뿌리 성정 (일간)", `너는 <b>${STEMS[pr.p.ds]}(${EL[pr.dayEl].name})</b> 일간이라 ${SPa.trait}인데, 그 그림자는 <b>${SPa.edge}</b> 점이야. 이 결의 상대는 하필 그 약점 위에 올라타`]]:[]),
@@ -5118,7 +5123,7 @@ function avoidHTML(pr){
       return gi?[["가장 애먹는 자리 (사화 화기)", `네 <b>화기</b>(${gi.별})${neun(gi.별)} <b>${gi.궁}</b>에 떨어졌어. ${PAL[gi.궁]||'그 영역에 유독 마음이 쏠리고'}, 이 결의 상대는 하필 그 급소를 통해 들어와`]]:[];})()),
     ...((()=>{const bp=bodyPalace(pr);return bp?[["인생의 무게가 실린 곳 (신궁)", `네 신궁은 <b>${bp}</b>(${ZW_PAL_SUB[bp]||''}). 2장에서 짚은 그 자리야. 피해야 할 결은 <b>바로 그 자리를 흔들어</b> 네 중심을 무너뜨리니, 여기만은 양보하지 마`]]:[];})()),
     ...((()=>{const gm=gongmang(pr);if(!gm)return [];const h=gm.맞은자리;
-      return [["비어 있는 자리 (공망)", `네 공망은 <b>${JOSA(gm.지지.join('·'),'이야','야')}</b>. ${h.length?`특히 <b>${JOSA(h.join('·'),'이','가')}</b> 비어서, 그 영역에선 채우려 할수록 헛돌아. 이 결의 상대는 그 허전함을 정확히 겨눠 "이 사람이면 채워질까" 싶게 만들어.`:'연·월·시지는 공망을 피했으니, 빈자리를 메우려는 조급함에 휘둘릴 위험은 낮은 편이야.'}`]];})()),
+      return [["비어 있는 자리 (공망)", `네 공망은 <b>${JOSA(gm.지지.join('·'),'이야','야')}</b>. ${h.length?`특히 <b>${JOSA(h.join('·'),'이','가')}</b> 비어서, 그 영역에선 채우려 할수록 헛돌아. 이 결의 상대는 그 허전함을 정확히 겨눠 "이 사람이면 채워질까" 싶게 만들어.`:'연·월·시의 아래 글자는 그 자리를 피했으니, 빈자리를 메우려는 조급함에 휘둘릴 위험은 낮은 편이야.'}`]];})()),
     ...(MA?[["나의 약한 틈 (명궁)", `너는 <b>${myoStarA}</b> 명궁이라 ${JOSA(MA.me,'이야','야')}. 그래서 ${MA.gap}. 같은 기신이어도 <b>이 틈이 사람마다 달라서</b> 위험 지점이 갈라져`]]:[]),
     ...((()=>{const J=johu(pr);return J?[["온도가 어긋나는 사람", `너는 ${J.season}에 나서 ${J.bias} 결인데, 이 결의 상대는 그 편향을 <b>같은 방향으로 더 밀어</b>. ${/* ★봄을 여름과 묶어 '달아오른다'고 했는데, 1장 계절표는 봄을 습(濕)·아직 찬 기운이라 한다. 네 계절이 각자 다른 편향이므로 넷으로 가른다 (2026-08-26). */J.season==='여름'?'가뜩이나 달아오르는데 옆에서 더 부추기는 셈이야':J.season==='겨울'?'가뜩이나 가라앉는데 옆에서 더 눌러 앉히는 셈이야':J.season==='봄'?'가뜩이나 눅눅해서 시동이 안 걸리는데 옆에서 더 미루게 만드는 셈이야':'가뜩이나 메말라 날이 서 있는데 옆에서 더 각지게 만드는 셈이야'}`]]:[];})()),
     ...((()=>{const Y=yunyeon(pr);return Y?[["올해 특히 조심할 자리", `${Y.year}년은 네 <b>${Y.궁}</b>(${Y.주제}) 영역이 크게 움직이는 해야. 이 결의 상대는 <b>하필 그 영역을 흔들며</b> 들어오기 쉬우니, 올해만큼은 그 자리에서 만난 인연을 한 박자 늦게 판단해`]]:[];})()),
@@ -5366,14 +5371,14 @@ function compatibility(me,other){
        b===Ya.hee?`용신 다음으로 네 편인 <b>희신</b> 자리라 은근히 너를 받쳐 줘.`:
        b===Ya.gi?`네 균형을 흔드는 기운이라, 처음 끌림과 달리 네가 맞춰 주다 지칠 수 있으니 거리 조절이 필요해.`:
        `직접 채워 주진 못해도, 서로의 결을 존중하면 균형을 찾아갈 수 있어.`)
-    : `너는 ${me.sinLevel} 사주라 기운이 단단한 편이니, ${oname}${irang(oname)}은 누가 채워 주기보다 ${JOSA(rel==='same'?'서로 비슷한 힘을 어떻게 나눌지':'서로 다른 방향을 어떻게 맞출지','이','가')} 관건이야.`;
+    : `너는 ${me.sinLevel} 사주라 ${/중화/.test(me.sinLevel)?`어느 쪽으로도 크게 안 기울어 있으니`:`기운이 단단한 편이니`}, ${oname}${irang(oname)}은 누가 채워 주기보다 ${JOSA(rel==='same'?'서로 비슷한 힘을 어떻게 나눌지':'서로 다른 방향을 어떻게 맞출지','이','가')} 관건이야.`;
   const storyTwoCharts =
     `두 사람 명식을 나란히 펼쳐 볼게. 너는 일간 <b>${EL[a].name}(${me.dayStem})</b>·일지 ${aJi}(${ubCh})에 기운 세기는 <b>‘${me.sinLevel}’</b>, ${oname}${neun(oname)} 일간 <b>${EL[b].name}(${other.dayStem})</b>·일지 ${bJi}(${vbCh})에 <b>‘${other.sinLevel}’</b>${jong(other.sinLevel)?'이':''}야. `+
     `오행으로 보면 ${JOSA(elRelTxt[rel],'은','는')} 흐름이고, ${jiRelTxt}. `+
     `${yongTie} `+
     (me.sipTop[0]===other.sipTop[0]
       ? `한마디로 둘 다 <b>‘${SIPSUNG[me.sipTop[0]].one}’</b> 결을 타고나서, ${REL_STORY[rel]} 닮은 듯 다른 둘이 만난 셈이야.`
-      : `한마디로 너는 <b>‘${SIPSUNG[me.sipTop[0]].one}’</b>, ${oname}${neun(oname)} <b>‘${SIPSUNG[other.sipTop[0]].one}’</b> 인 사람이라, ${REL_STORY[rel]} 두 결이 만난 셈이야.`);
+      : `한마디로 너는 <b>‘${SIPSUNG[me.sipTop[0]].one}’</b>, ${oname}${neun(oname)} <b>‘${SIPSUNG[other.sipTop[0]].one}’</b>${iya(SIPSUNG[other.sipTop[0]].one)}. ${REL_STORY[rel]} 두 결이 만난 셈이야.`);
   /* ── 상대 고유 정보 스니펫 (장마다 다른 facet으로 주입 → 상대별 차별화) ── */
   const oZ=ZODIAC[other.zod].kw, oTti=other.animal+'띠', oJu=`${other.dayStem}${vbCh}일주`;
   /* ── 장별 이야기(내러티브) ── */
@@ -6935,7 +6940,7 @@ function renderCompatList(){
         ? `<b>${[...new Set(cc.risk)].join('·')}월</b>은 둘 중 한 명의 속마음 자리가 정면으로 흔들리는 달이라 서로 예민해지기 쉬워. 돈·이사·부모님 같은 큰 얘기는 이 달을 피해서 꺼내.`
         : '';
       const anv=(rel==='love'&&c.anniv)?annivReport(c.anniv,r,me,op):'';
-      let ch=`<div class="chapter"><div class="ch-h"><span class="ch-n">하나</span><div class="ch-tt"><div class="ch-t">두 사람의 사주</div><div class="ch-s">나란히 펼쳐 본 우리</div></div></div><p class="body" >${r.storyTwoCharts}</p><p class="body sub" style="font-size:13.5px">${SIPSUNG[op.sipTop[0]].story}</p><div class="info-grid"><div class="info-card"><div class="lab">${escapeHtml(myName)} (나)</div><div class="val">${me.dayStem}${BRANCHES[me.p.db]}일주 · ${me.animal}띠 · ${me.zod} ${ZODIAC[me.zod].sym}<br>본질 ${EL[me.dayEl].name} · 대표 ${SIPSUNG[me.sipTop[0]].label.split(', ')[0]}</div></div><div class="info-card"><div class="lab">${escapeHtml(c.name)}</div><div class="val">${op.dayStem}${BRANCHES[op.p.db]}일주 · ${op.animal}띠 · ${op.zod} ${ZODIAC[op.zod].sym}<br>본질 ${EL[op.dayEl].name} · 대표 ${SIPSUNG[op.sipTop[0]].label.split(', ')[0]}</div></div></div>
+      let ch=`<div class="chapter"><div class="ch-h"><span class="ch-n">하나</span><div class="ch-tt"><div class="ch-t">두 사람의 사주</div><div class="ch-s">나란히 펼쳐 본 우리</div></div></div><p class="body" >${r.storyTwoCharts}</p><p class="body sub" style="font-size:13.5px">${SIPSUNG[op.sipTop[0]].story3?SIPSUNG[op.sipTop[0]].story3(escapeHtml(c.name)):SIPSUNG[op.sipTop[0]].story}</p><div class="info-grid"><div class="info-card"><div class="lab">${escapeHtml(myName)} (나)</div><div class="val">${me.dayStem}${BRANCHES[me.p.db]}일주 · ${me.animal}띠 · ${me.zod} ${ZODIAC[me.zod].sym}<br>본질 ${EL[me.dayEl].name} · 대표 ${SIPSUNG[me.sipTop[0]].label.split(', ')[0]}</div></div><div class="info-card"><div class="lab">${escapeHtml(c.name)}</div><div class="val">${op.dayStem}${BRANCHES[op.p.db]}일주 · ${op.animal}띠 · ${op.zod} ${ZODIAC[op.zod].sym}<br>본질 ${EL[op.dayEl].name} · 대표 ${SIPSUNG[op.sipTop[0]].label.split(', ')[0]}</div></div></div>
           ${chTwoCharts(me,op,c.name)}
           <div class="mc-section" style="margin-top:14px">📜 ${escapeHtml(c.name)} 님 사주 원국</div>
           ${renderMyeongsik(op)}</div>
