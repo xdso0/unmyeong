@@ -20,7 +20,7 @@
 /* ============================================================
    사주 × 별자리 운명 분석, 전부 로컬, 외부통신 없음
    ============================================================ */
-const BUILD='2026-09-01.22';   // 날짜=빌드일, .N=그날 배포 순번. 재배포마다 갱신 → 자동 새로고침 트리거
+const BUILD='2026-09-01.23';   // 날짜=빌드일, .N=그날 배포 순번. 재배포마다 갱신 → 자동 새로고침 트리거
 /* 자동 업데이트: ①켜질 때 최신 BUILD 확인 → 다르면 캐시버스트 이동 ②탭이 다시 보일 때도 확인 → 읽던 중이면 강제 리로드 대신 배너
    (폰 브라우저는 옛 탭을 리로드 없이 복원하므로 ②가 없으면 며칠 전 버전이 계속 보임 — 오너 "어떤 건 배포됐고 어떤 건 안 됐던데" 원인) */
 (function(){try{
@@ -7039,9 +7039,26 @@ function monthGridHTML(me, op, rawName, rel){
     const runTxt = best>=3 ? ` 그리고 <b>${bs}월부터 ${bs+best-1}월까지 ${best}달</b>은 둘 다 크게 눌리지 않고 이어져. ${RW.long}${neun(RW.long)} 쪼개지 말고 <b>이 구간에 몰아서</b> 끝내는 게 이 해의 요령이야.`
       : ` 다만 둘 다 무난하게 이어지는 구간이 <b>길어야 ${best}달</b>이라, ${RW.long}${neun(RW.long)} 한 번에 끝내려 하지 말고 <b>단계로 쪼개</b> 두는 게 맞아.`;
     const restTxt = bothBadM.length ? ` <b>${bothBadM.join('·')}월</b>은 둘 다 눌리는 달이라 <b>같이 쉬는 달</b>로 비워 둬. 이런 달에 서로를 탓하면 그 감정만 남아.` : '';
-    const rhythmTxt = `열두 달을 세어 보면 순풍이 <b>너 ${meGood}달 · ${oname} ${opGood}달</b>이야. ${lead}${gapTxt}${runTxt}${restTxt}`;
+    /* ★계절 편중과 <다음 순풍까지의 거리>. 같은 rows 에서 더 뽑을 수 있다. */
+    const SEA=m=>m<=2?'겨울':m<=5?'봄':m<=8?'여름':m<=11?'가을':'겨울';
+    const seaOf=arr=>{ const cnt={}; arr.forEach(m=>{cnt[SEA(m)]=(cnt[SEA(m)]||0)+1;});
+      const mx=Math.max(0,...Object.values(cnt));
+      return Object.keys(cnt).filter(k=>cnt[k]===mx&&mx>=2); };
+    const myM=rows.filter(r=>r.a==='good').map(r=>r.m), opM=rows.filter(r=>r.b==='good').map(r=>r.m);
+    const ms=seaOf(myM), os_=seaOf(opM);
+    const seaTxt = (ms.length&&os_.length)
+      ? (ms.join()===os_.join()
+        ? ` 순풍이 몰리는 철도 둘 다 <b>${ms.join('·')}</b>${iya(ms[ms.length-1])}. 좋은 때가 같이 오니 <b>그 철에 큰 일을 몰아</b> 두면 돼.`
+        : ` 순풍이 몰리는 철이 달라. 너는 <b>${ms.join('·')}</b>, ${oname}${neun(oname)} <b>${os_.join('·')}</b>${iya(os_[os_.length-1])}. 한 사람이 신날 때 다른 쪽은 평범한 구조라, <b>번갈아 맞춰 주는</b> 게 이 해의 방식이야.`)
+      : '';
+    const nextBoth=(()=>{ for(let k=0;k<12;k++){ const m=((tm-1+k)%12)+1; const r=rows[m-1];
+        if(r.both&&k>0) return {m:m, in:k}; } return null; })();
+    const nextTxt = nextBoth
+      ? ` 다음으로 <b>둘 다 순풍</b>인 달은 <b>${nextBoth.m}월</b>, ${nextBoth.in}달 뒤야.`
+      : (both.length? '' : ` 올해 안엔 둘 다 순풍인 달이 더 오지 않아. 해를 넘겨서 잡는 것도 방법이야.`);
+    const rhythmTxt = `열두 달을 세어 보면 순풍이 <b>너 ${meGood}달 · ${oname} ${opGood}달</b>이야. ${lead}${gapTxt}${seaTxt}${runTxt}${nextTxt}${restTxt}`;
     const badTxt = bad.length
-      ? `<b>${bad.join('·')}월</b>은 조심할 달이야. ${(()=>{const ch=rows.filter(r=>r.bad&&r.chung).length; if(!ch) return ''; return ch===bad.length?`충이 걸려 있어서 <b>말이 세게 나가는</b> 달이야. `:`그중 충이 걸린 달은 특히 <b>말이 세게 나가</b>. `;})()}이 달에 몰린 약속이 있으면 미리 여유를 잡아 둬.`
+      ? `<b>${bad.join('·')}월</b>이야. ${(()=>{const ch=rows.filter(r=>r.bad&&r.chung).length; if(!ch) return ''; return ch===bad.length?`충이 걸려 있어서 <b>말이 세게 나가는</b> 달이야. `:`그중 충이 걸린 달은 특히 <b>말이 세게 나가</b>. `;})()}이 달에 몰린 약속이 있으면 미리 여유를 잡아 둬.`
       : `올해는 둘 다 크게 눌리는 달이 없어. 그만큼 <b>시기보다 습관이 변수</b>인 해야.`;
     return `<div class="chapter"><div class="ch-h"><span class="ch-n">장</span><div class="ch-tt"><div class="ch-t">올해 열두 달</div><div class="ch-s">${ty}년, 두 사람의 달을 나란히</div></div></div><p class="body" >앞 장이 <b>10년 단위 배경</b>을 봤다면 여기는 <b>올해 열두 달</b>이야. 같은 달이라도 한 사람에겐 순풍이고 다른 사람에겐 역풍일 수 있어서, 나란히 놓고 봐야 <b>왜 이 달따라 안 맞았는지</b>가 보여.</p>
       ${grid}
