@@ -20,7 +20,7 @@
 /* ============================================================
    사주 × 별자리 운명 분석, 전부 로컬, 외부통신 없음
    ============================================================ */
-const BUILD='2026-09-01.1';   // 날짜=빌드일, .N=그날 배포 순번. 재배포마다 갱신 → 자동 새로고침 트리거
+const BUILD='2026-09-01.2';   // 날짜=빌드일, .N=그날 배포 순번. 재배포마다 갱신 → 자동 새로고침 트리거
 /* 자동 업데이트: ①켜질 때 최신 BUILD 확인 → 다르면 캐시버스트 이동 ②탭이 다시 보일 때도 확인 → 읽던 중이면 강제 리로드 대신 배너
    (폰 브라우저는 옛 탭을 리로드 없이 복원하므로 ②가 없으면 며칠 전 버전이 계속 보임 — 오너 "어떤 건 배포됐고 어떤 건 안 됐던데" 원인) */
 (function(){try{
@@ -155,12 +155,25 @@ function attractedLabel(){
    (노션 「무엇을 하면 안 되나 ①」). 게다가 결점을 강조하다 얼굴이 섬뜩해졌다.
    사진처럼 보이게 하는 건 결점이 아니라 광학(렌즈·조명·심도)이다. 얼굴은 깔끔해야 한다.
    손은 아예 프레임에서 뺀다 — 꺾일 자리를 없애면 꺾일 일이 없다(캐릭터 시트와 같은 원칙). */
-const PHOTO_BASE="head and shoulders photograph, candid, 85mm lens at f/2, soft natural window light, shallow depth of field, natural clean skin, gentle warm closed-mouth smile, clear symmetric eyes looking at the camera";
+/* ★셀카 무보정 톤으로 교체 (2026-09-01, 오너 판정 및 실측).
+   전엔 85mm 인물사진 톤 + "natural clean skin" 이라 매끈한 CG 피부가 나왔고,
+   오너가 「실물 느낌이 없다」「필터 쓴 것 같다」고 했다.
+   오너가 준 참고 사진의 스타일은 폰 셀카·민무늬 벙·확산광·무보정이었다. */
+const PHOTO_BASE="selfie taken with a phone held close, soft diffused daylight from a window, no harsh shadows, minimal natural makeup, unedited photo, natural skin texture with visible pores, neutral color, calm closed-mouth expression, both eyes aligned looking at the phone";
 /* 부정 프롬프트는 서버로 따로 넘긴다(guidance>1 일 때만 효과가 있다) */
-const PHOTO_NEG="hands, fingers, arms, deformed eyes, asymmetrical eyes, cross-eyed, lazy eye, extra ear, extra nose, distorted face, creepy, harsh shadows, illustration, cgi, 3d render, plastic skin, text, watermark";
+/* ★필터·보정 계열을 추가했다. guidance 2.5 로 올려 이제 실제로 먹는다
+   (guidance 0 이면 부정 프롬프트가 통째로 무시된다 - 그게 지금까지 사시가 난 이유였을 수 있다). */
+const PHOTO_NEG="instagram filter, beauty filter, smooth airbrushed skin, retouched, glossy skin, HDR, oversaturated, heavy color grading, bloom, glow, vignette, hands, fingers, arms, deformed eyes, asymmetrical eyes, cross-eyed, lazy eye, wandering eye, uneven pupils, extra ear, extra nose, distorted face, creepy, harsh shadows, illustration, cgi, 3d render, plastic skin, text, watermark";
 /* 나이는 숫자만으로는 잘 안 붙는다. 나이대별 머리 단서를 같이 준다(실측). */
 const AGE_HAIR={20:'smooth young face',30:'faint smile lines',40:'fine lines around the eyes',50:'greying hair at the temples',60:'grey hair and gentle wrinkles',70:'white hair and deep laugh lines',80:'white hair and deep laugh lines'};
-const ROLE_SCENE={fate:'cafe interior blurred behind, warm daylight',avoid:'dim indoor background, cooler light'};
+/* ★배경이 전원 같은 카페라 다 똑같아 보였다. 오행별로 갈라 준다. */
+const SCENE_BY_EL={
+  목:'plain wall with a green plant beside, bright soft daylight',
+  화:'warm toned room, late afternoon light through a curtain',
+  토:'plain beige wall, flat even indoor daylight',
+  금:'plain white wall, cool clean daylight',
+  수:'dim plain wall, soft grey overcast light from a window'};
+const ROLE_SCENE={fate:'',avoid:'cooler light, slightly dim'};
 /* ★ 상대 이미지 생성 서버 (오너 PC + cloudflared 터널).
    무료 익명 pollinations 는 sana 한 종뿐이라 사진이 안 나온다(2026-08-27 6가지 방식 검증).
    상대는 사람마다 고유해야 해서 미리 뽑아 둘 수도 없다 — 런타임 생성만 남는다.
@@ -455,7 +468,7 @@ function personaSpec(elKey,role,pr,refY){
   const dec=Math.min(80,Math.max(20,Math.floor(age/10)*10));
   const noun=gw.replace('korean ','');
   const prompt='a '+age+' year old korean '+noun+', '+(AGE_HAIR[dec]||'')+', '
-    +EL_PHOTO[elKey]+look+', '+(ROLE_SCENE[role]||'')+', '+PHOTO_BASE;
+    +EL_PHOTO[elKey]+look+', '+(SCENE_BY_EL[elKey]||'')+(ROLE_SCENE[role]?', '+ROLE_SCENE[role]:'')+', '+PHOTO_BASE;
   return {prompt:prompt, seed:(seed%100000), age:age};
 }
 /* lazy=true 면 src 대신 data-src 로 내보낸다. 닫힌 details 안이라도 src 가 있으면
