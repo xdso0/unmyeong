@@ -20,7 +20,7 @@
 /* ============================================================
    사주 × 별자리 운명 분석, 전부 로컬, 외부통신 없음
    ============================================================ */
-const BUILD='2026-09-01.18';   // 날짜=빌드일, .N=그날 배포 순번. 재배포마다 갱신 → 자동 새로고침 트리거
+const BUILD='2026-09-01.19';   // 날짜=빌드일, .N=그날 배포 순번. 재배포마다 갱신 → 자동 새로고침 트리거
 /* 자동 업데이트: ①켜질 때 최신 BUILD 확인 → 다르면 캐시버스트 이동 ②탭이 다시 보일 때도 확인 → 읽던 중이면 강제 리로드 대신 배너
    (폰 브라우저는 옛 탭을 리로드 없이 복원하므로 ②가 없으면 며칠 전 버전이 계속 보임 — 오너 "어떤 건 배포됐고 어떤 건 안 됐던데" 원인) */
 (function(){try{
@@ -918,7 +918,7 @@ function weakGiNote(pr, where){
     const g=yongsin(pr).gi; if(pr.weakEl!==g) return '';
     const nm=EL[g].name;
     /* 상담(ask)은 축 이름을 못 쓴다(회귀 R8) — 같은 말을 전문용어 없이 한다 */
-    const head = (where==='luck') ? ` 참고로 <b>②에서 제일 옅다</b>고 한 기운도 ${nm}야.`
+    const head = (where==='luck') ? ` 참고로 <b>②에서 제일 옅다</b>고 한 기운도 ${nm}${iya(nm)}.`
       : (where==='ask') ? ` 다만 이 기운은 <b>많이 채울수록 좋은 쪽은 아니야</b>.`
       : ` 참고로 이 기운은 15장에서 <b>기신</b>(기울면 독이 되는 기운)이라 부를 바로 그 기운이야.`;
     /* 10장이 먼저 나오므로 15장은 되풀이하지 않고 앞을 가리킨다 — 안 그러면 두 장에 같은 두 문장이 그대로 실린다 */
@@ -2913,7 +2913,7 @@ function describePerson(pr){
   if(Zd && !Zd.noTime){ const ms=zwStarsAtPal(Zd,'명궁').stars;
     if(ms.length){ const m0=ms[0];
       p3z=`자, 이제 자미두수까지 겹쳐 보자. 사주가 ‘타고난 바탕’이라면 자미두수는 ‘인생이라는 무대 위에서 보이는 모습’이야. 네 무대 한가운데엔 <b>${m0}</b>${iga(m0)} 앉아 있어. ${ZW_STAR[m0].face}. ${day.kw[0]===ZW_STAR[m0].tags[0]
-  ? `그런데 사주와 자미가 <b>같은 말을 하고 있어</b>. 둘 다 <b>${day.kw[0]}</b>야. 서로 다른 두 체계가 한 단어로 모이는 건 흔치 않은데, 그만큼 이 결이 <b>흐려질 데가 없다</b>는 뜻이야. 좋게는 흔들려도 돌아올 자리가 분명하고, 뒤집으면 <b>다른 방식을 시도할 여지가 좁아</b>.`
+  ? `그런데 사주와 자미가 <b>같은 말을 하고 있어</b>. 둘 다 <b>${day.kw[0]}</b>${iya(day.kw[0])}. 서로 다른 두 체계가 한 단어로 모이는 건 흔치 않은데, 그만큼 이 결이 <b>흐려질 데가 없다</b>는 뜻이야. 좋게는 흔들려도 돌아올 자리가 분명하고, 뒤집으면 <b>다른 방식을 시도할 여지가 좁아</b>.`
   : `그러니까 너는 마음 바탕엔 사주가 말하는 <b>${day.kw[0]}</b>의 결을 깔고, 그 위에 자미가 말하는 <b>${ZW_STAR[m0].tags[0]}</b>의 모습을 얹은 사람이야. 사주만 보면 ‘${day.kw[0]}’ 한 사람, 자미만 보면 ‘${ZW_STAR[m0].tags[0]}’ 한 사람인데.`} 둘을 합쳐야 ‘${day.kw[0]}${eul(day.kw[0])} 바탕에 두고 ${ZW_STAR[m0].tags[0]}${jong(ZW_STAR[m0].tags[0])?'으로':'로'} 움직이는’ 진짜 너가 완성되는 거지.`;
     }
   }
@@ -6821,7 +6821,35 @@ function coupleDaysHTML(me, op, rawName, rel){
                 score:sm+so, sm:sm, so:so, br:dbr, um:um, uo:uo});
     }
     if(!hit.length){
-      return `<div class="chapter"><div class="ch-h"><span class="ch-n">장</span><div class="ch-tt"><div class="ch-t">둘 다 좋은 날</div><div class="ch-s">같이 정할 일은 언제로 잡을까</div></div></div><p class="body">앞으로 120일 안에서 <b>둘 다에게 열리는 날</b>을 찾아봤는데, 조건에 맞는 날이 안 나왔어. 두 사람의 <b>채울 기운이 서로 달라서</b> 한쪽에 좋은 날이 다른 쪽엔 밋밋한 구조야. 조건을 억지로 낮춰서 아무 날이나 권하진 않을게. 같이 정할 일은 <b>앞 장의 순풍 달</b>을 기준으로 잡고, 그 안에서 각자 편한 날을 고르는 쪽이 나아.</p></div>`;
+      /* ★「없음」을 고정 문장으로 끝내면 안 된다. 3쌍이 글자까지 같아졌다(2026-09-01).
+         왜 없는지를 두 사람의 값으로 말하고, 차선으로 <각자의 날>을 준다. */
+      const solo=(pr,otherClash)=>{
+        const Y=yongsin(pr), out=[];
+        for(let k=1;k<=120&&out.length<3;k++){
+          const d=new Date(now.getFullYear(),now.getMonth(),now.getDate()+k);
+          const jdn=toJDN(d.getFullYear(),d.getMonth()+1,d.getDate());
+          const di=((jdn+49)%60+60)%60, ds=di%10, dbr=di%12, el=STEM_EL[ds];
+          if(dbr===(pr.p.db+6)%12||dbr===otherClash) continue;
+          if(el!==Y.yong&&el!==Y.hee) continue;
+          const un=(typeof unseongAt==='function')?unseongAt(pr.p.ds,dbr):null;
+          if(un&&['절','묘','사'].includes(un)) continue;
+          out.push(d.getMonth()+1+'월 '+d.getDate()+'일');
+        }
+        return out;
+      };
+      const mineD=solo(me,oClash), opD=solo(op,mClash);
+      const Ym2=yongsin(me), Yo2=yongsin(op);
+      const mySet=[EL[Ym2.yong].name,EL[Ym2.hee].name].join('·');
+      const opSet=[EL[Yo2.yong].name,EL[Yo2.hee].name].join('·');
+      const same=(Ym2.yong===Yo2.yong)||(Ym2.yong===Yo2.hee)||(Ym2.hee===Yo2.yong);
+      const why=same
+        ? `채울 기운은 겹치는데(너 <b>${mySet}</b> · ${nm} <b>${opSet}</b>) 그 기운이 드는 날마다 <b>둘 중 한 명의 자리와 부딪혀서</b> 다 빠졌어.`
+        : `네 채울 기운은 <b>${mySet}</b>인데 ${nm}${neun(nm)} <b>${opSet}</b>${jong(opSet)?'이라':'라'}, 한쪽에 좋은 날이 다른 쪽엔 밋밋해.`;
+      const alt=(mineD.length||opD.length)
+        ? `<p class="body">대신 <b>각자의 날</b>은 이래. ${mineD.length?`네 날은 <b>${mineD.join(' · ')}</b>${opD.length?'이고':'이야'}`:''}${(mineD.length&&opD.length)?', ':''}${opD.length?`${nm}의 날은 <b>${opD.join(' · ')}</b>${iya(opD[opD.length-1])}`:''}. 같이 정할 일이면 <b>둘 중 한쪽의 날에 맞춰 주는</b> 쪽이 아무 날이나 잡는 것보다 나아. 누구 날로 할지는 그 일이 <b>누구 쪽 일인지</b>로 정하면 덜 다퉈.</p>`
+        : `<p class="body">각자로 봐도 앞으로 120일 안엔 뚜렷한 날이 없어. 시기를 넓게 잡거나 <b>앞 장의 순풍 달</b>을 기준으로 고르는 게 나아.</p>`;
+      return `<div class="chapter"><div class="ch-h"><span class="ch-n">장</span><div class="ch-tt"><div class="ch-t">둘 다 좋은 날</div><div class="ch-s">같이 정할 일은 언제로 잡을까</div></div></div><p class="body">앞으로 120일 안에서 <b>둘 다에게 열리는 날</b>을 찾아봤는데 안 나왔어. ${why} 조건을 억지로 낮춰서 아무 날이나 권하진 않을게.</p>
+        ${alt}</div>`;
     }
     hit.sort((a,b)=>b.score-a.score||a.m-b.m||a.d-b.d);
     const pick=hit.slice(0,6).sort((a,b)=>a.m-b.m||a.d-b.d);
@@ -6877,7 +6905,7 @@ function monthGridHTML(me, op, rawName, rel){
       + `${r.chung?`<div style="font-size:10px;color:var(--care)">충</div>`:`<div style="font-size:10px;color:transparent">.</div>`}</div>`;
     const grid=`<div style="display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:6px;margin:12px 0 4px">`
       + rows.map(cell).join('') + `</div>`
-      + `<p class="body sub" style="font-size:12px;color:var(--muted);margin-top:2px">칸마다 <b>왼쪽이 너, 오른쪽이 ${oname}</b>야. ▲ 순풍 · ▽ 역풍 · · 평. <b>충</b>은 둘 중 한 명이 유난히 예민해지는 달이야(위기 리포트에서 자세히 다뤄). 금테는 이번 달.</p>`;
+      + `<p class="body sub" style="font-size:12px;color:var(--muted);margin-top:2px">칸마다 <b>왼쪽이 너, 오른쪽이 ${oname}</b>${iya(oname)}. ▲ 순풍 · ▽ 역풍 · · 평. <b>충</b>은 둘 중 한 명이 유난히 예민해지는 달이야(위기 리포트에서 자세히 다뤄). 금테는 이번 달.</p>`;
     const both=rows.filter(r=>r.both).map(r=>r.m);
     const oneMe=rows.filter(r=>r.one&&r.a==='good').map(r=>r.m);
     const oneOp=rows.filter(r=>r.one&&r.b==='good').map(r=>r.m);
