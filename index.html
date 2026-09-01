@@ -20,7 +20,7 @@
 /* ============================================================
    사주 × 별자리 운명 분석, 전부 로컬, 외부통신 없음
    ============================================================ */
-const BUILD='2026-09-01.15';   // 날짜=빌드일, .N=그날 배포 순번. 재배포마다 갱신 → 자동 새로고침 트리거
+const BUILD='2026-09-01.16';   // 날짜=빌드일, .N=그날 배포 순번. 재배포마다 갱신 → 자동 새로고침 트리거
 /* 자동 업데이트: ①켜질 때 최신 BUILD 확인 → 다르면 캐시버스트 이동 ②탭이 다시 보일 때도 확인 → 읽던 중이면 강제 리로드 대신 배너
    (폰 브라우저는 옛 탭을 리로드 없이 복원하므로 ②가 없으면 며칠 전 버전이 계속 보임 — 오너 "어떤 건 배포됐고 어떤 건 안 됐던데" 원인) */
 (function(){try{
@@ -1741,7 +1741,7 @@ const RHYTHM_PAIR={
  '여름|가을':'한쪽은 감정이 먼저 끓고 한쪽은 말이 정확해. <b>뜨거운 말 vs 맞는 말</b>이 부딪히니, 화날 땐 판단을 잠깐 미루기로 약속해.',
  '여름|겨울':'온도 차가 가장 큰 조합이야. 한쪽은 지금 풀고 싶고 한쪽은 시간이 필요해. <b>“몇 시간 뒤에 얘기하자”</b>고 시각을 못 박는 게 이 조합의 특효약이야.',
  '가을|가을':'둘 다 냉정해서 싸움이 조용한 대신 <b>오래 가</b>. 옳고 그름을 따지기 전에 감정을 한 줄 말하는 습관이 필요해.',
- '가을|겨울':'둘 다 표현이 적어서 편한데, <b>아무도 먼저 손 내밀지 않아</b> 냉전이 길어져. 화해 담당을 미리 정해 두면 웃으면서 넘어가.',
+ '가을|겨울':'둘 다 <b>먼저 손 내미는 걸 어려워해서</b> 냉전이 길어져. 화해 담당을 미리 정해 두면 웃으면서 넘어가.',
  '겨울|겨울':'둘 다 데워지는 데 시간이 걸려서 <b>서로 식었다고 오해</b>하기 쉬워. 애정 표현의 총량이 적은 게 정상인 조합이니 그 기준을 서로 인정해 줘.'};
 function rhythmPairLine(me,op){
   const j=pairJohu(me,op); if(!j)return '';
@@ -5344,9 +5344,9 @@ function compatibility(me,other){
   const oTrait=ZODIAC[other.zod].kw[0];
   const closing=(total>=85?`${oname}${neun(oname)} 보기 드문 천생연분이야. 지금 그 마음 믿고 가.`:
     total>=70?`${oname}${neun(oname)} 서로를 채워 주는 좋은 인연이야. 솔직함만 안 잃으면 오래가.`:
-    total>=55?`${oname}${neun(oname)} 노력으로 충분히 좋아지는 사이야. 표현이랑 배려가 열쇠야.`:
+    total>=55?`${oname}${wa_gwa(oname)}는 노력으로 충분히 좋아지는 사이야. 표현이랑 배려가 열쇠야.`:
     `${oname}${neun(oname)} 다른 만큼 배울 것도 많은 사이야. 속도 늦추고 서로 선 존중해.`)+
-    ` ${oname}의 ${other.zod}다운 ‘${oTrait}’한 면을 네가 알아봐 줄 때, 이 인연은 한층 더 깊어져. `+
+    ` ${oname}의 ${other.zod}다운 ‘${oTrait}’의 면을 네가 알아봐 줄 때, 이 인연은 한층 더 깊어져. `+
     `딱 하나만 기억해. ${total>=70?'지금처럼 자주 마음 표현하기':'다름을 틀림으로 보지 않기'}.`;
   /* ── 두 명식을 나란히 펼친 근거 문단 ── */
   const ubCh=BRANCHES[me.p.db], vbCh=BRANCHES[other.p.db];
@@ -5393,7 +5393,7 @@ function compatibility(me,other){
     (chung?` 강하게 끌린 만큼 부딪힘도 운명처럼 따라오니까, 그 긴장마저 둘 인연이라 여기면 한결 편해져.`:
      yuk?` 마치 전생에 못다 한 얘기를 잇듯, 곁에 있으면 묘하게 편할 거야.`:
      tri?` 같이 있으면 손발이 척척 맞아서, 뭘 해도 합이 좋은 사이야.`:``)+
-    ` 이 인연에서 ${oname}${neun(oname)} <b>${oTti} ${other.zod}</b>(${oZ[0]}·${oZ[1]})의 기질을 가져와. ${(rel==='shengIn'||rel==='shengOut')?`네 ‘${EL[a].kw[0]}’ 결이랑 자연스레 맞물려서`:rel==='same'?`너랑 닮은 결이라 익숙하면서도`:`네 ‘${EL[a].kw[0]}’ 결이랑은 다른 색이라`} 그 ‘${oZ[0]}’한 면이 ${total>=60?'관계에 생기를 더해 줄 거야.':'가끔 너랑 엇갈리기도 할 거고.'}`;
+    ` 이 인연에서 ${oname}${neun(oname)} <b>${oTti} ${other.zod}</b>(${oZ[0]}·${oZ[1]})의 기질을 가져와. ${(rel==='shengIn'||rel==='shengOut')?`네 ‘${EL[a].kw[0]}’ 결이랑 자연스레 맞물려서`:rel==='same'?`너랑 닮은 결이라 익숙하면서도`:`네 ‘${EL[a].kw[0]}’ 결이랑은 다른 색이라`} 그 ‘${oZ[0]}’의 면이 ${total>=60?'관계에 생기를 더해 줄 거야.':'가끔 너랑 엇갈리기도 할 거고.'}`;
   const storyPersonality=
     `${sipsungMatch(me.sipTop[0], other.sipTop[0], oname, me)} `+
     ``;   /* paceTxt·talk 둘 다 아래 카드(💞 💬)에 있다. 도입은 sipsungMatch 만(2026-08-28) */
@@ -5429,7 +5429,7 @@ function compatibility(me,other){
   const storyMarriage=
     `먼 미래를 그려 보면, ${spouseGround}${isQueer()?'법적 틀이랑 상관없이 ':''}둘이 같이 나이 들어가는 그림은 `+
     (mar>=70?`꽤 단단하고 따뜻해. `:mar>=55?`노력으로 충분히 안정될 수 있어. `:`서로 더 깊이 알아간 뒤에 그려도 안 늦어. `)+
-    `오래 볼수록 ${oname}의 ${oTti} ${other.zod}다운 ‘${oZ[1]}’한 면이 ${mar>=60?'가정에 안정감을 더해 줄 거고. ':'미래 그림에서 너랑 살짝 엇갈릴 수 있으니 미리 맞춰 두면 좋고. '}`+
+    `오래 볼수록 ${oname}의 ${oTti} ${other.zod}다운 ‘${oZ[1]}’의 면이 ${mar>=60?'가정에 안정감을 더해 줄 거고. ':'미래 그림에서 너랑 살짝 엇갈릴 수 있으니 미리 맞춰 두면 좋고. '}`+
     /* familyNote 는 아래 카드(🏠)에 따로 있다(2026-08-28) */
     `${isQueer()?'동반의':'결혼의'} 좋은 흐름은 ${JOSA(marriageWhen,'이고','고')}.`+
     /* childNote 는 아래 카드(👶)에 따로 있다. 점수만 남긴다(2026-08-28) */
@@ -6364,7 +6364,12 @@ function chClosingMore(me,op,oname,rel,r){
     }
     if(typeof yongsin==='function'&&typeof rawElementCount==='function'){
       const Y=yongsin(me), B=rawElementCount(op.p), n=B[Y.yong]||0;
-      items.push(n>=3
+      /* ★<기운>이 이미 같은 오행을 말했으면 <처방>은 다른 말을 해야 한다.
+         안 그러면 「딱 세 가지」가 실은 두 가지가 된다(2026-09-01 통독). */
+      const _dup=items.some(x=>x.indexOf('>'+EL[Y.yong].name+'<')>=0);
+      items.push(_dup
+        ? `<b>처방.</b> 바로 위의 그 기운이 네 <b>약</b>이기도 해. 채울 자리와 약이 같은 자리라, 이 관계에선 그 하나만 제대로 챙기면 나머지가 따라와.`
+        : n>=3
         ? `<b>처방.</b> 네게 약이 되는 <b>${EL[Y.yong].name}</b>${eul(EL[Y.yong].name)} ${oname}${iga(oname)} 두껍게 갖고 있어. 이 사람 옆에서 편한 건 <b>기분 탓이 아니야</b>.`
         : (n>=1
           ? `<b>처방.</b> 네게 약이 되는 건 <b>${EL[Y.yong].name}</b>${jong(EL[Y.yong].name)?'이고':'고'}, ${oname}${iga(oname)} 조금 갖고 있어. 없는 것과는 다르니 그쪽으로 기대는 건 괜찮아.`
@@ -6416,6 +6421,8 @@ function daeunCrossHTML(me, op, rawName, rel){
       if(x==='good'&&z==='good') return 'both';
       if(x==='bad'&&z==='bad') return 'neither';
       if(x==='good'||z==='good') return 'one';
+      /* ★한쪽만 역풍인 구간을 안 갈라서 「둘 다 눌리지 않는 구간」으로 나갔다(2026-09-01) */
+      if(x==='bad'||z==='bad') return 'oneDown';
       return 'flat';
     };
     const line = sg => {
@@ -6430,6 +6437,8 @@ function daeunCrossHTML(me, op, rawName, rel){
         ? `${lead} 쪽만 흐름이 열리는 구간이야. ${meUp
             ? `네가 앞장서고 ${oname}${neun(oname)} 받쳐 주는 배치가 자연스러워. 이때 상대가 굼떠 보여도 게으른 게 아니라 구간이 다른 거야.`
             : `${oname}${iga(oname)} 앞장서고 네가 받쳐 주는 배치가 자연스러워. 네가 뒤처진 것 같아도 게으른 게 아니라 구간이 다른 거야.`}`
+        : k==='oneDown'
+        ? `${sg.a.tone==='bad'?'너':oname} 쪽만 무거운 구간이야. 한쪽은 평소대로인데 한쪽만 눌리니, 이때 속도를 맞추라고 하면 눌린 쪽이 더 지쳐. 이 구간엔 짐을 나누는 쪽이 맞아.`
         : `둘 다 크게 밀지도 눌리지도 않는 구간이야. 큰 결정보다 쌓아 두기에 맞아.`;
       const an=EL[sg.a.el].name, bn=EL[sg.b.el].name;
       const el = sg.a.el===sg.b.el
