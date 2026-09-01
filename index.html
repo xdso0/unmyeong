@@ -20,7 +20,7 @@
 /* ============================================================
    사주 × 별자리 운명 분석, 전부 로컬, 외부통신 없음
    ============================================================ */
-const BUILD='2026-09-01.8';   // 날짜=빌드일, .N=그날 배포 순번. 재배포마다 갱신 → 자동 새로고침 트리거
+const BUILD='2026-09-01.9';   // 날짜=빌드일, .N=그날 배포 순번. 재배포마다 갱신 → 자동 새로고침 트리거
 /* 자동 업데이트: ①켜질 때 최신 BUILD 확인 → 다르면 캐시버스트 이동 ②탭이 다시 보일 때도 확인 → 읽던 중이면 강제 리로드 대신 배너
    (폰 브라우저는 옛 탭을 리로드 없이 복원하므로 ②가 없으면 며칠 전 버전이 계속 보임 — 오너 "어떤 건 배포됐고 어떤 건 안 됐던데" 원인) */
 (function(){try{
@@ -2056,7 +2056,7 @@ function goodDays(pr){
     if(!out.length) return `<p class="body"><b>택일</b>은 앞으로 120일 안에서 <b>천간 오행이 네 용신·희신이면서 네 일지와 부딪히지 않는 날</b>을 찾는 방식으로 뽑아. 그런데 이 구간엔 조건에 맞는 날이 안 나왔어. 조건을 억지로 낮춰서 아무 날이나 권하진 않을게. 시기를 조금 넓게 잡거나, 위 <b>시기별 운 흐름</b> 장의 좋은 달을 기준으로 잡는 게 나아.</p>`;
     const _useSeen={}, _sipSeen={};
     const list=out.map(x=>`<li><b>${x.m}월 ${x.d}일</b> · ${x.gz}일 · <b>${EL[x.el].name}</b>(${x.sip}) · <b>${x.uns||'-'}</b> 단계. ${(()=>{const a=!!_useSeen[x.use];_useSeen[x.use]=1;return a?'앞의 같은 단계 날과 쓰임이 같아':x.use;})()}.${(()=>{/* ★십성 꼬리에도 중복 방지가 필요하다. 같은 십성 날이 여럿이면 같은 문장이 그대로 반복됐다(실측 6회). 줄 앞에 십성이 이미 찍혀 있어 빼도 정보가 안 준다. */ if(_sipSeen[x.sip]) return ''; _sipSeen[x.sip]=1; return x.sip==='인성'?' 배우거나 도움을 청하기 좋은 결이야.':x.sip==='비겁'?' 함께 움직이는 일에 힘이 붙어.':x.sip==='식상'?' 내놓고 보여 주는 일에 유리해.':x.sip==='재성'?' 숫자와 결과가 걸린 일에 맞아.':' 자리와 책임이 걸린 일에 맞아.';})()}</li>`).join('');
-    return `<p class="body"><b>택일. 앞으로 120일 중 네게 유리한 날</b>이야. 각 줄은 <b>날짜 · 그날의 두 글자 · 그 기운이 네게 하는 역할 · 그날 네 기운의 단계</b> 순서로 읽으면 돼. 뽑는 기준은 두 가지야. ① 그날의 <b>위 글자</b>가 네게 힘이 되는 기운(<b>${EL[Y.yong].name}</b> 또는 <b>${EL[Y.hee].name}</b>)일 것. ② 그날의 <b>아래 글자</b>가 <b>${db>=0?BRANCHES[db]+"("+BRANCH_ANIMAL[db]+")":"네 일지"}</b>(네가 태어난 날의 아래 글자야)와 <b>정면으로 부딪히지 않을</b> 것.${avoid.length?' 부딪히는 날은 <b>앞으로 120일 중 '+avoid.length+'일</b>인데('+avoid.slice(0,3).join('·')+' 등) 그 날들은 아래 목록에서 미리 뺐어.':''} 두 조건 다 <b>네 사주에서만 나오는 값</b>이야.</p><ul class="clean">${list}</ul><p class="body sub">계약·면접·고백·개업처럼 <b>시작이 되는 일</b>에 얹어 봐. 다만 택일은 <b>없는 운을 만들지 않아</b>. 준비된 일의 등을 밀어 줄 뿐이고, 상대가 있는 일이면 상대 사정이 먼저야.</p>`;
+    return `<p class="body"><b>택일. 앞으로 120일 중 네게 유리한 날</b>이야. 각 줄은 <b>날짜 · 그날의 간지</b>(그날의 두 글자) <b>· 그 기운이 네게 하는 역할 · 그날 네 기운의 단계</b> 순서로 읽으면 돼. 뽑는 기준은 두 가지야. ① 그날의 <b>위 글자</b>가 네게 힘이 되는 기운(<b>${EL[Y.yong].name}</b> 또는 <b>${EL[Y.hee].name}</b>)일 것. ② 그날의 <b>아래 글자</b>가 <b>${db>=0?BRANCHES[db]+"("+BRANCH_ANIMAL[db]+")":"네 일지"}</b>(네가 태어난 날의 아래 글자야)와 <b>정면으로 부딪히지 않을</b> 것.${avoid.length?' 부딪히는 날은 <b>앞으로 120일 중 '+avoid.length+'일</b>인데('+avoid.slice(0,3).join('·')+' 등) 그 날들은 아래 목록에서 미리 뺐어.':''} 두 조건 다 <b>네 사주에서만 나오는 값</b>이야.</p><ul class="clean">${list}</ul><p class="body sub">계약·면접·고백·개업처럼 <b>시작이 되는 일</b>에 얹어 봐. 다만 택일은 <b>없는 운을 만들지 않아</b>. 준비된 일의 등을 밀어 줄 뿐이고, 상대가 있는 일이면 상대 사정이 먼저야.</p>`;
   }catch(e){ return ''; }
 }
 function practicalSec(pr){
@@ -2207,7 +2207,7 @@ function zwAllPalaces(pr){
     const empties=info.filter(x=>x.borrowed||!x.st.length);
     if(empties.length) out.push(`<p class="body"><b>비어 있는 칸은 ${empties.map(x=>x.G.p).join('·')}</b>이야. 맞은편 별을 빌려 쓰는 자리야. 비었다는 건 결핍이 아니라 <b>고정 각본이 없다</b>는 뜻이라, 그 영역은 시기와 환경에 따라 모양이 크게 바뀌어. ${empties.length>=4?'빈 칸이 많은 편인데, 그만큼 <b>바꿀 여지가 크고</b> 한번 잘 풀리면 크게 풀려.':'그 칸들은 "나는 원래 이래"로 규정하지 말고 <b>지금 어떤 상태인지</b> 그때그때 확인하는 쪽이 맞아.'} ${gungSaju(pr, empties[0].G.p, _gsSeen)}</p>`);
     else out.push(`<p class="body"><b>빈 칸이 하나도 없어.</b> 열두 칸 전부에 자기 별이 들어 있다는 뜻이야. 영역마다 색이 뚜렷해서 애매한 데가 없는 대신, <b>바꾸고 싶은 영역도 쉽게 안 바뀌는</b> 편이지. ${gungSaju(pr, '명궁', _gsSeen)}</p>`);
-    return `<p class="body">앞에서 무대의 뼈대를 봤으니 이제 <b>열두 칸 전체</b>를 볼게. 먼저 표로 한눈에 보고, 그 아래에서 <b>특히 두드러진 칸</b>만 골라 깊게 풀어 줄게. 열두 개를 다 외울 필요는 없어. 눈에 걸리는 칸 하나만 제대로 알아도 충분해.</p>${table}${out.join('')}`;
+    return `<p class="body">앞에서 명반의 뼈대를 봤으니 이제 <b>열두 칸 전체</b>를 볼게. 먼저 표로 한눈에 보고, 그 아래에서 <b>특히 두드러진 칸</b>만 골라 깊게 풀어 줄게. 열두 개를 다 외울 필요는 없어. 눈에 걸리는 칸 하나만 제대로 알아도 충분해.</p>${table}${out.join('')}`;
   }catch(e){ return ''; }
 }
 /* ===== 자미두수 녹존·사살성 =====
@@ -2259,7 +2259,7 @@ function yuksalStory(pr){
     const tail=dup.length
       ? `<p class="body sub">특히 <b>${dup.join('·')}</b>엔 살성이 <b>둘 이상 겹쳐</b> 있어. 그 영역이 네 인생에서 가장 마찰이 잦은 자리란 뜻이야. 겹친 자리는 운이 나쁜 게 아니라 <b>난이도가 높은 것</b>이고, 난이도가 높은 만큼 여기서 쌓은 실력은 남들이 못 따라와.</p>`
       : `<p class="body sub">네 살성들은 <b>서로 다른 궁에 흩어져</b> 있어. 한 영역에 몰리지 않았다는 건 <b>치명적인 약점이 없다</b>는 뜻이야. 대신 여러 영역에서 조금씩 걸리니, 하나씩 정리하는 습관이 필요해.</p>`;
-    return `<p class="body" style="margin-top:12px"><b>⑩ 마찰을 만드는 별</b>: 열두 칸 안에는 <b>일을 뻑뻑하게 만드는 별</b>들이 따로 있어(살성이라고 불러). 흉하다고 겁먹을 건 아니고, <b>어느 영역이 유난히 뻑뻑한지</b>를 알려 주는 표시로 읽으면 돼. 뻑뻑한 자리를 미리 알면 거기서만 속도를 줄이면 되니까.</p><ul class="clean">${rows}</ul>${tail}
+    return `<p class="body" style="margin-top:12px"><b>⑩ 살성, 마찰을 만드는 별</b>: 위 표의 <b>살성</b> 칸에 적힌 것들이야. <b>일을 뻑뻑하게 만드는 별</b>이지. 흉하다고 겁먹을 건 아니고, <b>어느 영역이 유난히 뻑뻑한지</b>를 알려 주는 표시로 읽으면 돼. 뻑뻑한 자리를 미리 알면 거기서만 속도를 줄이면 되니까.</p><ul class="clean">${rows}</ul>${tail}
     <p class="body sub" style="font-size:13.5px;color:var(--muted)">※ 자미 살성은 흔히 여섯(육살성)으로 세는데, 여기선 <b>넷만</b> 짚었어. 화성·영성은 기준을 잡는 표가 유파마다 갈려서 <b>확실한 것만</b> 넣었어.</p>`;
   }catch(e){ return ''; }
 }
@@ -2317,7 +2317,7 @@ function stemHapStory(pr){
     const others=[['연간',p.ys],['월간',p.ms],['시간',p.hs]].filter(x=>x[1]!=null&&x[1]>=0);
     const hits=others.filter(([nm,st])=>STEMHAP.some(k=>(k[0]===ds&&k[1]===st)||(k[1]===ds&&k[0]===st)));
     if(!hits.length)
-      return `<p class="body sub">윗줄 글자끼리 짝을 이뤄 성질이 바뀌는 구조는 없어. <b>네 성질이 희석되지 않고 그대로 나오는</b> 편이지. 좋게 말하면 일관되고, 뒤집으면 <b>상황에 맞춰 변신하는 유연함</b>은 덜해.</p>`;
+      return `<p class="body sub"><b>천간합</b>은 없어. 천간끼리 짝을 이뤄 성질이 바뀌는 구조가 없다는 뜻이라, <b>네 성질이 희석되지 않고 그대로 나오는</b> 편이지. 좋게 말하면 일관되고, 뒤집으면 <b>상황에 맞춰 변신하는 유연함</b>은 덜해.</p>`;
     const rows=hits.map(([nm,st])=>{
       const key=[STEMS[ds],STEMS[st]].sort((a,b)=>'갑을병정무기경신임계'.indexOf(a)-'갑을병정무기경신임계'.indexOf(b)).join('');
       const M=STEMHAP_MEAN[key]||STEMHAP_MEAN[STEMS[st]+STEMS[ds]];
@@ -3518,7 +3518,7 @@ function myeongsikStory(pr){
   if(many.length) dist=`<b>${many.join('·')}</b> 기운이 세 글자 이상으로 확 몰려 있어. 이게 네 삶에서 가장 강하게 작동하는 축이라, 좋게 쓰면 최대 무기지만 과하면 그 기운의 그늘(고집·쏠림)도 같이 따라와`;
   else if(none.length) dist=`오행이 대체로 퍼져 있는데 <b>${none.join('·')}</b> 기운은 여덟 글자 안에 아예 없어. 없는 기운은 평생 은근히 목마른 자리라, 신기하게도 그 기운을 지닌 사람이나 환경에 유독 끌리게 돼`;
   else dist=`특별히 몰리거나 빈 곳 없이 비교적 고르게 퍼져 있어. 색이 튀진 않아도 어느 상황에나 무난히 스며드는 균형형이지`;
-  return `<p class="body">네가 태어난 해·달·날·시를 각각 두 글자씩 적으면 여덟 글자가 나와. 그게 사주야. 흔히 사주팔자라고 부르는 게 이거고. 이 여덟 글자가 서로 돕거나 부딪히는 그림이 네 설계도야.</p><p class="body">네 기둥은 인생의 시기와 자리를 나눠 맡아. <b>년주(${STEMS[pr.p.ys]}${BRANCHES[pr.p.yb]})</b>는 뿌리·초년·집안 배경, <b>월주(${STEMS[pr.p.ms]}${BRANCHES[pr.p.mb]})</b>는 사회와 부모·직업의 무대(여덟 글자 중 힘이 제일 센 자리야), <b>일주(${pr.dayStem}${BRANCHES[pr.p.db]})</b>는 바로 <b>너 자신과 배우자</b>, ${noT?'시주는 태어난 시간을 몰라 이번엔 비워 뒀어(원래는 자식·말년 자리).':'<b>시주</b>는 자식과 말년의 흐름이야.'} 그중 태어난 날의 위 글자 <b>${pr.dayStem}(${EL[dayEl].name})</b>, 이게 너 자신이야. ${STEM_PERSONA[pr.dayStem]?`이 <b>${pr.dayStem}${EL[dayEl].name.charAt(0)}</b> 일간은 <b>${STEM_PERSONA[pr.dayStem].ess}</b> 같은 결이라, ${STEM_PERSONA[pr.dayStem].trait}인 게 네 타고난 바탕이야. 같은 ${EL[dayEl].name.charAt(0)} 기운이어도 <b>천간이 다르면 사람이 달라</b>. 무는 큰 산, 기는 논밭처럼. `:''}나머지 일곱 글자는 전부 이 글자를 기준으로 읽어. 뒤에 나올 성격·연애·직업 풀이가 다 여기서 출발하고.</p><p class="body">네 원국을 보면, ${dist}. ${tugan.length?`남들 눈에 먼저 보이는 건 위쪽 넉 자야(아래쪽 넉 자는 속에 감춘 뿌리고). 네 위쪽에 뜬 기운은 ${tugan.join(', ')}이야. 괄호 안은 그 글자가 너를 돕는지 누르는지 꺼내 쓰는지를 부르는 이름이야. 이 기질이 네 언행과 첫인상에 제일 먼저 나와. `:''}기운이 한쪽으로 몰리면 그쪽이 세게 작동하는 대신 반대편이 약점이 되고, 고르면 무난한 대신 색이 옅어져. 네 여덟 글자가 어디로 기울었고 뭘 곁에 둬야 중심이 잡히는지는 3장에서 볼게. 이 여덟 글자는 평생 안 바뀌는 지도야. 여기에 해마다 새 기운이 들어와 날씨를 만들어. 그건 뒤에서 볼게.</p>
+  return `<p class="body">네가 태어난 해·달·날·시를 각각 두 글자씩 적으면 여덟 글자가 나와. 그게 사주야. 흔히 사주팔자라고 부르는 게 이거고. 이 여덟 글자가 서로 돕거나 부딪히는 그림이 네 설계도야.</p><p class="body">네 기둥은 인생의 시기와 자리를 나눠 맡아. <b>년주(${STEMS[pr.p.ys]}${BRANCHES[pr.p.yb]})</b>는 뿌리·초년·집안 배경, <b>월주(${STEMS[pr.p.ms]}${BRANCHES[pr.p.mb]})</b>는 사회와 부모·직업의 무대(여덟 글자 중 힘이 제일 센 자리야), <b>일주(${pr.dayStem}${BRANCHES[pr.p.db]})</b>는 바로 <b>너 자신과 배우자</b>, ${noT?'시주는 태어난 시간을 몰라 이번엔 비워 뒀어(원래는 자식·말년 자리).':'<b>시주</b>는 자식과 말년의 흐름이야.'} 그중 태어난 날의 위 글자 <b>${pr.dayStem}(${EL[dayEl].name})</b>, 이게 너 자신이야. ${STEM_PERSONA[pr.dayStem]?`이 <b>${pr.dayStem}${EL[dayEl].name.charAt(0)}</b> 일간은 <b>${STEM_PERSONA[pr.dayStem].ess}</b> 같은 결이라, ${STEM_PERSONA[pr.dayStem].trait}인 게 네 타고난 바탕이야. 같은 ${EL[dayEl].name.charAt(0)} 기운이어도 <b>천간이 다르면 사람이 달라</b>. 무는 큰 산, 기는 논밭처럼. `:''}나머지 일곱 글자는 전부 이 글자를 기준으로 읽어. 뒤에 나올 성격·연애·직업 풀이가 다 여기서 출발하고.</p><p class="body">네 <b>원국</b>(여덟 글자 전체)을 보면, ${dist}. ${tugan.length?`남들 눈에 먼저 보이는 건 위쪽 넉 자야(아래쪽 넉 자는 속에 감춘 뿌리고). 네 위쪽에 뜬 기운은 ${tugan.join(', ')}이야. 괄호 안은 그 글자가 너를 돕는지 누르는지 꺼내 쓰는지를 부르는 이름이야(<b>십성</b>). 이 기질이 네 언행과 첫인상에 제일 먼저 나와. `:''}기운이 한쪽으로 몰리면 그쪽이 세게 작동하는 대신 반대편이 약점이 되고, 고르면 무난한 대신 색이 옅어져. 네 여덟 글자가 어디로 기울었고 뭘 곁에 둬야 중심이 잡히는지는 3장에서 볼게. 이 여덟 글자는 평생 안 바뀌는 지도야. 여기에 해마다 새 기운이 들어와 날씨를 만들어. 그건 뒤에서 볼게.</p>
   ${(()=>{const U=unseong(pr),D=UNSEONG_DESC[U.일지];if(!D)return '';
     const mo=UNSEONG_DESC[U.월지];
     return `<p class="body">너는 집에서랑 밖에서 좀 다른 사람이야.<br>
@@ -3683,7 +3683,7 @@ function joheuNote(pr){
       else if(_J && _J.need && _J.need===_Y.gi){
         clash = ` <b>여기서 한 가지 부딪히는 게 있어</b>. 조후가 필요하다는 <b>${EL[_J.need].name}</b>${iga(EL[_J.need].name)} 네 <b>기신</b>이기도 해. 모순 같지만 재는 게 달라서 그래. 조후는 <b>온도</b>를, 용신은 <b>세기</b>를 봐. 읽는 법은 이거야: <b>${EL[_J.need].name}${neun(EL[_J.need].name)} 최소한만, 몸에 닿는 쪽으로</b>(따뜻한 음식·볕 쬐기·체온) 쓰고, <b>크게 두르거나 환경을 통째로 바꾸진 마</b>(방 전체 색, 큰 가구, 직업 방향). 온도는 맞추되 세기는 안 올리는 게 이 조합의 답이야.`;
       } }catch(e){}
-    return `<p class="body sub" style="margin-top:10px;padding:10px 12px;background:var(--violet-soft,rgba(138,111,208,.10));border-radius:10px">🌗 <b>계절 보정</b>. ${body}${clash}</p>`;
+    return `<p class="body sub" style="margin-top:10px;padding:10px 12px;background:var(--violet-soft,rgba(138,111,208,.10));border-radius:10px">🌗 <b>계절 보정</b>(조후). ${body}${clash}</p>`;
   }catch(e){return '';}
 }
 /* ★사주 원국 섹션에 섞여 있던 자미두수 심화 블록(삼방사정·사화·신궁·보좌성·유년)을 이 자미두수 섹션으로 이동(감사 2026-07-22).
@@ -3693,7 +3693,7 @@ function ziweiExtras(pr){
   ${(()=>{const SH=sihwaPalaces(pr);if(!SH||!SH.length)return '';
     const rows=SH.map(x=>{const m=SIHWA_MEAN[x.화]||{};return `<li><b>${x.화}</b>${iga(x.화)} <b>${x.별}</b>에 붙어 <b>${x.궁}</b>(${ZW_PAL_SUB[x.궁]||''})에 떨어졌어. 그 영역이 ${m.d} 자리야.</li>`;}).join('');
     const gi=SH.find(x=>x.화==='화기');
-    return `<p class="body">태어난 해가 네 별 중 넷을 골라 도장을 하나씩 찍어. <b>복·재물</b>, <b>권한</b>, <b>명예</b>, 그리고 <b>막힘·집착</b>. 같은 자리에 태어나도 <b>이 도장이 어느 칸에 찍혔느냐</b>에 따라 인생의 강약이 완전히 달라져.</p><ul class="clean">${rows}</ul>
+    return `<p class="body">태어난 해가 네 별 중 넷을 골라 도장을 하나씩 찍어. <b>화록</b>(복·재물)·<b>화권</b>(권한)·<b>화과</b>(명예)·<b>화기</b>(막힘·집착). 위 표 가운데에 어느 별에 찍혔는지 적혀 있어. 같은 <b>명궁</b>이어도 <b>이 도장이 어느 궁에 찍혔느냐</b>에 따라 인생의 강약이 완전히 달라져.</p><ul class="clean">${rows}</ul>
     ${gi?`<p class="body sub">특히 <b>화기</b>는 <b>${gi.궁}</b>(${ZW_PAL_SUB[gi.궁]||''})에 있어. 여기가 네 인생에서 가장 마음이 쓰이고 애먹는 자리야. <b>${JOSA(gi.궁,'은','는')} 실제 그 대상만이 아니라 ‘${ZW_PAL_SUB[gi.궁]||'그 영역'}’이라는 삶의 테마를 가리켜</b>. 나쁘다는 뜻이 아니라 <b>가장 많이 붙들고 결국 제일 깊어지는 영역</b>이라는 뜻이야.</p>`:''}`;})()}
   ${(()=>{const bp=bodyPalace(pr);if(!bp||!BODY_MEAN[bp])return '';
     return `<p class="body">타고난 나 말고 <b>살면서 실제로 힘을 쏟게 되는 자리</b>가 따로 있어(신궁이라고 불러). 네 경우엔 <b>${bp}</b>(${ZW_PAL_SUB[bp]||''}). ${BODY_MEAN[bp]}.<br><span style="color:var(--muted)">${bp==='명궁'?`그래서 한쪽만 보면 반쪽인데, <b>네 경우엔 이 둘이 같은 칸</b>이야. 타고난 결과 실제로 힘을 쏟는 자리가 <b>겹친다</b>는 뜻이라, "나는 이런 사람인데 왜 자꾸 저기에 매달리지?" 하는 어긋남이 적은 대신 <b>한 방향으로 쏠려</b>. 잘 풀릴 땐 아주 잘 풀리고, 막히면 돌아갈 다른 무대가 없어.`:`그래서 한쪽만 보면 반쪽이야. 타고난 결과 실제로 힘을 쏟는 자리가 <b>어긋나면</b> "나는 이런 사람인데 왜 자꾸 저기에 매달리지?" 하는 느낌이 드는데, 그게 이 구조 때문이야.`}</span></p>${(()=>{try{
@@ -3723,7 +3723,7 @@ function ziweiExtras(pr){
     return `<p class="body">주성 말고 <b>보좌성</b>도 있어. 주성이 배우라면 보좌성은 <b>조명·음향 같은 스태프</b>야. 어느 영역을 밝혀 주는지가 사람마다 달라.</p><ul class="clean">${rows}</ul>
     ${gwi.length?`<p class="body sub">특히 <b>귀인성(천괴·천월)</b>은 ${gwi.map(g=>`<b>${g.궁}</b>`).join('·')}에 있어. 그 영역에서 곤란할 때 <b>사람이 나타나 풀어 주는</b> 구조야. 혼자 버티지 말고 그 자리에선 도움을 청해.</p>`:''}`;})()}
   ${(()=>{const SB=sambangSajeong(pr);if(!SB)return '';
-    return `<p class="body">자미두수는 내 칸 하나만 보지 않아. 내 칸에 <b>돈 칸·일 칸</b>, 그리고 마주 보는 <b>바깥 칸</b>까지 네 칸을 묶어서 읽어야 사람이 제대로 보여. 그 네 칸에 든 별은 <b>${JOSA(SB.stars.join('·'),'이고','고')}</b>, 그 결을 합치면 <b>${SB.tags.join('·')}</b>${iya(SB.tags[SB.tags.length-1])}.<br><span style="color:var(--muted)">명궁 별 하나로 규정되는 게 아니라, 이 네 칸의 조합이 곧 너야.</span></p>`;})()}
+    return `<p class="body">자미두수는 <b>명궁</b> 한 칸만 보지 않아. 명궁에 <b>재백궁</b>(돈)·<b>관록궁</b>(일), 그리고 마주 보는 <b>천이궁</b>(바깥에서 비치는 나)까지 네 칸을 묶어서 읽어야 사람이 제대로 보여. 그 네 칸에 든 별은 <b>${JOSA(SB.stars.join('·'),'이고','고')}</b>, 그 결을 합치면 <b>${SB.tags.join('·')}</b>${iya(SB.tags[SB.tags.length-1])}.<br><span style="color:var(--muted)">명궁 별 하나로 규정되는 게 아니라, 이 네 칸의 조합이 곧 너야.</span></p>`;})()}
   ${(()=>{if(yunyeon(pr))return '';
     /* 시간미상 폴백 — 유년의 궁 위치는 못 그려도, 그 해 간지와 일간의 십성 관계는 순수 사주라 그대로 성립 */
     try{const y=nowSajuYear(), si=(y-4)%10, bi=(y-4)%12;
@@ -3922,7 +3922,7 @@ function ziweiStory(pr){
   } else {
     mingLine=`네 명궁(나 자신의 칸)은 비어 있어서 맞은편 칸의 별을 빌려 와(차용). 이건 나쁜 게 아니라, 정해진 색이 옅은 대신 상황에 따라 여러 색을 꺼내 쓰는 유연한 무대라는 뜻이야.`;
   }
-  return concept+`<p class="body">${mingLine}</p><p class="body">읽는 요령은 이래. 표에서 <b>나·연애·일·돈</b> 네 칸만 먼저 봐도 인생의 큰 그림이 잡혀. 나머지 칸들은 아래 각 장(연애·일·건강)에서 사주와 겹쳐서 하나씩 풀어 줄 거니까, 여기서 다 외우려고 하지 않아도 돼. 그리고 이 열두 칸은 10년마다 무대가 옆 칸으로 옮겨 가. 그 얘기는 시기별 운 흐름 장에서 이어서 할게.</p>`+zwSeat(pr)+zwFourCells(pr)+zwRestCells(pr)+ziweiExtras(pr);
+  return concept+`<p class="body">${mingLine}</p><p class="body">읽는 요령은 이래. 표에서 <b>명궁</b>(나)·<b>부부궁</b>(연애)·<b>관록궁</b>(일)·<b>재백궁</b>(돈) 네 칸만 먼저 봐도 인생의 큰 그림이 잡혀. 나머지 칸들은 아래 각 장(연애·일·건강)에서 사주와 겹쳐서 하나씩 풀어 줄 거니까, 여기서 다 외우려고 하지 않아도 돼. 그리고 이 열두 칸은 10년마다 무대가 옆 칸으로 옮겨 가. 그 얘기는 시기별 운 흐름 장에서 이어서 할게.</p>`+zwSeat(pr)+zwFourCells(pr)+zwRestCells(pr)+ziweiExtras(pr);
 }
 /* 신살 x 대인 — 관계에 직접 걸리는 축인데 10장이 안 쓰고 있었다 */
 const DAEIN_SIN={
@@ -3981,7 +3981,7 @@ function innerOuter(pr){
         grp:SIPNAME(STEM_EL[ds], STEM_EL[h])}); }); });   /* ★HIDDEN_SIP 은 그룹 키다 (2026-08-26) */
     const uniq=[]; const seen=new Set();
     hidden.forEach(x=>{ if(!seen.has(x.sip)){seen.add(x.sip); uniq.push(x);} });
-    const outLine=`<p class="body"><b>겉과 속을 명리로 갈라 볼게.</b> 여덟 글자 중 위에 놓인 넉 자는 <b>밖으로 드러난 나</b>야. 남들이 보고 아는 모습이지. 네 윗줄은 <b>${JOSA(stems.map(x=>STEMS[x[1]]).join('·'),'이고','고')}</b>, 그중 <b>${STEMS[ds]}</b>${iga(STEMS[ds])} 너 자신이야. 그런데 아래 넉 자 안에는 글자가 한둘씩 더 숨어 있어. 이게 <b>겉으론 안 보이는데 실제로 작동하는 나</b>지. 네 아랫줄 ${brs.map(x=>`<b>${BRANCHES[x[1]]}</b>`).join('·')} 안에는 <b>${JOSA([...new Set(brs.flatMap(x=>(JIJANGGAN[x[1]]||[]).map(h=>STEMS[h])))].join('·'),'이','가')}</b> 들어 있어.</p>`;
+    const outLine=`<p class="body"><b>겉과 속을 명리로 갈라 볼게.</b> 여덟 글자 중 위에 놓인 넉 자, <b>천간</b>은 <b>밖으로 드러난 나</b>야. 남들이 보고 아는 모습이지. 네 천간은 <b>${JOSA(stems.map(x=>STEMS[x[1]]).join('·'),'이고','고')}</b>, 그중 <b>${STEMS[ds]}</b>${iga(STEMS[ds])} 너 자신이야. 그런데 아래 넉 자, <b>지지</b> 안에는 글자가 한둘씩 더 숨어 있어(<b>지장간</b>이라고 불러). 이게 <b>겉으론 안 보이는데 실제로 작동하는 나</b>지. 네 지지 ${brs.map(x=>`<b>${BRANCHES[x[1]]}</b>`).join('·')} 안에는 <b>${JOSA([...new Set(brs.flatMap(x=>(JIJANGGAN[x[1]]||[]).map(h=>STEMS[h])))].join('·'),'이','가')}</b> 들어 있어.</p>`;
     const noneLine=`<p class="body">특이한 건, <b>안에 숨은 기운이 겉에도 전부 드러나 있다</b>는 거야. 겉과 속의 종류가 같다는 뜻이라 <b>보이는 대로의 사람</b>에 가까워. 숨겨 둔 카드가 적어서 오해를 덜 사고 관계가 단순한 대신, <b>반전의 여지도 적어서</b> 한번 각인된 인상을 바꾸기가 어려워. 새로운 자리에선 첫인상 관리가 유난히 중요한 구조야.</p>`;
     /* ★HIDDEN_SIP 은 그룹(비겁·식상·재성·관성·인성)으로 키를 잡는데
        x.sip 은 tenGodName 이 준 세부 십성(편인·정관…)이라 조회가 늘 실패했다.
@@ -3994,7 +3994,7 @@ function innerOuter(pr){
       return out.join(''); })();
     /* 목록이 비면 약속만 하고 안 지키는 글이 된다. 그럴 땐 위 분기로 보낸다. */
     if(!rows) return outLine+noneLine;
-    return outLine+`<p class="body"><b>그래서 네 속에만 있는 힘</b>은 이거야. 윗줄에는 안 나오는데 아랫줄 속에만 들어 있는 기운들이야. 없는 게 아니라 <b>밖으로 잘 안 나오는 것</b>이지.</p><ul class="clean">${rows}</ul><p class="body sub">이 기운들은 <b>평소엔 안 보이다가 편한 사람 앞에서, 혹은 한계까지 몰렸을 때</b> 나와. 그래서 "쟤 저런 면이 있었어?" 소리를 듣게 되는 거고, 정작 너는 <b>그게 원래 나인데</b> 싶지. 둘 다 맞아. 겉은 남들이 아는 나, 속은 네가 아는 나야. 이 둘의 차이가 클수록 <b>사회생활이 피곤하지만 깊이는 있는</b> 사람이 돼.</p>`;
+    return outLine+`<p class="body"><b>그래서 네 속에만 있는 힘</b>은 이거야. 천간에는 안 나오는데 지지 속에만 들어 있는 기운들이야. 이렇게 겉으로 안 올라온 걸 <b>투출하지 않았다</b>고 해. 없는 게 아니라 <b>밖으로 잘 안 나오는 것</b>이지.</p><ul class="clean">${rows}</ul><p class="body sub">이 기운들은 <b>평소엔 안 보이다가 편한 사람 앞에서, 혹은 한계까지 몰렸을 때</b> 나와. 그래서 "쟤 저런 면이 있었어?" 소리를 듣게 되는 거고, 정작 너는 <b>그게 원래 나인데</b> 싶지. 둘 다 맞아. 겉은 남들이 아는 나, 속은 네가 아는 나야. 이 둘의 차이가 클수록 <b>사회생활이 피곤하지만 깊이는 있는</b> 사람이 돼.</p>`;
   }catch(e){ return ''; }
 }
 /* 같은 오행 안에서 양간·음간이 갈리는 지점.
@@ -4461,10 +4461,10 @@ function renderMyDetail(pr){
     `<button class="fate-teaser" onclick="gotoSecLike('운명의 상대')"><span class="ft-emoji">💞</span><span class="ft-txt"><b>운명의 상대는 누구일까?</b><br><span class="ft-sub">그 사람, 이미 좌표가 있어. 언제·어디서 만날지까지 계산해 뒀어.</span></span><span class="ft-arrow">→</span></button>` +
     `<button class="comp-jump" onclick="var c=document.getElementById('compSection');if(c){c.scrollIntoView({behavior:'smooth'});var n=document.getElementById('cName');if(n)setTimeout(function(){n.focus({preventScroll:true});},400);}">🔗 <b style="color:var(--ink)">다른 사람과의 궁합</b> · 친구·연인·동료<span class="cj-arrow">→</span></button>` +
     renderAsk(pr) +
-    sec('📜','내 사주 여덟 글자', renderMyeongsik(pr)+iljuStory(pr)+stemHapStory(pr)+`<p class="body sub" style="margin-top:10px">${pr.dayStem}${BRANCHES[pr.p.db]}일주 · ${pr.animal}띠 · ${pr.zod} ${z.sym} · ${lunarText(pr.y,pr.m,pr.d)||''}</p>`+((pr.tmin!=null&&pr.tmin>=23*60)?(()=>{const kr=!(STATE.me&&STATE.me.bornKorea===false);
+    sec('📜','내 사주 명식, 여덟 글자', renderMyeongsik(pr)+iljuStory(pr)+stemHapStory(pr)+`<p class="body sub" style="margin-top:10px">${pr.dayStem}${BRANCHES[pr.p.db]}일주 · ${pr.animal}띠 · ${pr.zod} ${z.sym} · ${lunarText(pr.y,pr.m,pr.d)||''}</p>`+((pr.tmin!=null&&pr.tmin>=23*60)?(()=>{const kr=!(STATE.me&&STATE.me.bornKorea===false);
       return `<p class="body sub" style="font-size:13px;color:var(--muted);margin-top:6px">ℹ️ <b>밤 11시 이후(자시)에 태어났구나.</b> 이 시간대는 명리 유파가 갈리는 지점이야. ${kr?'이 앱은 <b>한국 만세력 관법</b>대로 <b>자시(밤 11시)부터 다음 날로 넘겨</b> 일주를 계산했어(야자시 적용). 입력에서 ‘🇰🇷 한국에서 태어남’을 끄면 자정 기준으로 바뀌어.':'‘해외 출생’으로 봐서 이 앱은 <b>자정 기준</b>으로 일주를 잡았어(야자시 미적용).'} 다른 곳과 <b>일주가 하루 다르게</b> 나온 적이 있다면 그건 틀린 게 아니라 <b>기준(유파)이 다른 것</b>이고, 그 경우 일간·용신 같은 뿌리 값이 함께 달라져.</p>`;})():'')+myeongsikStory(pr)+`<div style="text-align:center;margin-top:8px"><button class="btn ghost sm" onclick="openMs()">🔍 만세력 크게 보기</button></div>`) +
-    sec('🔭','자미두수 명반', renderZiwei(pr)+`<p class="body sub" style="margin-top:8px">위 여덟 글자가 ‘타고난 기운의 밀도’라면, 이 열두 칸은 ‘인생 무대의 배치도’야. 아래 모든 풀이는 이 <b>둘을 합쳐서</b> 나온 결과야.</p>`+ziweiStory(pr)) +
-    sec('⚖️','내 기운의 세기와 채울 것',
+    sec('🔭','자미두수 명반', renderZiwei(pr)+`<p class="body sub" style="margin-top:8px">위 <b>사주 명식</b>(여덟 글자)이 ‘타고난 기운의 밀도’라면, 이 <b>명반</b>(열두 칸 표)은 ‘인생 무대의 배치도’야. 아래 모든 풀이는 이 <b>둘을 합쳐서</b> 나온 결과야.</p>`+ziweiStory(pr)) +
+    sec('⚖️','신강신약과 용신, 내 기운의 세기와 채울 것',
       `<div class="sin7">${SIN_LEVELS.map(l=>`<span class="${l===pr.sinLevel?'on':''}">${l}</span>`).join('')}</div>`+
       `<p class="body sub" style="margin:0 0 6px">앞 장에서 풀어 준 기운 세기(신강도 <b>${pr.sinPct}%</b> · ‘${pr.sinLevel}’)를 여기선 <b>카드 한 장으로 정리</b>할게, 뭘 곁에 두고 뭘 덜어낼지만 기억하면 돼.</p>`+
       (()=>{const Y=yongsin(pr);const hj=e=>EL[e].name;return `<div class="yong3">`+
@@ -4538,7 +4538,7 @@ function renderMyDetail(pr){
       (()=>{const Zt=ziwei(pr); if(!Zt||Zt.noTime) return ''; const dw=Zt.daewoon.find(d=>Zt.curAge>=d.age&&Zt.curAge<d.age+10)||Zt.daewoon[0]; if(!dw) return '';
         return `<div class="zwfuse" style="margin-top:12px"><span class="fh">🧩 자미두수 대운, 지금 ‘인생의 챕터’</span>여기서는 <b>10년마다 인생의 주제가 바뀌는 큰 흐름</b>을 봐. 지금 너는 <b>${dw.age}~${dw.age+9}세 ${dw.pal} 대운</b> ${JOSA(dwPos(Zt.curAge,dw.age),'이라','라')}, 이 10년은 <b>‘${ZW_PAL_SUB[dw.pal]}’</b>${iga(ZW_PAL_SUB[dw.pal])} 인생의 메인 무대란 뜻이지. 쉽게 말해 <b>지금 이 시기엔 ‘${ZW_PAL_SUB[dw.pal]}’ 쪽에서 가장 큰 일·변화·기회가 일어나기 쉬우니, 여기에 힘을 실으면 운을 탄다</b>는 거야.${(()=>{const left=dw.age+10-Zt.curAge;const nx=Zt.daewoon.find(d=>d.age===dw.age+10);return (left<=2&&nx)?`<br><br><b>⏳ 대운 교체 임박, ${left<=0?'올해':left+'년 뒤'}부터 새 챕터!</b> ${dw.age+10}세부터는 무대가 <b>${nx.pal}(${ZW_PAL_SUB[nx.pal]})</b>로 넘어가. 10년짜리 인생 주제가 바뀌는 전환기라, 큰 결정(이직·결혼·이사)은 이 흐름 교체를 보고 타이밍을 잡으면 좋아.`:'';})()}</div>`;})()) +
     sec('🧭','실전 활용, 방위·날짜·삼재', practicalSec(pr)) +
-    sec('✨','너만의 무늬',
+    sec('✨','신살, 너만의 무늬',
       `<p class="body">흐름 얘기를 했으니, 다시 네 안으로 돌아올게. 여덟 글자가 특정한 짝을 이루면 <b>별명 같은 태그</b>가 하나 붙어(신살이라고 불러). 게임으로 치면 태어날 때 딸려 온 특수 옵션이지. 옛날엔 길하다 흉하다로 점을 쳤지만, 여기서는 <b>성향의 무늬</b>로 읽어. 도화살이 있으면 바람기가 아니라 사람을 끌어당기는 매력이 기본 장착이라는 뜻이고, 역마살은 한자리보다 움직일 때 운이 도는 체질이라는 뜻이야. 흉하다는 말에 겁먹을 필요 없어. 어떤 무늬든 쓰는 법을 알면 무기가 되니까, 아래 카드들을 그 설명서로 읽어 줘. 참고로 신살이 많다고 특별하고 적다고 밋밋한 게 아니야. 무늬가 적은 사주는 그만큼 기본기가 담백하고 안정적이라는 뜻이니까, 개수에 연연하지 말고 각각의 무늬를 어떻게 쓰느냐만 봐 줘.</p>`+
       renderSinsal(pr)+
       (()=>{const Zn=ziwei(pr); if(!Zn||Zn.noTime||!Zn.sihwa.length) return '';
