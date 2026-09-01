@@ -20,7 +20,7 @@
 /* ============================================================
    사주 × 별자리 운명 분석, 전부 로컬, 외부통신 없음
    ============================================================ */
-const BUILD='2026-09-01.11';   // 날짜=빌드일, .N=그날 배포 순번. 재배포마다 갱신 → 자동 새로고침 트리거
+const BUILD='2026-09-01.12';   // 날짜=빌드일, .N=그날 배포 순번. 재배포마다 갱신 → 자동 새로고침 트리거
 /* 자동 업데이트: ①켜질 때 최신 BUILD 확인 → 다르면 캐시버스트 이동 ②탭이 다시 보일 때도 확인 → 읽던 중이면 강제 리로드 대신 배너
    (폰 브라우저는 옛 탭을 리로드 없이 복원하므로 ②가 없으면 며칠 전 버전이 계속 보임 — 오너 "어떤 건 배포됐고 어떤 건 안 됐던데" 원인) */
 (function(){try{
@@ -1942,7 +1942,7 @@ function careerDetail(pr){
     const scaleLine=`<p class="body"><b>감당 가능한 규모</b>도 봐야 해. 재성은 <b>돈과 결과를 만드는 힘</b>인데 네 명식에선 <b>${jae}%</b>야${jae<10?". 거의 비어 있지":""}. 그걸 담는 그릇이 네 기운이고. ${scale} 용신이 <b>${EL[Y.yong].name}</b>${jong(EL[Y.yong].name.charAt(0))?'이니':'니'} ${EL[Y.yong].name} 기운이 도는 업종·환경에 있을 때 같은 노력으로 더 나은 결과가 나와.</p>`;
     /* ④ 자미 관록궁 — 일할 때의 얼굴 */
     const zwLine = gwanStar
-      ? `<p class="body"><b>자미로 겹쳐 보면</b>, 네 관록궁엔 <b>${gwanStar.st.join('·')}</b>${gwanStar.borrowed?'(차용)':''}${PJ(gwanStar.st.join('·'),'이','가')} 있어. <b>${gwanStar.tags}</b>의 결이야. 사주 격국이 <b>${G&&G.격?G.격:'구조'}</b>인데 일터에서의 얼굴이 <b>${gwanStar.tags}</b>${PJ(gwanStar.tags,'이라는','라는')} 건, ${gd&&gd.kw&&gwanStar.tags.split('·').some(t=>gd.kw.includes(t))?`둘이 <b>같은 방향</b>이라는 뜻이야. 타고난 구조와 일하는 방식이 어긋나지 않아서 <b>한 길로 오래 갈 때</b> 힘이 제일 잘 붙어.`:`둘이 <b>다른 방향</b>이라는 뜻이야. 구조는 이런데 일터에선 저렇게 쓴다는 거라, <b>겉보기 직업과 실제 잘하는 일이 다를</b> 수 있어. 이런 사람은 직업 이름으로 자기를 규정하면 계속 헛헛해져. <b>어떤 역할을 할 때 살아나는지</b>로 잡아야 맞아.`}</p>`
+      ? `<p class="body"><b>자미로 겹쳐 보면</b>, 네 관록궁엔 <b>${gwanStar.st.join('·')}</b>${gwanStar.borrowed?'(차용)':''}${PJ(gwanStar.st.join('·'),'이','가')} 있어. <b>${gwanStar.tags}</b>의 결이야. 타고난 구조는 <b>${G&&G.격?G.격:'구조'}</b>인데 일터에서 비치는 얼굴이 <b>${gwanStar.tags}</b>${PJ(gwanStar.tags,'이라는','라는')} 건, ${gd&&gd.kw&&gwanStar.tags.split('·').some(t=>gd.kw.includes(t))?`둘이 <b>같은 방향</b>이라는 뜻이야. 타고난 구조와 일하는 방식이 어긋나지 않아서 <b>한 길로 오래 갈 때</b> 힘이 제일 잘 붙어.`:`둘이 <b>다른 방향</b>이라는 뜻이야. 구조는 이런데 일터에선 저렇게 쓴다는 거라, <b>겉보기 직업과 실제 잘하는 일이 다를</b> 수 있어. 이런 사람은 직업 이름으로 자기를 규정하면 계속 헛헛해져. <b>어떤 역할을 할 때 살아나는지</b>로 잡아야 맞아.`}</p>`
       : '';
     return gLine+orgLine+scaleLine+zwLine;
   }catch(e){ return ''; }
@@ -2681,7 +2681,7 @@ function yearTactic(pr,tone,ye,again){
           중:'루틴을 지키는 자가 이기는 해야. 큰 승부 대신 꾸준함으로 점수를 쌓아.'}};
   const AGAIN={good:'이 해도 순풍이라 앞 해와 같은 원칙이야. 큰 결정을 여기 배치해도 좋고.',
     bad:'이 해도 역풍이라 앞 해와 같은 원칙이야. 확장보다 정리와 점검 쪽으로.',
-    flat:'이 해도 평이라 앞 해와 같은 원칙이야. 크게 벌이기보다 꾸준함으로.'};
+    flat:'이 해도 무난한 구간이라 앞 해와 같은 원칙이야. 크게 벌이기보다 꾸준함으로.'};
   return (again?(AGAIN[tone]||AGAIN.flat):(T[tone]||T.flat)[b])+tail;
 }
 /* 순풍 구간을 어디에 쓸지 — 십성 × 신강약. near=그 구간이 15년 안인가 */
@@ -2779,7 +2779,7 @@ function sajuDaeunCard(pr){
   const cells=D.list.map(d=>{const on=(d===cur); const c=d.tone==='good'?'#2e8a60':d.tone==='bad'?'#c25b7a':'#8a7fd0';
     return `<div style="flex:0 0 auto;min-width:66px;text-align:center;padding:6px 8px;border-radius:9px;font-size:11px;line-height:1.5;border:1.5px solid ${on?c:'var(--line2)'};${on?`background:${c}1a;font-weight:700`:'color:var(--sub)'}"><b>${d.age}~${d.age+9}</b><br>${d.gz}<br><small style="color:${c}">${EL[d.el].name} ${d.tone==='good'?'순풍':d.tone==='bad'?'역풍':'평'}</small></div>`;}).join('');
   const tw=cur.tone==='good'?'용신·희신 기운이라 <b>순풍</b>':cur.tone==='bad'?'기신 기운이라 <b>다지는 시기(역풍)</b>':'튀지 않는 <b>중립 흐름</b>';
-  return `<div class="zwfuse" style="margin-top:12px"><span class="fh">🌊 사주 대운, 10년 단위 큰 물결</span>사주에서 시기를 보는 제일 큰 도구야. 넌 <b>${D.startAge}세부터 10년마다</b> 대운이 바뀌어(${D.forward?'순행':'역행'}). ${(pr.tmin==null||pr.tmin<0)?'<b>태어난 시간을 넣으면 시작 나이가 더 정확</b>해져. ':''}지금은 <b>${cur.age}~${cur.age+9}세 · ${cur.gz}(${EL[cur.el].name}) 대운</b> ${JOSA(dwPos(D.curAge,cur.age),'이라','라')}, ${JOSA(tw,'이야','야')}.<div style="display:flex;gap:6px;overflow-x:auto;margin:9px 0 2px;padding-bottom:4px">${cells}</div><p class="body sub" style="font-size:12px;margin-top:4px">각 칸의 간지가 그 10년을 지배하는 기운이야(천간 오행 기준, 시작 나이는 절기 계산이라 ±1세 오차). 초록(순풍)엔 판을 키우고, 분홍(역풍)엔 무리보다 내실을 다지면 돼.</p></div>`;
+  return `<div class="zwfuse" style="margin-top:12px"><span class="fh">🌊 사주 대운, 10년 단위 큰 물결</span>사주에서 시기를 보는 제일 큰 도구야. 넌 <b>${D.startAge}세부터 10년마다</b> 대운이 바뀌어(${D.forward?'앞으로':'거꾸로'} 도는 순서야). ${(pr.tmin==null||pr.tmin<0)?'<b>태어난 시간을 넣으면 시작 나이가 더 정확</b>해져. ':''}지금은 <b>${cur.age}~${cur.age+9}세 · ${cur.gz}(${EL[cur.el].name}) 대운</b> ${JOSA(dwPos(D.curAge,cur.age),'이라','라')}, ${JOSA(tw,'이야','야')}.<div style="display:flex;gap:6px;overflow-x:auto;margin:9px 0 2px;padding-bottom:4px">${cells}</div><p class="body sub" style="font-size:12px;margin-top:4px">각 칸의 간지가 그 10년을 지배하는 기운이야(천간 오행 기준, 시작 나이는 절기 계산이라 ±1세 오차). 초록(순풍)엔 판을 키우고, 분홍(역풍)엔 무리보다 내실을 다지면 돼.</p></div>`;
 }
 /* ===== 종합 심화 리포트 (모든 데이터를 한 편의 글로) ===== */
 /* ---------- 텍스트 생성 (상세) ---------- */
@@ -4075,11 +4075,11 @@ function domainSplit(pr, TBL, head, sipKey, sipLabel, again){
     const ratio=Math.round(sipN/sipAll*100);
     /* 「숫자로도 짚어 볼게. 네 신강도는 N%이고,」까지 두 장에 똑같이 나갔다. 신강도는 한 번만 말한다. */
     const num=(again?` 비중으로 보면 ${sipLabel}(<b>${sipKey}</b>)은 네 여덟 글자에서 <b>${ratio}%</b>야`
-      :` 숫자로도 짚어 볼게. 네 신강도는 <b>${pr.sinPct}%</b>이고, ${sipLabel}(<b>${sipKey}</b>)이 네 여덟 글자에서 차지하는 비중은 <b>${ratio}%</b>야`)+`${again?``:`<span style="color:var(--muted)">(십성 비중은 <b>일간을 뺀 나머지</b>에서 재고 월지를 더 무겁게 쳐서, 앞서 본 오행 분포와 숫자가 조금 달라. 같은 기운을 다른 자로 잰 거야)</span>`}. ${again
+      :` 숫자로도 짚어 볼게. 네 신강도는 <b>${pr.sinPct}%</b>이고, ${sipLabel}(<b>${sipKey}</b>)이 네 여덟 글자에서 차지하는 비중은 <b>${ratio}%</b>야`)+`. ${again
       /* 두 장의 bijung 등급이 같은 사람(B·I·K)은 이 문장까지 통째로 두 번 받았다 */
       ?(bijung(ratio)===2?`두꺼운 쪽이라 이 영역은 네가 안 건드려도 알아서 커져. 대신 손해도 여기서 제일 크게 나.`:bijung(ratio)===1?`보통이라 힘을 실으면 실은 만큼만 나와. 밑지지도 크게 남지도 않는 자리야.`:`옅은 쪽이라 남들 하는 속도로 따라가려 하면 손해야. 네 속도표를 따로 두는 게 나아.`)
       :(bijung(ratio)===2?`비중이 두꺼운 편이라 이 영역이 <b>인생의 주 무대</b>가 돼. 잘 풀릴 때도 여기서 풀리고, 막힐 때도 여기서 막혀.`:bijung(ratio)===1?`비중이 보통이라 <b>필요할 때 쓰는 카드</b> 정도야. 여기에 인생을 다 걸 필요는 없어.`:`비중이 옅어. 타고나길 이쪽에 힘이 덜 실렸다는 뜻이라, <b>남들만큼 쉽게 되진 않는다</b>고 미리 알고 가는 게 나아. 대신 옅은 만큼 이 영역에 덜 휘둘려.`)}`;
-    return `<p class="body">${head} 너는 <b>${stem}</b>(${yang?'양간':'음간'})${PJ(stem,'이라','라')} ${t}${tail}${num}</p>${again?'':`
+    return `<p class="body">${head} 너는 <b>${stem}</b>${PJ(stem,'이라','라')} ${t}${tail}${num}</p>${again?'':`
     <p class="body sub">위에서 다섯 기운으로 묶어 설명한 건 <b>큰 틀</b>이야. 같은 기운이어도 열 갈래로 더 나뉘는데, 체감은 이 갈래 쪽이 더 맞을 거야.</p>`}`;
   }catch(e){ return ''; }
 }
@@ -4113,7 +4113,7 @@ function healthAxes(pr){
       ? `<p class="body"><b>같은 ${EL[w].name} 부족이어도 채우는 법이 사람마다 달라.</b> 너는 <b>${JOSA(pr.sinLevel,'이라','라')}</b> 기본 체력 자체는 넉넉한 편이야. 그래서 네 건강 문제는 <b>모자라서</b>가 아니라 <b>쓰다가 안 멈춰서</b> 생겨. ${EL[w].name} 기운을 보충하는 것보다 <b>과부하를 끊는 것</b>이 먼저야. 안 그러면 채우는 족족 같은 데로 새.</p>`
       : b==='약'
       ? `<p class="body"><b>같은 ${EL[w].name} 부족이어도 채우는 법이 사람마다 달라.</b> 너는 <b>${JOSA(pr.sinLevel,'이라','라')}</b> 기본 체력의 여유가 크지 않아. 그래서 <b>회복이 곧 관리</b>야. 남들이 하는 강도 높은 운동·단식·몰아치기 루틴은 너한텐 관리가 아니라 소모라, 강도보다 <b>꾸준함과 수면</b>에 걸어야 성과가 나.</p>`
-      : `<p class="body"><b>같은 ${EL[w].name} 부족이어도 채우는 법이 사람마다 달라.</b> 너는 <b>중화</b>라 한쪽으로 크게 안 기울어. 그래서 평소엔 별 문제가 없다가 <b>한 시기에 몰아 썼을 때</b>만 티가 나. 관리 강도를 늘 높게 유지할 필요는 없고, <b>과부하 구간을 미리 아는 것</b>만으로 대부분 커버돼.</p>`;
+      : `<p class="body"><b>같은 ${EL[w].name} 부족이어도 채우는 법이 사람마다 달라.</b> 너는 <b>중화</b>, 그러니까 어느 쪽으로도 크게 안 기울어 있어. 그래서 평소엔 별 문제가 없다가 <b>한 시기에 몰아 썼을 때</b>만 티가 나. 관리 강도를 늘 높게 유지할 필요는 없고, <b>과부하 구간을 미리 아는 것</b>만으로 대부분 커버돼.</p>`;
     /* ② 태어난 계절 x 약한 기운 */
     const seasonLine = seasonNm
       ? `<p class="body"><b>태어난 계절</b>도 몸에 걸려. 너는 <b>${seasonNm}</b>(${EL[seasonEl].name}) 기운을 안고 태어났고, 약한 건 <b>${JOSA(EL[w].name,'이야','야')}</b>. ${seasonEl===w?`태어난 계절과 약한 기운이 <b>같아</b>. 그 계절에 태어났는데도 그 기운이 옅다는 건, <b>같은 계절이 와도 남들만큼 못 받는다</b>는 뜻이야. ${wSeason}엔 남들이 좋아지는 만큼 네가 안 좋아져도 이상한 게 아니니, 그때 무리한 일정을 넣지 마.`:`계절 기운(${EL[seasonEl].name})과 약한 기운(${EL[w].name})이 달라서, <b>${wSeason}</b>에 몸을 챙기면 효율이 제일 좋아. 반대로 <b>${JOSA(seasonNm,'은','는')}</b> 익숙한 계절이라 컨디션 변화가 둔해서 <b>과로를 늦게 알아채</b>. 익숙한 계절일수록 스스로 점검해 줘야 해.`}</p>`
@@ -4184,7 +4184,7 @@ function spouseAxes(pr){
       :bijung(gwan)===1?'맞춰 주는 힘이 <b>적당해</b>. 필요할 땐 맞추고 아닐 땐 안 맞추는 균형이 있지.'
       :gwan>=1?'맞춰 주는 힘이 <b>옅어</b>. 관계에서 자기 결을 잘 안 굽히는 편이라, 서로 존중이 전제된 상대라야 오래 가.'
       :'맞춰 주는 힘이 <b>거의 없어</b>. 규칙이나 형식에 매이는 관계가 안 맞는다는 뜻이라, <b>각자 독립적인 형태</b>가 너한텐 오히려 안정적이야.';
-    return `<p class="body"><b>배우자궁</b>부터 보자. 명리에서 <b>일지</b>(태어난 날의 지지)는 <b>배우자 자리</b>로 읽어. 여덟 글자 중 네 옆에 가장 가까이 붙어 있는 칸이거든. 네 일지는 <b>${JOSA(br,'이야','야')}</b>. ${seat}</p><p class="body">그리고 <b>${hap?`일지와 짝을 이루는 지지는 <b>${hap}</b>(육합)이야. 이 결을 가진 사람과 있을 때 유난히 편안하고 말이 잘 통해. 반대로 <b>${BRANCHES[clash]}</b>${jong(BRANCHES[clash])?'은':'는'} 정면으로 부딪히는 자리라, 끌리더라도 부딪힘이 잦은 조합이지.`:`일지와 정면으로 부딪히는 자리는 <b>${BRANCHES[clash]}</b>${iya(BRANCHES[clash])}. 끌리더라도 부딪힘이 잦은 조합이니 알아 두면 좋아.`}</b></p><p class="body"><b>배우자성</b>도 짚을게. 옛날엔 이걸 성별로 갈라서 봤어. 남자는 이쪽, 여자는 저쪽 하는 식으로. 여기선 <b>둘 다 짚어</b>. 둘 다 네 안에 있고 둘 다 관계에서 쓰이니까. 다만 <b>언제 만나는지</b>를 셀 때만 옛 방식대로 네 성별 쪽을 무겁게 봐. 성별을 안 밝혔거나 <b>남·여 둘 중 하나가 아니면</b><b>그때도 둘 다</b> 봐. 네 명식에서 <b>재성</b>(끌어오고 만드는 힘)은 <b>${jae}%</b>로 ${lvl(jae)} 편이고, <b>관성</b>(맞추고 지키는 힘)은 <b>${gwan}%</b>로 ${lvl(gwan)} 편이야.</p><ul class="clean"><li><b>재성 ${jae}%</b>. ${jaeTxt}</li><li><b>관성 ${gwan}%</b>. ${gwanTxt}</li></ul><p class="body sub">${jae>=15&&gwan>=15?'둘 다 어느 정도 있어서 <b>다가가는 것과 맞추는 것</b>을 상황 따라 쓸 수 있어. 관계에서 유리한 조합이야.':jae>gwan?'끌어오는 힘이 맞춰 주는 힘보다 커. <b>시작은 잘하는데 유지가 숙제</b>인 구조라, 관계 초반의 열기가 식은 뒤를 미리 설계해 두면 좋아.':gwan>jae?'맞춰 주는 힘이 끌어오는 힘보다 커. <b>시작이 어렵지 한번 시작되면 오래 가는</b> 구조라, 인연이 생길 환경에 몸을 두는 게 너한텐 제일 실질적인 전략이야.':'재성과 관성이 비슷해. 다가감과 맞춤이 균형을 이룬 대신 <b>어느 쪽도 압도적이지 않아서</b> 관계마다 결과 편차가 큰 편이야.'}</p>`;
+    return `<p class="body"><b>배우자궁</b>부터 보자. 명리에서 <b>일지</b>(태어난 날의 지지)는 <b>배우자 자리</b>로 읽어. 여덟 글자 중 네 옆에 가장 가까이 붙어 있는 칸이거든. 네 일지는 <b>${JOSA(br,'이야','야')}</b>. ${seat}</p><p class="body">그리고 <b>${hap?`일지와 짝을 이루는 글자는 <b>${hap}</b>야(이런 짝을 육합이라고 불러). 이 결을 가진 사람과 있을 때 유난히 편안하고 말이 잘 통해. 반대로 <b>${BRANCHES[clash]}</b>${jong(BRANCHES[clash])?'은':'는'} 정면으로 부딪히는 자리라, 끌리더라도 부딪힘이 잦은 조합이지.`:`일지와 정면으로 부딪히는 자리는 <b>${BRANCHES[clash]}</b>${iya(BRANCHES[clash])}. 끌리더라도 부딪힘이 잦은 조합이니 알아 두면 좋아.`}</b></p><p class="body"><b>배우자성</b>도 짚을게. 옛날엔 이걸 성별로 갈라서 봤어. 남자는 이쪽, 여자는 저쪽 하는 식으로. 여기선 <b>둘 다 짚어</b>. 둘 다 네 안에 있고 둘 다 관계에서 쓰이니까. 다만 <b>언제 만나는지</b>를 셀 때만 옛 방식대로 네 성별 쪽을 무겁게 봐. 성별을 안 밝혔거나 <b>남·여 둘 중 하나가 아니면</b><b>그때도 둘 다</b> 봐. 네 명식에서 <b>재성</b>(끌어오고 만드는 힘)은 <b>${jae}%</b>로 ${lvl(jae)} 편이고, <b>관성</b>(맞추고 지키는 힘)은 <b>${gwan}%</b>로 ${lvl(gwan)} 편이야.</p><ul class="clean"><li><b>재성 ${jae}%</b>. ${jaeTxt}</li><li><b>관성 ${gwan}%</b>. ${gwanTxt}</li></ul><p class="body sub">${jae>=15&&gwan>=15?'둘 다 어느 정도 있어서 <b>다가가는 것과 맞추는 것</b>을 상황 따라 쓸 수 있어. 관계에서 유리한 조합이야.':jae>gwan?'끌어오는 힘이 맞춰 주는 힘보다 커. <b>시작은 잘하는데 유지가 숙제</b>인 구조라, 관계 초반의 열기가 식은 뒤를 미리 설계해 두면 좋아.':gwan>jae?'맞춰 주는 힘이 끌어오는 힘보다 커. <b>시작이 어렵지 한번 시작되면 오래 가는</b> 구조라, 인연이 생길 환경에 몸을 두는 게 너한텐 제일 실질적인 전략이야.':'재성과 관성이 비슷해. 다가감과 맞춤이 균형을 이룬 대신 <b>어느 쪽도 압도적이지 않아서</b> 관계마다 결과 편차가 큰 편이야.'}</p>`;
   }catch(e){ return ''; }
 }
 /* 사랑 표현 언어 (오행별) */
@@ -4525,7 +4525,7 @@ function renderMyDetail(pr){
         const sinLine = (yeokma&&dohwa)?' 게다가 <b>역마+도화</b>라 사람이 잘 따르고 인맥도 넓게 퍼져. 활동 반경이 곧 인맥이야.'
           : yeokma?' 게다가 <b>역마살</b>이라 한곳보다 여러 무대를 오가며 인맥이 넓어지는 편이야.'
           : dohwa?' 게다가 <b>도화살</b>이라 사람이 자연스레 너를 따르고 좋아해. 인기형이야.':'';
-        return `<p class="body"><b>🎴 네 관계의 결 (십성 · ${SIPSUNG[top].label.split(', ')[0]})</b>. ${DAEIN_SIP[top]||''}${sinLine}</p>`;})()+
+        return `<p class="body"><b>🎴 네 관계의 결 · ${SIPSUNG[top].label.split(', ')[0]}</b>. ${DAEIN_SIP[top]||''}${sinLine}</p>`;})()+
       `<p class="body">관계에도 계절이 있다는 것도 기억해 줘. 아무리 잘 맞던 사람도 서로의 시기가 어긋나면 잠시 멀어지고, 안 맞다고 생각했던 사람이 몇 년 뒤 귀인이 되기도 해. 그러니 멀어진 관계를 실패로 접지 말고 계절이 바뀐 것으로 봐. 다만 만날 때마다 기운이 빨리는 사람, 아래 카드의 ‘나를 지치게 하는 사람’에 해당하는 관계라면 얘기가 달라. 그건 계절 문제가 아니라 결이 안 맞는 거니까, 죄책감 없이 거리를 둬도 돼. 대인운의 절반은 좋은 사람을 알아보는 눈이고, 나머지 절반은 아닌 관계에서 나를 지키는 용기야. 아래 카드 세 장이 그 눈과 용기의 기준이 돼 줄 거야.</p>`+
       `<div class="info-grid" style="margin-top:10px"><div class="info-card"><div class="lab" style="color:var(--good)">💚 나와 잘 맞는 사람</div><div class="val" style="font-weight:500">${REL_DEEP[pr.dayEl].fit}</div></div><div class="info-card"><div class="lab" style="color:var(--bad)">💢 나를 지치게 하는 사람</div><div class="val" style="font-weight:500">${REL_DEEP[pr.dayEl].hard}</div></div><div class="info-card wide"><div class="lab">🔑 관계를 오래가게 하는 한 가지</div><div class="val" style="font-weight:500">${REL_DEEP[pr.dayEl].tip}</div></div></div>`+
       `<div class="info-grid" style="margin-top:10px">${domRow('🤝','대인운','social')}</div>`) +
