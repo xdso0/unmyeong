@@ -20,7 +20,7 @@
 /* ============================================================
    사주 × 별자리 운명 분석, 전부 로컬, 외부통신 없음
    ============================================================ */
-const BUILD='2026-09-01.12';   // 날짜=빌드일, .N=그날 배포 순번. 재배포마다 갱신 → 자동 새로고침 트리거
+const BUILD='2026-09-01.13';   // 날짜=빌드일, .N=그날 배포 순번. 재배포마다 갱신 → 자동 새로고침 트리거
 /* 자동 업데이트: ①켜질 때 최신 BUILD 확인 → 다르면 캐시버스트 이동 ②탭이 다시 보일 때도 확인 → 읽던 중이면 강제 리로드 대신 배너
    (폰 브라우저는 옛 탭을 리로드 없이 복원하므로 ②가 없으면 며칠 전 버전이 계속 보임 — 오너 "어떤 건 배포됐고 어떤 건 안 됐던데" 원인) */
 (function(){try{
@@ -127,7 +127,7 @@ function attractedLabel(){
   if(o==="ace")  return "깊은 정서적 교감을 나누는 사람";
   if(o==="demi") return "마음을 깊이 나눈, 결이 통하는 사람";
   if(o==="bi"||o==="pan") return "성별에 얽매이지 않는, 마음이 통하는 사람";
-  return "당신에게 끌리는 모든 가능성의 사람";
+  return "모든 가능한 상대";
 }
 /* ---------- 별 배경 (밝고 은은) ---------- */
 (function(){
@@ -2057,7 +2057,7 @@ function goodDays(pr){
     }
     if(!out.length) return `<p class="body"><b>택일</b>은 앞으로 120일 안에서 <b>천간 오행이 네 용신·희신이면서 네 일지와 부딪히지 않는 날</b>을 찾는 방식으로 뽑아. 그런데 이 구간엔 조건에 맞는 날이 안 나왔어. 조건을 억지로 낮춰서 아무 날이나 권하진 않을게. 시기를 조금 넓게 잡거나, 위 <b>시기별 운 흐름</b> 장의 좋은 달을 기준으로 잡는 게 나아.</p>`;
     const _useSeen={}, _sipSeen={};
-    const list=out.map(x=>`<li><b>${x.m}월 ${x.d}일</b> · ${x.gz}일 · <b>${EL[x.el].name}</b>(${x.sip}) · <b>${x.uns||'-'}</b> 단계. ${(()=>{const a=!!_useSeen[x.use];_useSeen[x.use]=1;return a?'앞의 같은 단계 날과 쓰임이 같아':x.use;})()}.${(()=>{/* ★십성 꼬리에도 중복 방지가 필요하다. 같은 십성 날이 여럿이면 같은 문장이 그대로 반복됐다(실측 6회). 줄 앞에 십성이 이미 찍혀 있어 빼도 정보가 안 준다. */ if(_sipSeen[x.sip]) return ''; _sipSeen[x.sip]=1; return x.sip==='인성'?' 배우거나 도움을 청하기 좋은 결이야.':x.sip==='비겁'?' 함께 움직이는 일에 힘이 붙어.':x.sip==='식상'?' 내놓고 보여 주는 일에 유리해.':x.sip==='재성'?' 숫자와 결과가 걸린 일에 맞아.':' 자리와 책임이 걸린 일에 맞아.';})()}</li>`).join('');
+    const list=out.map(x=>`<li><b>${x.m}월 ${x.d}일</b> · ${x.gz}일 · <b>${EL[x.el].name}</b>(${x.sip}) · <b>${x.uns||'-'}</b> 단계${(UNSEONG_DESC[x.uns]&&UNSEONG_DESC[x.uns].kw)?`(${UNSEONG_DESC[x.uns].kw})`:''}. ${(()=>{const a=!!_useSeen[x.use];_useSeen[x.use]=1;return a?'앞의 같은 단계 날과 쓰임이 같아':x.use;})()}.${(()=>{/* ★십성 꼬리에도 중복 방지가 필요하다. 같은 십성 날이 여럿이면 같은 문장이 그대로 반복됐다(실측 6회). 줄 앞에 십성이 이미 찍혀 있어 빼도 정보가 안 준다. */ if(_sipSeen[x.sip]) return ''; _sipSeen[x.sip]=1; return x.sip==='인성'?' 배우거나 도움을 청하기 좋은 결이야.':x.sip==='비겁'?' 함께 움직이는 일에 힘이 붙어.':x.sip==='식상'?' 내놓고 보여 주는 일에 유리해.':x.sip==='재성'?' 숫자와 결과가 걸린 일에 맞아.':' 자리와 책임이 걸린 일에 맞아.';})()}</li>`).join('');
     return `<p class="body"><b>택일. 앞으로 120일 중 네게 유리한 날</b>이야. 각 줄은 <b>날짜 · 그날의 간지</b>(그날의 두 글자) <b>· 그 기운이 네게 하는 역할 · 그날 네 기운의 단계</b> 순서로 읽으면 돼. 뽑는 기준은 두 가지야. ① 그날의 <b>위 글자</b>가 네게 힘이 되는 기운(<b>${EL[Y.yong].name}</b> 또는 <b>${EL[Y.hee].name}</b>)일 것. ② 그날의 <b>아래 글자</b>가 <b>${db>=0?BRANCHES[db]+"("+BRANCH_ANIMAL[db]+")":"네 일지"}</b>(네가 태어난 날의 아래 글자야)와 <b>정면으로 부딪히지 않을</b> 것.${avoid.length?' 부딪히는 날은 <b>앞으로 120일 중 '+avoid.length+'일</b>인데('+avoid.slice(0,3).join('·')+' 등) 그 날들은 아래 목록에서 미리 뺐어.':''} 두 조건 다 <b>네 사주에서만 나오는 값</b>이야.</p><ul class="clean">${list}</ul><p class="body sub">계약·면접·고백·개업처럼 <b>시작이 되는 일</b>에 얹어 봐. 다만 택일은 <b>없는 운을 만들지 않아</b>. 준비된 일의 등을 밀어 줄 뿐이고, 상대가 있는 일이면 상대 사정이 먼저야.</p>`;
   }catch(e){ return ''; }
 }
@@ -2518,7 +2518,7 @@ function renderSinsal(pr){
   const combos=SINSAL_COMBO.filter(c=>c.has.every(h=>list.includes(h)));
   const comboBox=combos.length?`<div style="margin-top:12px;padding:13px 15px;border-radius:14px;background:rgba(46,138,96,.08);border:1px solid var(--line2)"><div style="font-weight:700;margin-bottom:5px">🔗 신살 조합, 이게 진짜 너만의 무늬야</div>`+
     combos.map(c=>`<p class="body" style="margin:5px 0;font-size:13.5px">${c.txt}</p>`).join('')+`</div>`:'';
-  return `<p class="body sub" style="margin:0 0 10px">신살은 사주에 박힌 ‘특별한 기운 표식’이야. 너한텐 이게 있어:</p><div class="info-grid">`+
+  return `<p class="body sub" style="margin:0 0 10px">너한텐 이게 있어:</p><div class="info-grid">`+
     cards+`</div>`+comboBox+sinsalWhereHTML(pr)+sibisinsalHTML(pr);
 }
 /* ===== 3분 사전, 용어를 일상어로 ===== */
@@ -3126,7 +3126,7 @@ function fatePassedNote(pr){
     const D=(typeof sajuDaeun==='function')?sajuDaeun(pr):null;
     const cur=(D&&D.list)?D.list.slice().reverse().find(d=>D.curAge>=d.age):null;
     const good=!!(cur&&cur.tone==='good');
-    return `<p class="body">그런데 <b>제일 센 창</b>은 <b>${p.past.y}년(${bAge}세)에 이미 지나갔어</b>. 그래서 두 가지로 읽어야 해.<br><b>하나. 이미 스쳤을 수 있어.</b> 그 무렵 알게 된 사람 중에 <b>${yel}</b>의 결을 가진 ${ani?`<b>${ani}띠</b> `:''}사람이 있었는지 떠올려 봐. 지나간 창은 <b>아무 일도 없었다</b>가 아니라 <b>그때 열려 있었다</b>는 뜻이야. 끊긴 연도 다시 이을 수 있는 자리인데, 그땐 상대가 오는 게 아니라 <b>네가 먼저 닿아야</b> 열려.<br><b>둘. 이 자리는 12년마다 돌아와.</b> 네 배우자궁과 육합인 해가 12년 주기라서 그래. ${p.none?`남은 구간 안에서 다시 오진 않아. 그건 인연이 없다는 뜻이 아니라 <b>가장 센 창이 지났다</b>는 뜻이고, 이제는 시기보다 <b>사람의 결</b>로 찾는 게 맞아.`:`다음이 <b>${p.win.y}년 ${FATE_MON[p.win.el]||''}</b>(${nAge}세)야.`} ${good?`지금 대운이 <b>순풍</b>이라, 기다리기보다 <b>네가 움직일 때</b> 열리는 구간이야.`:`지금 대운은 <b>다지는 구간</b>이라, 무리해서 찾기보다 ${yel} 기운을 채워 두는 쪽(5장 개운)이 효율이 좋아.`} 창이 열려도 <b>반경이 좁으면 안 만나져</b>.</p>`;
+    return `<p class="body">제일 센 창이 지났다는 건 두 가지로 읽어야 해.<br><b>하나. 이미 스쳤을 수 있어.</b> 그 무렵 알게 된 사람 중에 <b>${yel}</b>의 결을 가진 ${ani?`<b>${ani}띠</b> `:''}사람이 있었는지 떠올려 봐. 지나간 창은 <b>아무 일도 없었다</b>가 아니라 <b>그때 열려 있었다</b>는 뜻이야. 끊긴 연도 다시 이을 수 있는 자리인데, 그땐 상대가 오는 게 아니라 <b>네가 먼저 닿아야</b> 열려.<br><b>둘. 이 자리는 12년마다 돌아와.</b> 네 배우자궁과 육합인 해가 12년 주기라서 그래. ${p.none?`남은 구간 안에서 다시 오진 않아. 그건 인연이 없다는 뜻이 아니라 <b>가장 센 창이 지났다</b>는 뜻이고, 이제는 시기보다 <b>사람의 결</b>로 찾는 게 맞아.`:`다음이 <b>${p.win.y}년 ${FATE_MON[p.win.el]||''}</b>(${nAge}세)야.`} ${good?`지금 대운이 <b>순풍</b>이라, 기다리기보다 <b>네가 움직일 때</b> 열리는 구간이야.`:`지금 대운은 <b>다지는 구간</b>이라, 무리해서 찾기보다 ${yel} 기운을 채워 두는 쪽(5장 개운)이 효율이 좋아.`} 창이 열려도 <b>반경이 좁으면 안 만나져</b>.</p>`;
   }catch(e){ return ''; }
 }
 /* 상대(추정) MBTI·키·한줄 */
@@ -3288,13 +3288,6 @@ const CAREER={
   토:"부동산·요식·상담/복지·인사·총무·교육·식품, ‘신뢰가 쌓이는’ 분야",
   금:"금융·회계·법률·의료·엔지니어링·IT·품질/감정, ‘정밀하고 원칙적인’ 분야",
   수:"연구·기획·콘텐츠/작가·심리/상담·무역·데이터·여행, ‘사유하고 흐름을 읽는’ 분야",
-};
-const MONEY_TIP={
-  목:"성장에 먼저 투자하느라 현금흐름이 마르기 쉽습니다. 비상금 6개월치를 먼저 확보하세요.",
-  화:"기분 지출·충동구매가 최대 변수. 체크카드·예산앱으로 ‘보이는 소비’를 하면 새는 돈이 줄어듭니다.",
-  토:"모으는 힘은 최고지만 안전자산에만 묶여 기회를 놓치기 쉽습니다. 일부는 성장형에 분산하세요.",
-  금:"관리·계획은 탁월. 다만 지나친 절약으로 자신에게 인색해지지 않게 ‘쓸 곳엔 쓰는’ 예산을 두세요.",
-  수:"흐름을 읽는 감각은 좋으나 변동성에 약합니다. 분산투자와 손절 원칙을 미리 정해두세요.",
 };
 /* 재물운 상세 */
 const WEALTH_STYLE={
@@ -4606,7 +4599,7 @@ const EL_EXCESS_RISK={
  금:"비판이 앞서고 정 떼기가 빨라. 원칙에 집착해 융통성이 사라지고, 어느새 곁에 사람이 줄어 있을 수 있어.",
  수:"생각이 생각을 낳아 실행이 늦어지고 비밀이 많아져. 우울감·무기력 쪽으로 기울기 쉬우니 몸 움직이는 루틴이 필수야."};
 const SIP_TRAP={
- 비겁:"내 힘(비견·겁재)가 과하면, 고집·경쟁심이 세져 협업이 어렵고, 특히 <b>동업·돈거래에서 사람 때문에 돈이 나가는</b> 구조가 생기기 쉬워. 형제·친구랑 얽힌 돈은 처음부터 선을 긋고, ‘내가 하는 게 낫다’는 말이 잦아지면 위험 신호야.",
+ 비겁:"내 힘(비견·겁재)이 과하면, 고집·경쟁심이 세져 협업이 어렵고, 특히 <b>동업·돈거래에서 사람 때문에 돈이 나가는</b> 구조가 생기기 쉬워. 형제·친구랑 얽힌 돈은 처음부터 선을 긋고, ‘내가 하는 게 낫다’는 말이 잦아지면 위험 신호야.",
  식상:"표현(식신·상관)이 과하면, 말이 먼저 나가 구설에 오르기 쉽고, 윗사람·규칙이랑 부딪혀. 재주는 많은데 산만해서 하나로 못 모으는 게 함정이고, ‘옳은 말인데 아프게 하는’ 습관이 커리어의 발목을 잡을 수 있어.",
  재성:"재물(편재·정재) 기운이 과하면, 돈과 눈앞의 실속에 판단이 흔들려. 기운이 약한 사주면 돈 쫓다 건강을 갈아 넣는 구조가 되기 쉽고, 이성 문제가 일을 꼬이게 만들기도 해. ‘벌 수 있다’와 ‘감당할 수 있다’는 다른 문제야.",
  관성:"통제(편관·정관)이 과하면, 스스로를 너무 조여. 남의 시선·평가에 매여 하고 싶은 걸 누르고, 그 스트레스가 신경·소화 쪽 몸으로 와. 권위적인 사람 밑에서 시달리는 자리에 자꾸 놓이는 것도 이 구조의 특징이야.",
@@ -5177,11 +5170,11 @@ const STEMHAP=[[0,5],[1,6],[2,7],[3,8],[4,9]];            // 천간합 갑기·�
 /* 사주 궁합: 일간 오행 + 천간합 + 일지 관계 + 오행 보완 */
 function sajuCompat(me,other){
   let s=50; const R=[]; const a=me.dayEl,b=other.dayEl;
-  if(SHENG[b]===a){s+=20;R.push(`상대의 ${EL[b].name}${iga(EL[b].name.charAt(0))} 당신의 ${EL[a].name}${eul(EL[a].name.charAt(0))} 길러줍니다. 당신이 채워지는 관계`);}
-  else if(SHENG[a]===b){s+=16;R.push(`당신의 ${EL[a].name}${iga(EL[a].name.charAt(0))} 상대의 ${EL[b].name}${eul(EL[b].name.charAt(0))} 길러줍니다. 당신이 베푸는 관계`);}
+  if(SHENG[b]===a){s+=20;R.push(`상대의 ${EL[b].name}${iga(EL[b].name.charAt(0))} 네 ${EL[a].name}${eul(EL[a].name.charAt(0))} 길러 줘. 네가 채워지는 관계`);}
+  else if(SHENG[a]===b){s+=16;R.push(`네 ${EL[a].name}${iga(EL[a].name.charAt(0))} 상대의 ${EL[b].name}${eul(EL[b].name.charAt(0))} 길러 줘. 네가 베푸는 관계`);}
   else if(a===b){s+=8;R.push(`같은 ${EL[a].name} 일간, 닮은 결, 편하지만 약점도 공유`);}
-  else if(KE[b]===a){s-=22;R.push(`상대의 ${EL[b].name}${iga(EL[b].name.charAt(0))} 당신의 ${EL[a].name}${eul(EL[a].name.charAt(0))} 극(剋)합니다. 기운이 소진되기 쉬움`);}
-  else if(KE[a]===b){s-=16;R.push(`당신의 ${EL[a].name}${iga(EL[a].name.charAt(0))} 상대의 ${EL[b].name}${eul(EL[b].name.charAt(0))} 극합니다. 당신이 답답함을 느낄 수 있음`);}
+  else if(KE[b]===a){s-=22;R.push(`상대의 ${EL[b].name}${iga(EL[b].name.charAt(0))} 네 ${EL[a].name}${eul(EL[a].name.charAt(0))} 눌러. 기운이 소모되기 쉬움`);}
+  else if(KE[a]===b){s-=16;R.push(`네 ${EL[a].name}${iga(EL[a].name.charAt(0))} 상대의 ${EL[b].name}${eul(EL[b].name.charAt(0))} 눌러. 네가 답답함을 느끼기 쉬움`);}
   // 일간 천간합
   if(inPairs(STEMHAP,me.p.ds,other.p.ds)){s+=10;R.push(`일간이 천간합, 자연스레 끌리는 짝의 기운`);}
   // 일지(배우자궁) 관계
@@ -5196,8 +5189,8 @@ function sajuCompat(me,other){
   if(sameTriad(me.p.yb,other.p.yb)){s+=6;R.push(`띠가 삼합, 무리에서 자연히 어울림`);}
   else if(Math.abs(me.p.yb-other.p.yb)===6){s-=6;R.push(`띠가 충, 첫인상은 강렬`);}
   // 오행 보완
-  if(b===me.weakEl){s+=10;R.push(`상대가 당신에게 부족한 ${EL[me.weakEl].name}${eul(EL[me.weakEl].name.charAt(0))} 채워줌`);}
-  if(a===other.weakEl){s+=6;R.push(`당신이 상대의 부족한 ${EL[other.weakEl].name}${eul(EL[other.weakEl].name.charAt(0))} 채워줌`);}
+  if(b===me.weakEl){s+=10;R.push(`상대가 네게 부족한 ${EL[me.weakEl].name}${eul(EL[me.weakEl].name.charAt(0))} 채워 줌`);}
+  if(a===other.weakEl){s+=6;R.push(`네가 상대의 부족한 ${EL[other.weakEl].name}${eul(EL[other.weakEl].name.charAt(0))} 채워 줌`);}
   return {score:Math.max(5,Math.min(99,Math.round(s))),reasons:R};
 }
 /* 별자리 궁합: 4원소 + 각도(어스펙트) */
