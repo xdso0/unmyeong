@@ -20,7 +20,7 @@
 /* ============================================================
    사주 × 별자리 운명 분석, 전부 로컬, 외부통신 없음
    ============================================================ */
-const BUILD='2026-09-01.20';   // 날짜=빌드일, .N=그날 배포 순번. 재배포마다 갱신 → 자동 새로고침 트리거
+const BUILD='2026-09-01.21';   // 날짜=빌드일, .N=그날 배포 순번. 재배포마다 갱신 → 자동 새로고침 트리거
 /* 자동 업데이트: ①켜질 때 최신 BUILD 확인 → 다르면 캐시버스트 이동 ②탭이 다시 보일 때도 확인 → 읽던 중이면 강제 리로드 대신 배너
    (폰 브라우저는 옛 탭을 리로드 없이 복원하므로 ②가 없으면 며칠 전 버전이 계속 보임 — 오너 "어떤 건 배포됐고 어떤 건 안 됐던데" 원인) */
 (function(){try{
@@ -6649,14 +6649,36 @@ function yongFitHTML(me, op, rawName, rel){
       강:'기운이 센 편이라, 더 보태는 게 아니라 <b>덜어내거나 눌러 주는</b> 기운이 약이야.',
       약:'기운이 여린 편이라, <b>널 낳아 주고 받쳐 주는</b> 기운이 약이야.',
       중:'한쪽으로 크게 안 기울어서, <b>제일 얇은 자리를 메우는</b> 기운이 약이야.'};
+    /* ★같은 한 자여도 <어느 자리>에 있느냐로 뜻이 달라진다(2026-09-01).
+       일간·일지는 그 사람 자신과 가장 가까운 자리, 월주는 사회, 연주는 배경,
+       시주는 말년·결과물이다. 계산은 이미 있는데(p.ys~hb) 개수만 세고 있었다.
+       개수만 말하면 양방향 문장이 글자까지 같아지기도 한다(실측 부당 2회). */
+    const POS_MEAN={연간:'집안 배경 쪽에',연지:'뿌리·어린 시절 쪽에',월간:'사회에서 쓰는 자리에',
+      월지:'일과 사회의 한복판에',일간:'그 사람 자신에',일지:'가장 가까운 자리에',
+      시간:'말년과 결과물 쪽에',시지:'말년과 자녀 쪽에'};
+    const whereEl=(pr,el)=>{
+      const P8=[['연간',STEM_EL[pr.p.ys]],['월간',STEM_EL[pr.p.ms]],['일간',STEM_EL[pr.p.ds]],['시간',pr.p.hs>=0?STEM_EL[pr.p.hs]:null],
+                ['연지',BRANCH_EL[pr.p.yb]],['월지',BRANCH_EL[pr.p.mb]],['일지',BRANCH_EL[pr.p.db]],['시지',pr.p.hb>=0?BRANCH_EL[pr.p.hb]:null]];
+      return P8.filter(x=>x[1]===el).map(x=>x[0]);
+    };
+    const posTxt=(pr,el)=>{
+      const w=whereEl(pr,el); if(!w.length) return '';
+      const key=['일지','일간','월지','월간','시지','시간','연지','연간'].find(k=>w.includes(k));
+      const near=(key==='일지'||key==='일간');
+      return ` 그 기운은 <b>${key}</b>, ${POS_MEAN[key]||''} 있어.${near?` 가장 가까운 자리라 <b>같이 있는 시간이 길수록</b> 효과가 커.`:(key==='월지'||key==='월간')?` 일과 사회 쪽 자리라 <b>같이 일할 때</b> 특히 살아나.`:` 배경처럼 은근히 깔리는 자리라 <b>천천히</b> 스며.`}`;
+    };
     /* ★who 에는 <조사를 붙이지 않은> 소유격 주체를 넘긴다.
        초안에서 neun() 을 붙여 넘겨 「상대는 여덟 글자 중」이 나갔다. */
-    const verdict = (n, yEl, who, isMe) => {
+    const _saidLv={};
+    const verdict = (n, yEl, who, isMe, holder) => {
+      const wh=holder?posTxt(holder,yEl):'';
+      /* 같은 등급을 두 번째 말할 땐 틀을 반복하지 않는다(양방향 호출). */
+      const key=n>=3?'many':(n>=1?'few':'none'), again=!!_saidLv[key]; _saidLv[key]=1;
       const yn=EL[yEl].name, ya=JOSA(yn,'이야','야');
-      if(n>=3) return `${who} 여덟 글자 중 <b>${n}자</b>가 ${ya}. 두껍게 갖고 있어. ${isMe
+      if(n>=3) return `${who} 여덟 글자 중 <b>${n}자</b>가 ${ya}. ${again?'이쪽도 <b>두툼해</b>.':'두껍게 갖고 있어.'}${wh} ${isMe
         ? `이 사람 옆에서 네가 잘 굴러간다면 그건 기분 탓이 아니야. <b>네게 모자란 걸 상대가 그냥 들고 있어.</b>`
         : `${oname}에게 모자란 걸 <b>네가 들고 있다</b>는 뜻이야. 상대가 너를 편해하는 이유가 성격만은 아니야.`}`;
-      if(n>=1) return `${who} 여덟 글자 중 <b>${n}자</b>가 ${ya}. 많진 않아도 <b>없는 것과는 달라</b>. ${isMe
+      if(n>=1) return `${who} 여덟 글자 중 <b>${n}자</b>가 ${ya}. ${again?'이쪽도 <b>아주 없진 않아</b>.':'많진 않아도 <b>없는 것과는 달라</b>.'}${wh} ${isMe
         ? `${yn} 쪽으로 일이 풀릴 때 상대가 곁에 있었다면, 우연이 아닐 수 있어.`
         : `${oname}${iga(oname)} ${yn} 쪽에서 막힐 때 네가 도움이 되는 자리야.`}`;
       const g=(typeof GAEUN!=='undefined'&&GAEUN[yEl])?GAEUN[yEl]:null;
@@ -6688,7 +6710,7 @@ function yongFitHTML(me, op, rawName, rel){
       ? `<b>${oname}${neun(oname)} 받는데 너는 이 관계에서 그걸 못 받아.</b> 나쁜 뜻이 아니라 기울어 있다는 뜻이야. 이런 배치에서 지치는 건 늘 주는 쪽이고, 지금은 네가 그쪽이야. 네게 필요한 <b>${EL[Y1.yong].name}</b>${eul(EL[Y1.yong].name)} <b>관계 밖에서 채워도 되는 것</b>으로 정해 둬. 그게 이 관계를 오래 가게 해.`
       : `<b>서로의 약을 서로가 안 갖고 있어.</b> 이건 나쁜 궁합이라는 뜻이 아니야. <b>보완하는 관계가 아니라 나누는 관계</b>라는 뜻이야. 서로를 채워 주려고 애쓸수록 둘 다 없는 걸 짜내게 되니까, 각자 필요한 건 각자 밖에서 채우고 <b>이 관계에서는 다른 걸 기대하는 편</b>이 훨씬 편해.`;
     const sumFull = sumTxt + sameTxt;
-    return `<div class="chapter"><div class="ch-h"><span class="ch-n">장</span><div class="ch-tt"><div class="ch-t">서로에게 약이 되나</div><div class="ch-s">각자에게 필요한 기운을 상대가 갖고 있는지</div></div></div><p class="body" >명리에선 사람마다 <b>약이 되는 기운</b>이 따로 있다고 봐. 같은 오행이어도 누구에겐 보약이고 누구에겐 과잉이야. 앞 장에서 <b>둘을 합치면 무엇이 차고 비는지</b>를 봤다면, 이번엔 <b>각자에게 필요한 걸 상대가 들고 있는지</b>를 봐. 총량이 아니라 <b>처방</b>이야.</p><div class="info-grid"><div class="info-card"><div class="lab">너에게 약이 되는 기운 · ${EL[Y1.yong].name}</div><div class="val" style="font-weight:500">${WHY[lv(me)]} 그래서 네 약은 <b>${EL[Y1.yong].name}</b>${jong(EL[Y1.yong].name)?'이야':'야'}.<br>${verdict(toMe, Y1.yong, oname, true)}${giNote(giMe, Y1.gi, `${oname}${iga(oname)}`)}</div></div><div class="info-card"><div class="lab">${oname}에게 약이 되는 기운 · ${EL[Y2.yong].name}</div><div class="val" style="font-weight:500">${lv(me)===lv(op)?`${oname}${neun(oname)} <b>너와 같은 이유</b>야.`:WHY[lv(op)]} 그래서 ${oname}의 약은 <b>${EL[Y2.yong].name}</b>${jong(EL[Y2.yong].name)?'이야':'야'}.<br>${verdict(toOp, Y2.yong, '네', false)}${giNoteOp(giOp, Y2.gi)}</div></div><div class="info-card wide"><div class="lab" style="color:${both?'var(--good)':((onlyMe||onlyOp)?'var(--ok)':'var(--muted)')}">두 방향을 겹치면</div><div class="val" style="font-weight:500">${sumFull}</div></div>
+    return `<div class="chapter"><div class="ch-h"><span class="ch-n">장</span><div class="ch-tt"><div class="ch-t">서로에게 약이 되나</div><div class="ch-s">각자에게 필요한 기운을 상대가 갖고 있는지</div></div></div><p class="body" >명리에선 사람마다 <b>약이 되는 기운</b>이 따로 있다고 봐. 같은 오행이어도 누구에겐 보약이고 누구에겐 과잉이야. 앞 장에서 <b>둘을 합치면 무엇이 차고 비는지</b>를 봤다면, 이번엔 <b>각자에게 필요한 걸 상대가 들고 있는지</b>를 봐. 총량이 아니라 <b>처방</b>이야.</p><div class="info-grid"><div class="info-card"><div class="lab">너에게 약이 되는 기운 · ${EL[Y1.yong].name}</div><div class="val" style="font-weight:500">${WHY[lv(me)]} 그래서 네 약은 <b>${EL[Y1.yong].name}</b>${jong(EL[Y1.yong].name)?'이야':'야'}.<br>${verdict(toMe, Y1.yong, oname, true, op)}${giNote(giMe, Y1.gi, `${oname}${iga(oname)}`)}</div></div><div class="info-card"><div class="lab">${oname}에게 약이 되는 기운 · ${EL[Y2.yong].name}</div><div class="val" style="font-weight:500">${lv(me)===lv(op)?`${oname}${neun(oname)} <b>너와 같은 이유</b>야.`:WHY[lv(op)]} 그래서 ${oname}의 약은 <b>${EL[Y2.yong].name}</b>${jong(EL[Y2.yong].name)?'이야':'야'}.<br>${verdict(toOp, Y2.yong, '네', false, me)}${giNoteOp(giOp, Y2.gi)}</div></div><div class="info-card wide"><div class="lab" style="color:${both?'var(--good)':((onlyMe||onlyOp)?'var(--ok)':'var(--muted)')}">두 방향을 겹치면</div><div class="val" style="font-weight:500">${sumFull}</div></div>
         ${(()=>{ try{
           /* ★희신은 yongsin 이 이미 돌려주는데 궁합이 한 곳도 안 썼다 (2026-08-31).
              개인 리포트는 24곳에서 쓴다. 있는 계산을 안 쓰고 있었다.
