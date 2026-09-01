@@ -20,7 +20,7 @@
 /* ============================================================
    사주 × 별자리 운명 분석, 전부 로컬, 외부통신 없음
    ============================================================ */
-const BUILD='2026-09-01.7';   // 날짜=빌드일, .N=그날 배포 순번. 재배포마다 갱신 → 자동 새로고침 트리거
+const BUILD='2026-09-01.8';   // 날짜=빌드일, .N=그날 배포 순번. 재배포마다 갱신 → 자동 새로고침 트리거
 /* 자동 업데이트: ①켜질 때 최신 BUILD 확인 → 다르면 캐시버스트 이동 ②탭이 다시 보일 때도 확인 → 읽던 중이면 강제 리로드 대신 배너
    (폰 브라우저는 옛 탭을 리로드 없이 복원하므로 ②가 없으면 며칠 전 버전이 계속 보임 — 오너 "어떤 건 배포됐고 어떤 건 안 됐던데" 원인) */
 (function(){try{
@@ -960,7 +960,6 @@ function weakest(c){let k="토",v=1e9;for(const e of EL_ORDER)if(c[e]<v){v=c[e];
 /* ===================== 자미두수(紫微斗數) 엔진 ===================== */
 const ZW_PAL=['명궁','형제궁','부부궁','자녀궁','재백궁','질액궁','천이궁','교우궁','관록궁','전택궁','복덕궁','부모궁'];
 const ZW_PAL_SUB={명궁:'나·운명',형제궁:'형제·동료',부부궁:'배우자·연애',자녀궁:'자녀·창작',재백궁:'금전',질액궁:'건강',천이궁:'사회·이동',교우궁:'인맥',관록궁:'직업',전택궁:'주거·가정',복덕궁:'정신·복',부모궁:'부모·윗사람'};
-const ZW_HAN={자미:'紫微',천기:'天機',태양:'太陽',무곡:'武曲',천동:'天同',염정:'廉貞',천부:'天府',태음:'太陰',탐랑:'貪狼',거문:'巨門',천상:'天相',천량:'天梁',칠살:'七殺',파군:'破軍'};
 // 五虎遁: 年干%5 → 寅월 천간 index
 const ZW_WUHU=[2,4,6,8,0];
 // 60갑자 납음 → 오행국 수(水2 木3 金4 土5 火6)
@@ -1108,9 +1107,9 @@ function renderZiwei(pr){
   if(mainStar){
     const info=ZW_STAR[mainStar];
     const tags=[...new Set(ms.flatMap(s=>ZW_STAR[s].tags))].slice(0,4);
-    starCard=`<div class="zw-mainstar"><div class="zw-ms-lab">나의 명궁 주성('나' 칸을 밝히는 대표 별)</div>`+
-      `<div class="zw-ms-han">${ms.map(s=>ZW_HAN[s]).join(' · ')}</div>`+
-      `<div class="zw-ms-kr">${ms.join('·')}${Z.borrowed?' <span style="font-size:11px;color:var(--muted)">(천이궁 차용)</span>':''}</div>`+
+    starCard=`<div class="zw-mainstar"><div class="zw-ms-lab">'나' 칸을 밝히는 대표 별</div>`+
+      `<div class="zw-ms-han">${ms.join(' · ')}</div>`+
+      `${Z.borrowed?'<div class="zw-ms-kr" style="font-size:11px;font-weight:400;color:var(--muted)">마주 보는 칸에서 빌려 온 별이야</div>':''}`+
       `<div class="zw-ms-face">${info.face}</div>`+
       `<div class="zw-ms-tags">${tags.map(t=>`<span># ${t}</span>`).join('')}</div></div>`;
     // 성향 4축 평균
