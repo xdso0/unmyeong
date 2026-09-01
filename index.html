@@ -20,7 +20,7 @@
 /* ============================================================
    사주 × 별자리 운명 분석, 전부 로컬, 외부통신 없음
    ============================================================ */
-const BUILD='2026-09-01.3';   // 날짜=빌드일, .N=그날 배포 순번. 재배포마다 갱신 → 자동 새로고침 트리거
+const BUILD='2026-09-01.4';   // 날짜=빌드일, .N=그날 배포 순번. 재배포마다 갱신 → 자동 새로고침 트리거
 /* 자동 업데이트: ①켜질 때 최신 BUILD 확인 → 다르면 캐시버스트 이동 ②탭이 다시 보일 때도 확인 → 읽던 중이면 강제 리로드 대신 배너
    (폰 브라우저는 옛 탭을 리로드 없이 복원하므로 ②가 없으면 며칠 전 버전이 계속 보임 — 오너 "어떤 건 배포됐고 어떤 건 안 됐던데" 원인) */
 (function(){try{
@@ -159,7 +159,7 @@ function attractedLabel(){
    전엔 85mm 인물사진 톤 + "natural clean skin" 이라 매끈한 CG 피부가 나왔고,
    오너가 「실물 느낌이 없다」「필터 쓴 것 같다」고 했다.
    오너가 준 참고 사진의 스타일은 폰 셀카·민무늬 벙·확산광·무보정이었다. */
-const PHOTO_BASE="selfie taken with a phone held close, soft diffused daylight from a window, no harsh shadows, minimal natural makeup, unedited photo, natural skin texture with visible pores, neutral color, calm closed-mouth expression, both eyes aligned looking at the phone";
+const PHOTO_BASE="selfie taken with a phone held close, soft diffused daylight from a window, no harsh shadows, minimal natural makeup, unedited photo, natural clean skin, neutral color, calm closed-mouth expression, both eyes aligned looking at the phone";
 /* 부정 프롬프트는 서버로 따로 넘긴다(guidance>1 일 때만 효과가 있다) */
 /* ★필터·보정 계열을 추가했다. guidance 2.5 로 올려 이제 실제로 먹는다
    (guidance 0 이면 부정 프롬프트가 통째로 무시된다 - 그게 지금까지 사시가 난 이유였을 수 있다). */
@@ -2740,7 +2740,7 @@ function lifeGraph(pr){
   return `<p class="body sub" style="margin:0 0 6px">10년 대운을 5년 눈금으로 편 인생 운의 큰 흐름이야(용신 기준). 높을수록 순풍, 낮을수록 다지는 시기. 아래 대운표와 <b>같은 값</b>을 그린 거라 둘이 어긋나지 않아.</p>`+
     `<svg viewBox="0 0 ${W} ${H}" style="width:100%;height:auto;background:var(--pearl);border-radius:14px;border:1px solid var(--line2)">`+
     `<path d="${area}" fill="rgba(46,138,96,.12)"/><path d="${line}" fill="none" stroke="#2e8a60" stroke-width="2.5" stroke-linejoin="round"/>${dots}${labels}</svg>`+
-    `<p class="body" style="margin-top:8px">${peakTxt}${windy?" "+peakUse(pr,near):""} 반대로 그래프의 낮은 구간은 새 판 벌이기보다 마무리와 정리에 유리한 때야. 다만 이 그래프와 아래 대운표는 <b>10년 대운의 천간</b>으로 재고, 연도별 카드·13장·15장 ⑦은 <b>그 해의 지지</b>로 재. 자가 달라서 <b>순풍 구간 안에도 조심할 해가 한둘 섞일 수</b> 있어. 큰 방향은 이 그래프로, 개별 연도는 아래 카드로 봐.</p>`;
+    `<p class="body" style="margin-top:8px">${peakTxt}${windy?" "+peakUse(pr,near):""} 반대로 그래프의 낮은 구간은 새 판 벌이기보다 마무리와 정리에 유리한 때야. 다만 이 그래프와 아래 표는 <b>10년 단위 흐름</b>으로 재고, 연도별 카드는 <b>그 해 하나</b>로 재. 자가 달라서 <b>순풍 구간 안에도 조심할 해가 한둘 섞일 수</b> 있어. 큰 방향은 이 그래프로, 개별 연도는 아래 카드로 봐.</p>`;
 }
 /* ===== 사주 대운(大運) — 명리 시기론의 핵심(오너 2026-07-24 gap 보강) =====
    대운수: 출생에서 절(節, 황경 λ≡15 mod30)까지 일수 ÷ 3 (순행=다음 절, 역행=이전 절).
@@ -3697,7 +3697,7 @@ function ziweiExtras(pr){
     return `<p class="body">자미두수에는 <b>사화</b>라는 게 있어. 태어난 해의 천간이 네 별 중 넷을 골라 <b>화록(복·재물)·화권(권한)·화과(명예)·화기(막힘·집착)</b> 도장을 찍는 거야. 같은 명궁이어도 <b>이 도장이 어느 궁에 찍혔느냐</b>에 따라 인생의 강약이 완전히 달라져.</p><ul class="clean">${rows}</ul>
     ${gi?`<p class="body sub">특히 <b>화기</b>는 <b>${gi.궁}</b>(${ZW_PAL_SUB[gi.궁]||''})에 있어. 여기가 네 인생에서 가장 마음이 쓰이고 애먹는 자리야. <b>${JOSA(gi.궁,'은','는')} 실제 그 대상만이 아니라 ‘${ZW_PAL_SUB[gi.궁]||'그 영역'}’이라는 삶의 테마를 가리켜</b>. 나쁘다는 뜻이 아니라 <b>가장 많이 붙들고 결국 제일 깊어지는 영역</b>이라는 뜻이야.</p>`:''}`;})()}
   ${(()=>{const bp=bodyPalace(pr);if(!bp||!BODY_MEAN[bp])return '';
-    return `<p class="body">타고난 나 말고 <b>살면서 실제로 힘을 쏟게 되는 자리</b>가 따로 있어(신궁이라고 불러). 네 경우엔 <b>${bp}</b>(${ZW_PAL_SUB[bp]||''}). ${BODY_MEAN[bp]}.<br><span style="color:var(--muted)">${bp==='명궁'?`그래서 명궁만 보면 반쪽인데, <b>네 경우엔 신궁이 명궁과 같은 칸</b>이야. 타고난 결과 실제로 쓰는 힘이 <b>한 자리에 겹친다</b>는 뜻이라, "나는 이런 사람인데 왜 자꾸 저기에 매달리지?" 하는 어긋남이 적은 대신 <b>한 방향으로 쏠려</b>. 잘 풀릴 땐 아주 잘 풀리고, 막히면 돌아갈 다른 무대가 없어.`:`그래서 명궁만 보면 반쪽이야. 타고난 결(명궁)과 실제로 쓰는 힘(신궁)이 <b>어긋나면</b> "나는 이런 사람인데 왜 자꾸 저기에 매달리지?" 하는 느낌이 드는데, 그게 이 구조 때문이야.`}</span></p>${(()=>{try{
+    return `<p class="body">타고난 나 말고 <b>살면서 실제로 힘을 쏟게 되는 자리</b>가 따로 있어(신궁이라고 불러). 네 경우엔 <b>${bp}</b>(${ZW_PAL_SUB[bp]||''}). ${BODY_MEAN[bp]}.<br><span style="color:var(--muted)">${bp==='명궁'?`그래서 한쪽만 보면 반쪽인데, <b>네 경우엔 이 둘이 같은 칸</b>이야. 타고난 결과 실제로 힘을 쏟는 자리가 <b>겹친다</b>는 뜻이라, "나는 이런 사람인데 왜 자꾸 저기에 매달리지?" 하는 어긋남이 적은 대신 <b>한 방향으로 쏠려</b>. 잘 풀릴 땐 아주 잘 풀리고, 막히면 돌아갈 다른 무대가 없어.`:`그래서 한쪽만 보면 반쪽이야. 타고난 결과 실제로 힘을 쏟는 자리가 <b>어긋나면</b> "나는 이런 사람인데 왜 자꾸 저기에 매달리지?" 하는 느낌이 드는데, 그게 이 구조 때문이야.`}</span></p>${(()=>{try{
       const Zb=ziwei(pr); if(!Zb||Zb.noTime) return '';
       const rb=zwStarsAtPal(Zb,bp), sb=(rb.stars||[]).filter(x=>ZW_STAR[x]);
       const rm=zwStarsAtPal(Zb,'명궁'), sm=(rm.stars||[]).filter(x=>ZW_STAR[x]);
@@ -3912,7 +3912,7 @@ function zwRestCells(pr){
 /* 자미두수 명반 장 서술 (개념 + 이 사람 명궁 해설) */
 function ziweiStory(pr){
   const Z=ziwei(pr);
-  const concept=`<p class="body">자미두수가 뭔지 처음 보는 사람을 위해 짧게 설명할게. 사주가 여덟 글자로 <b>기운의 화학식</b>을 적는 학문이라면, 자미두수는 태어난 순간 하늘의 별들을 <b>12칸의 무대 배치도</b>로 그리는 학문이야. 위 표의 12칸(궁)이 각각 인생의 한 영역이야. 나 자신(명궁), 돈(재백궁), 일(관록궁), 연애(부부궁), 건강(질액궁) 같은 식으로. 각 칸에 어떤 별이 들어와 있느냐가 그 영역의 기본 성격을 정해.</p>`;
+  const concept=`<p class="body">앞에서는 여덟 글자로 네 기운의 배합을 봤어. 여기서는 태어난 순간의 별을 <b>열두 칸 무대</b>에 놓고 봐. 위 표의 열두 칸이 각각 인생의 한 영역이고. 나 자신(명궁), 돈(재백궁), 일(관록궁), 연애(부부궁), 건강(질액궁) 같은 식으로. 각 칸에 어떤 별이 들어와 있느냐가 그 영역의 기본 성격을 정해.</p>`;
   if(!Z||Z.noTime) return concept+`<p class="body sub">명반은 태어난 시간이 있어야 그릴 수 있어서 지금은 개념만 소개했어. 시간을 알게 되면 입력에 추가해 줘. 네 12칸 무대가 바로 그려져.</p>`+ziweiExtras(pr);
   const ms=(Z.mingStars||[]).filter(s=>ZW_STAR[s])[0];
   const borrowed=!(Z.mingStars||[]).length||!ms;
@@ -3923,7 +3923,7 @@ function ziweiStory(pr){
   } else {
     mingLine=`네 명궁(나 자신의 칸)은 비어 있어서 맞은편 칸의 별을 빌려 와(차용). 이건 나쁜 게 아니라, 정해진 색이 옅은 대신 상황에 따라 여러 색을 꺼내 쓰는 유연한 무대라는 뜻이야.`;
   }
-  return concept+`<p class="body">${mingLine}</p><p class="body">읽는 요령은 이래. 표에서 <b>명궁·부부궁·관록궁·재백궁</b> 네 칸만 먼저 봐도 인생의 큰 그림이 잡혀. 나머지 칸들은 아래 각 장(연애·일·건강)에서 사주와 겹쳐서 하나씩 풀어 줄 거니까, 여기서 다 외우려고 하지 않아도 돼. 그리고 12칸은 10년마다 무대가 옆 칸으로 이동하는데(대운), 그 얘기는 시기별 운 흐름 장에서 이어서 할게.</p>`+zwSeat(pr)+zwFourCells(pr)+zwRestCells(pr)+ziweiExtras(pr);
+  return concept+`<p class="body">${mingLine}</p><p class="body">읽는 요령은 이래. 표에서 <b>명궁·부부궁·관록궁·재백궁</b> 네 칸만 먼저 봐도 인생의 큰 그림이 잡혀. 나머지 칸들은 아래 각 장(연애·일·건강)에서 사주와 겹쳐서 하나씩 풀어 줄 거니까, 여기서 다 외우려고 하지 않아도 돼. 그리고 이 열두 칸은 10년마다 무대가 옆 칸으로 옮겨 가. 그 얘기는 시기별 운 흐름 장에서 이어서 할게.</p>`+zwSeat(pr)+zwFourCells(pr)+zwRestCells(pr)+ziweiExtras(pr);
 }
 /* 신살 x 대인 — 관계에 직접 걸리는 축인데 10장이 안 쓰고 있었다 */
 const DAEIN_SIN={
@@ -4079,7 +4079,7 @@ function domainSplit(pr, TBL, head, sipKey, sipLabel, again){
       ?(bijung(ratio)===2?`두꺼운 쪽이라 이 영역은 네가 안 건드려도 알아서 커져. 대신 손해도 여기서 제일 크게 나.`:bijung(ratio)===1?`보통이라 힘을 실으면 실은 만큼만 나와. 밑지지도 크게 남지도 않는 자리야.`:`옅은 쪽이라 남들 하는 속도로 따라가려 하면 손해야. 네 속도표를 따로 두는 게 나아.`)
       :(bijung(ratio)===2?`비중이 두꺼운 편이라 이 영역이 <b>인생의 주 무대</b>가 돼. 잘 풀릴 때도 여기서 풀리고, 막힐 때도 여기서 막혀.`:bijung(ratio)===1?`비중이 보통이라 <b>필요할 때 쓰는 카드</b> 정도야. 여기에 인생을 다 걸 필요는 없어.`:`비중이 옅어. 타고나길 이쪽에 힘이 덜 실렸다는 뜻이라, <b>남들만큼 쉽게 되진 않는다</b>고 미리 알고 가는 게 나아. 대신 옅은 만큼 이 영역에 덜 휘둘려.`)}`;
     return `<p class="body">${head} 너는 <b>${stem}</b>(${yang?'양간':'음간'})${PJ(stem,'이라','라')} ${t}${tail}${num}</p>${again?'':`
-    <p class="body sub">위에서 오행으로 묶어 설명한 건 <b>큰 틀</b>이야. 같은 오행이어도 <b>양간·음간</b>이 다르면 실제로는 꽤 다른 사람이라, 체감은 이 갈래 쪽이 더 맞을 거야.</p>`}`;
+    <p class="body sub">위에서 다섯 기운으로 묶어 설명한 건 <b>큰 틀</b>이야. 같은 기운이어도 열 갈래로 더 나뉘는데, 체감은 이 갈래 쪽이 더 맞을 거야.</p>`}`;
   }catch(e){ return ''; }
 }
 /* 대인운 심화 (오행별 관계 에너지) */
@@ -4386,7 +4386,7 @@ function renderMyDetail(pr){
   const personaSec = sec('🎭','나의 성격, 겉부터 속까지',
     fuseTop(pr,'복덕궁','내면',{title:'성격',
       saju:`일간 기준 ‘${s1.one}’(${s1.label.split(', ')[0]}) 기질이 제일 강해.`,
-      concl:`넌 한마디로 <b>‘${s1.one}’</b> 기질이야. 다만 겉으로 쓰는 기질과, 혼자 있을 때 마음이 차오르는 방식(복덕궁)은 별개라서, 아래에서 그 둘을 나눠서 보여 줄게.`,
+      concl:`넌 한마디로 <b>‘${s1.one}’</b> 기질이야. 다만 밖에서 쓰는 기질과 혼자 있을 때 마음이 차오르는 방식은 별개라서, 아래에서 둘을 나눠 볼게.`,
       noTime:''})+
     `<p class="body">앞 장이 네 기운의 ‘지도’였다면, 이 장은 그 지도 위에서 드러나는 ‘기질’이야. 일간(${EL[pr.dayEl].name}) 기준으로 <b>${EL[sipDriver].name}</b> 기운이 도드라져서, 십성(나를 기준으로 각 기운에 역할 이름을 붙인 분류)으론 <b>${s1.label}</b>의 색이 제일 강해.</p>`+
     `<p class="body">${s1.story}</p>`+
@@ -4487,7 +4487,7 @@ function renderMyDetail(pr){
         return `<div class="zwfuse" style="margin-top:11px"><span class="fh">🧩 자미두수로도 보면</span>자미두수엔 ‘신강약’ 대신 <b>명궁 별의 묘왕평함(빛의 세기)</b>으로 기운을 봐. 네 명궁 <b>${JOSA(ms,'은','는')}</b><b>${bg||'-'}</b>, ${tone}. <br><b>→ 결론:</b> ${concl}</div>`;})()) +
     sec('🗺️','자미두수 12궁, 인생의 열두 무대', zwAllPalaces(pr)) +
     sec('🍀','개운 가이드, 행운을 끌어올리는 법',
-      `<p class="body sub" style="margin:0 0 8px">개운은 <b>세 축</b>으로 짚어. ① <b>용신</b>(부족해서 채우면 좋은 기운)의 색·방위·숫자로 밸런스를 맞추고, ② <b>기신</b>(과하면 독이 되는 기운)의 색·방위는 피하고, ③ 태어난 <b>계절(조후)</b>의 한난을 보정해. 미신이라기보단 ‘환경을 이 결로 맞추면 균형이 좋아진다’는 처방이야.</p>`+
+      `<p class="body sub" style="margin:0 0 8px">세 가지로 짚어. 모자란 기운은 색·방위·숫자로 채우고, 넘치는 기운 쪽은 피하고, 태어난 계절의 춥고 더움을 맞추는 거야. 점을 치는 게 아니라 <b>환경을 네 결에 맞추는</b> 쪽에 가까워.</p>`+
       `<div class="info-grid">${luckGrid.map(([l,v])=>`<div class="info-card"><div class="lab">${l}</div><div class="val">${v}</div></div>`).join('')}</div>`+gaeunStory(pr)+joheuNote(pr)+`<p class="body sub" style="margin:10px 0 0">여기 색·방위·숫자는 <b>평생 쓰는 네 기본값</b>이야. 해마다 바뀌는 이사·공사 방위(대장군방·삼살방)는 뒤에 나올 <b>‘실전 활용’</b> 장에서 더할게.</p>`) +
     sec('🧭','나는 어떤 사람일까', describePerson(pr)+personLayers(pr)+selfVsChart(pr)) +
     personaSec +
@@ -4498,7 +4498,7 @@ function renderMyDetail(pr){
       `<p class="body">네 건강의 열쇠는 타고난 오행 균형이야. 너는 <b>${EL[pr.weakEl].name}(${EL[pr.weakEl].kw.join('·')})</b> 기운이 제일 옅어서, 무리가 쌓이면 그쪽부터 먼저 지쳐. 반대로 말하면, 이 기운만 의식적으로 채워 줘도 남들보다 효율 좋게 컨디션이 올라오는 체질이라는 뜻이야.${weakGiNote(pr,'body')}${weakVsYongNote(pr)}</p>`+
       fuseTop(pr,'질액궁','건강',{title:'건강·체질',
         saju:`사주에서 제일 옅은 <b>${EL[pr.weakEl].name}</b> 기운을 보완하는 게 건강의 기본 숙제야.`,
-        concl:`사주가 ‘부족해서 챙길 기운’을, 자미 질액궁이 ‘몸의 어디를 조심할지’를 알려 줘. 합치면 뭘 미리 관리할지가 또렷해져.`,
+        concl:`채워야 할 기운과 조심할 몸의 자리를 같이 봐. 합치면 뭘 미리 관리할지가 또렷해져.`,
         noTime:''})+
       `<p class="body"><b>⚠ 몸이 먼저 보내는 신호.</b> ${EL[pr.weakEl].name}${iga(EL[pr.weakEl].name.charAt(0))} 옅다는 건 몸으로는 이런 뜻이야: ${EL_LACK_RISK[pr.weakEl].health}  병원 진단을 대신하는 얘기는 아니고, ‘어디부터 지치는 체질인지’ 미리 아는 지도야.</p>`+
       `<div class="info-card wide" style="margin-top:10px"><div class="lab">🕐 하루 루틴 처방 (${EL[pr.weakEl].name} 채우기)</div><div class="val" style="font-weight:500">${HEALTH_ROUTINE[pr.weakEl]}</div></div>`+
@@ -4509,7 +4509,7 @@ function renderMyDetail(pr){
       `<p class="body">너는 ‘${EL[pr.dayEl].kw[0]}’${eul(EL[pr.dayEl].kw[0])} 바탕으로 관계를 맺어 가는 사람이야. ${(()=>{const SP=stemPersona(pr);return SP?`관계에서 네 강점은 <b>${SP.trait}</b> 쪽이고, 발목을 잡는 건 <b>${SP.edge}</b> 면이야. 이 둘은 같은 뿌리라서 한쪽만 떼어 낼 수는 없어.`:'관계의 강점과 약점이 같은 뿌리에서 나와서, 한쪽만 떼어 낼 수는 없어.';})()} 그러니 인맥을 넓히는 것보다 <b>이 두 얼굴이 언제 나오는지</b>를 아는 게 네 대인운의 핵심이야.</p>`+
       fuseTop(pr,'천이궁','관계',{title:'대인·사회',
         saju:`사람과의 결은 ‘${EL[pr.dayEl].kw[0]}’${eul(EL[pr.dayEl].kw[0])} 바탕으로 맺어 가.`,
-        concl:`사주의 대인 성향에 자미 천이궁의 ‘바깥에서 비치는 나’를 합치면, 집에서의 나랑 사회에서의 내가 어떻게 다른지 보여.`,
+        concl:`집에서의 나와 바깥에서 비치는 나가 어떻게 다른지 볼게.`,
         noTime:''})+
       `<p class="body">${DAEIN_DEEP[pr.dayEl]}</p>`+
       daeinAxes(pr)+
@@ -4537,7 +4537,7 @@ function renderMyDetail(pr){
       sajuDaeunCard(pr)+
       flowStory(pr)+
       (()=>{const Zt=ziwei(pr); if(!Zt||Zt.noTime) return ''; const dw=Zt.daewoon.find(d=>Zt.curAge>=d.age&&Zt.curAge<d.age+10)||Zt.daewoon[0]; if(!dw) return '';
-        return `<div class="zwfuse" style="margin-top:12px"><span class="fh">🧩 자미두수 대운, 지금 ‘인생의 챕터’</span>자미두수 대운은 <b>10년마다 인생의 ‘주제’가 바뀌는 큰 흐름</b>이야. 지금 너는 <b>${dw.age}~${dw.age+9}세 ${dw.pal} 대운</b> ${JOSA(dwPos(Zt.curAge,dw.age),'이라','라')}, 이 10년은 <b>‘${ZW_PAL_SUB[dw.pal]}’</b>${iga(ZW_PAL_SUB[dw.pal])} 인생의 메인 무대란 뜻이지. 쉽게 말해 <b>지금 이 시기엔 ‘${ZW_PAL_SUB[dw.pal]}’ 쪽에서 가장 큰 일·변화·기회가 일어나기 쉬우니, 여기에 힘을 실으면 운을 탄다</b>는 거야.${(()=>{const left=dw.age+10-Zt.curAge;const nx=Zt.daewoon.find(d=>d.age===dw.age+10);return (left<=2&&nx)?`<br><br><b>⏳ 대운 교체 임박, ${left<=0?'올해':left+'년 뒤'}부터 새 챕터!</b> ${dw.age+10}세부터는 무대가 <b>${nx.pal}(${ZW_PAL_SUB[nx.pal]})</b>로 넘어가. 10년짜리 인생 주제가 바뀌는 전환기라, 큰 결정(이직·결혼·이사)은 이 흐름 교체를 보고 타이밍을 잡으면 좋아.`:'';})()}</div>`;})()) +
+        return `<div class="zwfuse" style="margin-top:12px"><span class="fh">🧩 자미두수 대운, 지금 ‘인생의 챕터’</span>여기서는 <b>10년마다 인생의 주제가 바뀌는 큰 흐름</b>을 봐. 지금 너는 <b>${dw.age}~${dw.age+9}세 ${dw.pal} 대운</b> ${JOSA(dwPos(Zt.curAge,dw.age),'이라','라')}, 이 10년은 <b>‘${ZW_PAL_SUB[dw.pal]}’</b>${iga(ZW_PAL_SUB[dw.pal])} 인생의 메인 무대란 뜻이지. 쉽게 말해 <b>지금 이 시기엔 ‘${ZW_PAL_SUB[dw.pal]}’ 쪽에서 가장 큰 일·변화·기회가 일어나기 쉬우니, 여기에 힘을 실으면 운을 탄다</b>는 거야.${(()=>{const left=dw.age+10-Zt.curAge;const nx=Zt.daewoon.find(d=>d.age===dw.age+10);return (left<=2&&nx)?`<br><br><b>⏳ 대운 교체 임박, ${left<=0?'올해':left+'년 뒤'}부터 새 챕터!</b> ${dw.age+10}세부터는 무대가 <b>${nx.pal}(${ZW_PAL_SUB[nx.pal]})</b>로 넘어가. 10년짜리 인생 주제가 바뀌는 전환기라, 큰 결정(이직·결혼·이사)은 이 흐름 교체를 보고 타이밍을 잡으면 좋아.`:'';})()}</div>`;})()) +
     sec('🧭','실전 활용, 방위·날짜·삼재', practicalSec(pr)) +
     sec('✨','신살, 너만의 무늬',
       `<p class="body">흐름 얘기를 했으니, 다시 네 안으로 돌아올게. 신살은 여덟 글자가 특정한 짝을 이룰 때 붙는 <b>별명 같은 태그</b>야. 게임으로 치면 태어날 때 딸려 온 특수 옵션이지. 옛날엔 길하다 흉하다로 점을 쳤지만, 여기서는 <b>성향의 무늬</b>로 읽어. 도화살이 있으면 바람기가 아니라 사람을 끌어당기는 매력이 기본 장착이라는 뜻이고, 역마살은 한자리보다 움직일 때 운이 도는 체질이라는 뜻이야. 흉하다는 말에 겁먹을 필요 없어. 어떤 무늬든 쓰는 법을 알면 무기가 되니까, 아래 카드들을 그 설명서로 읽어 줘. 참고로 신살이 많다고 특별하고 적다고 밋밋한 게 아니야. 무늬가 적은 사주는 그만큼 기본기가 담백하고 안정적이라는 뜻이니까, 개수에 연연하지 말고 각각의 무늬를 어떻게 쓰느냐만 봐 줘.</p>`+
@@ -4657,7 +4657,7 @@ function shadowAxes(pr){
     const SH=(typeof sihwaPalaces==='function')?(sihwaPalaces(pr)||[]):[];
     const gi=SH.find(x=>x.화==='화기');
     if(gi){
-      out+=`<p class="body"><b>⑧ 자미가 찍은 그림자 도장, 화기</b>: 자미두수에는 태어난 해가 별 하나에 <b>화기</b>를 찍는 구조가 있어. 여기가 <b>인생에서 가장 마음이 쓰이고 애먹는 자리</b>야. 네 화기는 <b>${gi.별}</b>에 붙어 <b>${gi.궁}</b>(${ZW_PAL_SUB[gi.궁]||''})에 떨어졌어. 여기선 ${HWAGI_PAL[gi.궁]||'<b>남들보다 더 오래 붙들고 더 늦게 놓아</b>'}. 나쁘다는 뜻이 아니야. 실제로 이 자리가 평생의 주제이자 결국 제일 잘하게 되는 영역이 되기도 해. 다만 <b>집착과 몰입의 구분</b>이 여기선 유난히 어렵고, 잘 안 될 때 손절이 제일 늦는 자리이기도 하지. ${ZW_PAL_SUB[gi.궁]||'이 영역'}에서 판단이 흐려진다 싶으면 <b>바깥 사람 한 명에게 물어보는 규칙</b>을 정해 둬. 이 칸에서만큼은 네 판단이 제일 안 믿을 만하거든.</p>`;
+      out+=`<p class="body"><b>⑧ 가장 마음이 쓰이는 자리</b>: 태어난 해가 별 하나에 그림자 도장을 하나 찍어(화기라고 불러). 거기가 <b>인생에서 제일 애먹는 자리</b>야. 네 화기는 <b>${gi.별}</b>에 붙어 <b>${gi.궁}</b>(${ZW_PAL_SUB[gi.궁]||''})에 떨어졌어. 여기선 ${HWAGI_PAL[gi.궁]||'<b>남들보다 더 오래 붙들고 더 늦게 놓아</b>'}. 나쁘다는 뜻이 아니야. 실제로 이 자리가 평생의 주제이자 결국 제일 잘하게 되는 영역이 되기도 해. 다만 <b>집착과 몰입의 구분</b>이 여기선 유난히 어렵고, 잘 안 될 때 손절이 제일 늦는 자리이기도 하지. ${ZW_PAL_SUB[gi.궁]||'이 영역'}에서 판단이 흐려진다 싶으면 <b>바깥 사람 한 명에게 물어보는 규칙</b>을 정해 둬. 이 칸에서만큼은 네 판단이 제일 안 믿을 만하거든.</p>`;
     }
     /* ② 신살의 그림자 면 */
     const sins=(typeof sinsalList==='function')?sinsalList(pr):[];
@@ -5061,7 +5061,7 @@ function fateHTML(pr){
   const _def = Math.max(0, 22 - ((pr.pct&&pr.pct[fe])||0));             // 용신 오행 결핍도 0~22
   const prob = Math.round(Math.max(45, Math.min(95, 55 + _imb*0.7 + _def*0.8)));
   const ae=avoidElement(pr), Lf=LUCKY[fe];
-  return `<div class="hero-card fate"><div class="hero-img">${personaImg(fe,'fate',pr,(function(){try{const _p=fatePick(pr);/* ★본문이 쓰는 해를 그대로 넘긴다 (2026-08-31). null 로 두면 partnerAgeWord 가 fateYearScores 로 다른 해를 골라 본문과 나이가 갈렸다(실측 23세 vs 40세). */return _p?(_p.past?_p.past.y:(_p.win?_p.win.y:null)):null;}catch(e){return null;}})())}</div><div class="hero-ov"><div class="role good">♥ 운명의 상대</div><h3 class="mc-title">${EL[fe].name}의 기운을 지닌 사람</h3><div class="prob-badge">💞 인연 신호 <b>${prob}%</b></div>${lookLineKo(pr,fe,'fate')}<div class="body sub" style="font-size:11px;color:var(--muted);margin-top:2px">※ 미래 예측이 아니라 <b>사주 궁합의 세기</b>를 눈금으로 나타낸 값이야</div></div></div><p class="img-note">🎨 위 이미지는 오행 분위기를 표현한 ‘느낌’ 예시일 뿐, 실제 특정 인물이 아니야.</p><div class="mc-zodtags" style="margin-top:14px">${zs.map(n=>`<span class="tag gold">${n} ${ZODIAC[n].sym}</span>`).join('')}</div><p class="body sub" style="font-size:12px;color:var(--muted);margin-top:6px">※ 이 별자리들은 <b>사주 오행(${EL[fe].name})에 대응하는 계절</b>로 고른 거야. 궁합 장에서 쓰는 <b>서양 4원소</b>(불·흙·바람·물)와는 다른 기준이라, 같은 별자리가 두 곳에서 다르게 분류될 수 있어. 아래에서 짚는 <b>생월</b>과도 계절이 안 맞아 보일 수 있는데, 그쪽은 <b>띠에서 좁혀 낸 자리</b>고 이 별자리 넷은 <b>오행으로 고른 넓은 후보</b>야. 겹치면 제일 강하고, 안 겹쳐도 어긋난 게 아니라 <b>그물 크기가 다른 거야</b>.</p><p class="mc-desc">${desc}</p><div class="mc-section">💘 어떻게 만나게 될까</div><p class="body">${scenario}</p>
+  return `<div class="hero-card fate"><div class="hero-img">${personaImg(fe,'fate',pr,(function(){try{const _p=fatePick(pr);/* ★본문이 쓰는 해를 그대로 넘긴다 (2026-08-31). null 로 두면 partnerAgeWord 가 fateYearScores 로 다른 해를 골라 본문과 나이가 갈렸다(실측 23세 vs 40세). */return _p?(_p.past?_p.past.y:(_p.win?_p.win.y:null)):null;}catch(e){return null;}})())}</div><div class="hero-ov"><div class="role good">♥ 운명의 상대</div><h3 class="mc-title">${EL[fe].name}의 기운을 지닌 사람</h3><div class="prob-badge">💞 인연 신호 <b>${prob}%</b></div>${lookLineKo(pr,fe,'fate')}<div class="body sub" style="font-size:11px;color:var(--muted);margin-top:2px">※ 미래 예측이 아니라 <b>사주 궁합의 세기</b>를 눈금으로 나타낸 값이야</div></div></div><p class="img-note">🎨 위 이미지는 오행 분위기를 표현한 ‘느낌’ 예시일 뿐, 실제 특정 인물이 아니야.</p><div class="mc-zodtags" style="margin-top:14px">${zs.map(n=>`<span class="tag gold">${n} ${ZODIAC[n].sym}</span>`).join('')}</div><p class="body sub" style="font-size:12px;color:var(--muted);margin-top:6px">※ 이 별자리들은 <b>사주 오행(${EL[fe].name})에 대응하는 계절</b>로 고른 거야. 궁합 장에서 쓰는 <b>서양 4원소</b>(불·흙·바람·물)와는 다른 기준이라, 같은 별자리가 두 곳에서 다르게 분류될 수 있어. 아래에서 짚는 생월과 계절이 안 맞아 보일 수 있어. 그쪽은 좁게 고른 자리고 여기 넷은 넓게 고른 후보라 그래. 겹치면 제일 강하고, 안 겹쳐도 <b>틀린 게 아니라 그물 크기가 다른 거야</b>.</p><p class="mc-desc">${desc}</p><div class="mc-section">💘 어떻게 만나게 될까</div><p class="body">${scenario}</p>
      ${(function(){try{const _p=fatePick(pr); if(!_p) return '';const _ns=fateNearStrong(pr); if(!_ns) return '';const _m=_p.past?_p.past:_p.win;const _same=(_m.y===_ns.y);const _nA=_ns.y-pr.y+1, _mA=_m.y-pr.y+1;const _note=_same?`\uc774\uac74 \ub2e4\ub978 \uc0ac\ub78c\uc774 \uc544\ub2c8\uc57c. \ub124 \uacbd\uc6b0\uc5d4 <b>\uac00\uc7a5 \uc13c \ucc3d\uc774 \uace7 \uac00\uc7a5 \uac00\uae4c\uc6b4 \ucc3d</b>\uc774\ub77c \uac19\uc740 \uc0ac\ub78c\u00b7\uac19\uc740 \uc2dc\uc810\uc774\uc57c. \uae30\ub2e4\ub9b4 \uac83 \uc5c6\uc774 \uc9c0\uae08 \uacb0\uc744 \ub9de\ucd94\uba74 \ub3fc.`:(_p.past?`\uc704\ub294 <b>\uac00\uc7a5 \uc14c\ub358 \ucc3d</b>(${_m.y}\ub144 \u00b7 ${_mA}\uc138) \ubb34\ub835\uc758 \uacb0\uc774\uace0, \uc774\uac74 <b>\uc55e\uc73c\ub85c \uac00\uc7a5 \uac00\uae4c\uc6b4 \uac15\ud55c \ucc3d</b>\uc758 \uacb0\uc774\uc57c. \ub2e4\ub978 \uc0ac\ub78c \ub458\uc774 \uc544\ub2c8\ub77c <b>\uac19\uc740 \uacb0\uc744 \ub9cc\ub0a0 \ub450 \uc2dc\uc810</b>\uc774\ub77c\uace0 \ubcf4\uba74 \ub3fc.`:`\uc704\ub294 <b>\uac00\uc7a5 \uc13c \ucc3d</b>(${_m.y}\ub144 \u00b7 ${_mA}\uc138)\uc778\ub370 \uc880 \uba40\uc5b4. \uc774\uac74 <b>\uadf8\uc5d0 \ubc84\uae08\uac00\uba74\uc11c \uac00\uc7a5 \ube68\ub9ac \uc624\ub294 \ucc3d</b>\uc774\uc57c. \ub458 \ub2e4 \uac19\uc740 \uacb0\uc758 \uc0ac\ub78c\uc774\uc57c.`);return `<details class="fate-more" style="margin-top:14px" ontoggle="fateLazyOpen(this)"><summary style="cursor:pointer;font-weight:800;color:var(--violet);padding:11px 4px;min-height:44px;display:flex;align-items:center;gap:7px;flex-wrap:wrap">⏳ 가장 가까운 강한 인연도 보기<span style="font-weight:600;font-size:12px;color:var(--muted)">${_ns.y}년 · 네 ${_nA}세 무렵</span></summary><div class="hero-card fate" style="margin-top:8px"><div class="hero-img">${personaImg(fe,'fate',pr,_ns.y,true)}</div><div class="hero-ov"><div class="role good">⏳ 가장 가까운 강한 인연</div><h3 class="mc-title">${_ns.y}년 · 네 ${_nA}세 무렵</h3><p class="body sub" style="margin-top:6px">${_note}</p></div></div></details>`;}catch(e){return '';}})()}${fatePassedNote(pr)}
      ${meetRadius(pr)}
      <div class="mc-section">한눈에 보기</div><div class="kv">${kvRows(kv)}</div>
