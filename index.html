@@ -20,7 +20,7 @@
 /* ============================================================
    사주 × 별자리 운명 분석, 전부 로컬, 외부통신 없음
    ============================================================ */
-const BUILD='2026-09-01.17';   // 날짜=빌드일, .N=그날 배포 순번. 재배포마다 갱신 → 자동 새로고침 트리거
+const BUILD='2026-09-01.18';   // 날짜=빌드일, .N=그날 배포 순번. 재배포마다 갱신 → 자동 새로고침 트리거
 /* 자동 업데이트: ①켜질 때 최신 BUILD 확인 → 다르면 캐시버스트 이동 ②탭이 다시 보일 때도 확인 → 읽던 중이면 강제 리로드 대신 배너
    (폰 브라우저는 옛 탭을 리로드 없이 복원하므로 ②가 없으면 며칠 전 버전이 계속 보임 — 오너 "어떤 건 배포됐고 어떤 건 안 됐던데" 원인) */
 (function(){try{
@@ -159,30 +159,30 @@ function attractedLabel(){
    전엔 85mm 인물사진 톤 + "natural clean skin" 이라 매끈한 CG 피부가 나왔고,
    오너가 「실물 느낌이 없다」「필터 쓴 것 같다」고 했다.
    오너가 준 참고 사진의 스타일은 폰 셀카·민무늬 벙·확산광·무보정이었다. */
-const PHOTO_BASE="selfie taken with a phone held close, soft diffused daylight from a window, no harsh shadows, minimal natural makeup, unedited photo, natural clean skin, neutral color, calm closed-mouth expression, both eyes aligned looking at the phone";
+const PHOTO_BASE="head and shoulders, hands out of frame, phone selfie looking at camera, lips together, soft window light, natural clean skin";
 /* 부정 프롬프트는 서버로 따로 넘긴다(guidance>1 일 때만 효과가 있다) */
 /* ★필터·보정 계열을 추가했다. guidance 2.5 로 올려 이제 실제로 먹는다
    (guidance 0 이면 부정 프롬프트가 통째로 무시된다 - 그게 지금까지 사시가 난 이유였을 수 있다). */
-const PHOTO_NEG="instagram filter, beauty filter, smooth airbrushed skin, retouched, glossy skin, HDR, oversaturated, heavy color grading, bloom, glow, vignette, hands, fingers, arms, deformed eyes, asymmetrical eyes, cross-eyed, lazy eye, wandering eye, uneven pupils, extra ear, extra nose, distorted face, creepy, harsh shadows, illustration, cgi, 3d render, plastic skin, text, watermark";
+const PHOTO_NEG="hands, fingers, deformed eyes, asymmetrical eyes, cross-eyed, extra ear, distorted face, plastic skin, airbrushed, beauty filter, harsh shadows, illustration, 3d render, text, watermark";
 /* 나이는 숫자만으로는 잘 안 붙는다. 나이대별 머리 단서를 같이 준다(실측). */
 const AGE_HAIR={
-  20:"smooth young face",
+  20:"young smooth face",
   30:"faint smile lines",
-  40:"fine lines around the eyes",
-  50:"greying hair at the temples",
-  60:"grey hair and gentle wrinkles",
-  70:"white hair and deep laugh lines",
-  80:"white hair and deep laugh lines",
+  40:"fine eye lines",
+  50:"greying temples",
+  60:"grey hair, gentle wrinkles",
+  70:"white hair, deep wrinkles",
+  80:"white hair, deep wrinkles",
 };
 /* ★배경이 전원 같은 카페라 다 똑같아 보였다. 오행별로 갈라 준다. */
 const SCENE_BY_EL={
-  목:"plain wall with a green plant beside, bright soft daylight",
-  화:"warm toned room, late afternoon light through a curtain",
-  토:"plain beige wall, flat even indoor daylight",
-  금:"plain white wall, cool clean daylight",
-  수:"dim plain wall, soft grey overcast light from a window",
+  목:"plain wall, green plant",
+  화:"warm toned room",
+  토:"plain beige wall",
+  금:"plain white wall",
+  수:"dim plain wall",
 };
-const ROLE_SCENE={fate:'',avoid:'cooler light, slightly dim'};
+const ROLE_SCENE={fate:'',avoid:'cooler dimmer light'};
 /* ★ 상대 이미지 생성 서버 (오너 PC + cloudflared 터널).
    무료 익명 pollinations 는 sana 한 종뿐이라 사진이 안 나온다(2026-08-27 6가지 방식 검증).
    상대는 사람마다 고유해야 해서 미리 뽑아 둘 수도 없다 — 런타임 생성만 남는다.
@@ -220,11 +220,11 @@ function partnerGenderWord(){
 }
 const ROLE_PHOTO={fate:"casual front-camera selfie from a slightly high angle, warm genuine smile at the camera, soft window daylight, cozy room or cafe corner blurred behind", avoid:"mirror selfie in a dim interior, holding the phone so it partly covers the face, calm expression without a smile, moody elevator or hallway mirror lighting"};
 const EL_PHOTO={
-  목:"fresh light green knit or hoodie, easy relaxed vibe",
-  화:"warm red or coral toned outfit, lively bright energy",
-  토:"beige cozy oversized sweater, calm comfortable mood",
-  금:"clean white shirt and neat hair, tidy composed style",
-  수:"dark blue casual wear, quiet thoughtful mood",
+  목:"light green knit, relaxed vibe",
+  화:"warm red top, lively energy",
+  토:"beige sweater, calm mood",
+  금:"clean white shirt, tidy look",
+  수:"dark blue top, quiet mood",
 };
 /* role: 'fate' | 'avoid' — 시드에 그 사람의 명식(생년월일시)을 포함한다.
    버그(오너 제보 2026-07-20 "상대 이미지 변화 X"): 예전엔 시드가 역할+오행+성별뿐이라
@@ -236,20 +236,20 @@ const EL_PHOTO={
    옷 색·분위기만 갈려서, 용신이 같은 사람끼리는 프롬프트가 글자까지 동일하고 시드만 달랐다.
    이제 부부궁 주성(14종)이 얼굴형·인상까지 바꾼다 → 5종 → 5×14=70종(+성별×시드). */
 const SPOUSE_LOOK={
-  자미:"dignified elegant features, calm composed presence, refined styling",
-  천기:"slim delicate features, bright quick eyes, neat intellectual look",
-  태양:"bright open face, warm confident smile, energetic sunny presence",
-  무곡:"clean sharp features, firm determined jawline, crisp tidy styling",
-  천동:"soft round gentle features, kind approachable smile, cozy relaxed look",
-  염정:"striking distinctive features, intense magnetic gaze, bold fashionable styling",
-  천부:"well-proportioned calm features, generous steady expression, quietly luxurious look",
-  태음:"fair soft features, quiet dreamy eyes, gentle refined styling",
-  탐랑:"charming expressive features, playful flirtatious smile, trendy stylish look",
-  거문:"thoughtful serious features, deep observant eyes, understated intellectual styling",
-  천상:"neat balanced features, polite warm expression, clean classic styling",
-  천량:"mature composed features, reassuring calm gaze, simple dependable styling",
-  칠살:"strong angular features, cool decisive stare, sharp modern styling",
-  파군:"unconventional striking features, restless bold energy, edgy individual styling",
+  자미:"dignified elegant features, composed",
+  천기:"slim delicate features, bright quick eyes",
+  태양:"bright open face, warm smile",
+  무곡:"sharp features, firm jawline",
+  천동:"soft round features, kind smile",
+  염정:"striking features, intense gaze",
+  천부:"calm even features, steady gaze",
+  태음:"fair soft features, dreamy eyes",
+  탐랑:"expressive features, playful smile",
+  거문:"serious features, deep observant eyes",
+  천상:"neat balanced features, polite look",
+  천량:"mature composed features, calm gaze",
+  칠살:"angular features, cool decisive stare",
+  파군:"unconventional features, restless bold look",
 };
 function spouseStarOf(pr){
   try{const Z=ziwei(pr); if(!Z||Z.noTime) return null;
@@ -6898,12 +6898,35 @@ function monthGridHTML(me, op, rawName, rel){
     const oneTxt = (oneMe.length||oneOp.length)
       ? `<b>한쪽만 순풍인 달</b>도 있어. ${oneMe.length?`<b>${oneMe.join('·')}월</b>은 네가 앞장설 달${oneOp.length?'이고':'이야'}`:''}${(oneMe.length&&oneOp.length)?', ':''}${oneOp.length?`<b>${oneOp.join('·')}월</b>은 ${oname}${iga(oname)} 앞장설 달이야`:''}. 이런 달에 <b>서로 속도를 맞추라고 요구하면</b> 둘 다 지쳐. 앞장선 쪽이 정하고 다른 쪽은 받치는 게 그 달엔 제일 편해.`
       : `올해는 한쪽만 순풍인 달이 없어서, 둘의 리듬이 대체로 같이 움직여.`;
+    /* ★열두 달을 <세어서 판단>한다. 나열만 하면 값이 갈려도 뼈대가 글을 지배한다
+       (3장에서 실측: 나열로 늘렸더니 자수는 늘고 개인화는 오히려 나빠졌다). */
+    const meGood=rows.filter(r=>r.a==='good').length;
+    const opGood=rows.filter(r=>r.b==='good').length;
+    const align=rows.filter(r=>r.a===r.b).length;
+    const bothBadM=rows.filter(r=>r.a==='bad'&&r.b==='bad').map(r=>r.m);
+    let run=0,best=0,bs=0,cs=0;
+    rows.forEach(r=>{ if(r.a!=='bad'&&r.b!=='bad'&&!r.chung){ if(!run) cs=r.m; run++; if(run>best){best=run;bs=cs;} } else run=0; });
+    const RW = rel==='friend'
+      ? {job:'같이 벌이는 일', plan:'모임·여행 계획', long:'오래 끄는 모임'}
+      : rel==='work'
+      ? {job:'같이 맡는 일', plan:'일정·마감', long:'긴 프로젝트'}
+      : {job:'같이 정하는 일', plan:'여행·이사 계획', long:'긴 준비'};
+    const lead = meGood>opGood ? `올해는 <b>네가 끌고 가는 해</b>야. ${RW.job}은 상대 속도에 맞추라고 요구하기보다 <b>네가 정하고 알려 주는</b> 쪽이 덜 부딪혀.`
+      : opGood>meGood ? `올해는 <b>${oname}${iga(oname)} 끌고 가는 해</b>야. 네가 뒤처진 게 아니라 순번이 그쪽인 해라, ${RW.job}은 <b>받쳐 주다가 네 달에 몰아서</b> 잡으면 돼.`
+      : `순풍 달 수가 같아서 <b>번갈아 주도하는</b> 게 자연스러운 해야. ${RW.plan}은 누가 정할지 매번 다투기보다 <b>달마다 당번을 정해 두는</b> 게 편해.`;
+    const gapTxt = align>=9 ? ` 열두 달 중 <b>${align}달</b>은 둘의 방향이 같아. 리듬이 잘 붙는 해라 ${RW.plan}이 잘 맞아.`
+      : align<=5 ? ` 열두 달 중 방향이 같은 달은 <b>${align}달</b>뿐이야. 절반 넘게 어긋나니, ${RW.plan}부터 <b>같은 달에 몰지 않는</b> 게 나아.`
+      : ` 열두 달 중 <b>${align}달</b>은 방향이 같고 나머지는 갈려. 반반이라 ${RW.job}만 <b>겹치는 달에 놓고</b> 나머지는 각자 리듬대로 가면 돼.`;
+    const runTxt = best>=3 ? ` 그리고 <b>${bs}월부터 ${bs+best-1}월까지 ${best}달</b>은 둘 다 크게 눌리지 않고 이어져. ${RW.long}${neun(RW.long)} 쪼개지 말고 <b>이 구간에 몰아서</b> 끝내는 게 이 해의 요령이야.`
+      : ` 다만 둘 다 무난하게 이어지는 구간이 <b>길어야 ${best}달</b>이라, ${RW.long}${neun(RW.long)} 한 번에 끝내려 하지 말고 <b>단계로 쪼개</b> 두는 게 맞아.`;
+    const restTxt = bothBadM.length ? ` <b>${bothBadM.join('·')}월</b>은 둘 다 눌리는 달이라 <b>같이 쉬는 달</b>로 비워 둬. 이런 달에 서로를 탓하면 그 감정만 남아.` : '';
+    const rhythmTxt = `열두 달을 세어 보면 순풍이 <b>너 ${meGood}달 · ${oname} ${opGood}달</b>이야. ${lead}${gapTxt}${runTxt}${restTxt}`;
     const badTxt = bad.length
       ? `<b>${bad.join('·')}월</b>은 조심할 달이야. ${(()=>{const ch=rows.filter(r=>r.bad&&r.chung).length; if(!ch) return ''; return ch===bad.length?`충이 걸려 있어서 <b>말이 세게 나가는</b> 달이야. `:`그중 충이 걸린 달은 특히 <b>말이 세게 나가</b>. `;})()}이 달에 몰린 약속이 있으면 미리 여유를 잡아 둬.`
       : `올해는 둘 다 크게 눌리는 달이 없어. 그만큼 <b>시기보다 습관이 변수</b>인 해야.`;
     return `<div class="chapter"><div class="ch-h"><span class="ch-n">장</span><div class="ch-tt"><div class="ch-t">올해 열두 달</div><div class="ch-s">${ty}년, 두 사람의 달을 나란히</div></div></div><p class="body" >앞 장이 <b>10년 단위 배경</b>을 봤다면 여기는 <b>올해 열두 달</b>이야. 같은 달이라도 한 사람에겐 순풍이고 다른 사람에겐 역풍일 수 있어서, 나란히 놓고 봐야 <b>왜 이 달따라 안 맞았는지</b>가 보여.</p>
       ${grid}
-      <div class="info-grid"><div class="info-card wide"><div class="lab" style="color:${cur.both?'var(--good)':(cur.bad?'var(--care)':'var(--ok)')}">이번 달</div><div class="val" style="font-weight:500">${curTxt}</div></div><div class="info-card wide"><div class="lab">같이 밀 달, 번갈아 밀 달</div><div class="val" style="font-weight:500">${bothTxt}<br>${oneTxt}</div></div><div class="info-card wide"><div class="lab" style="color:var(--care)">조심할 달</div><div class="val" style="font-weight:500">${badTxt}</div></div></div><p class="body sub" style="font-size:13.5px;color:var(--muted);margin-top:8px">이 표는 <b>${ty}년 기준</b>이야. 해가 바뀌면 배치도 바뀌니까 새해에 다시 열어 봐.</p></div>`;
+      <div class="info-grid"><div class="info-card wide"><div class="lab" style="color:${cur.both?'var(--good)':(cur.bad?'var(--care)':'var(--ok)')}">이번 달</div><div class="val" style="font-weight:500">${curTxt}</div></div><div class="info-card wide"><div class="lab">같이 밀 달, 번갈아 밀 달</div><div class="val" style="font-weight:500">${bothTxt}<br>${oneTxt}</div></div><div class="info-card wide"><div class="lab">올해의 리듬</div><div class="val" style="font-weight:500">${rhythmTxt}</div></div><div class="info-card wide"><div class="lab" style="color:var(--care)">조심할 달</div><div class="val" style="font-weight:500">${badTxt}</div></div></div><p class="body sub" style="font-size:13.5px;color:var(--muted);margin-top:8px">이 표는 <b>${ty}년 기준</b>이야. 해가 바뀌면 배치도 바뀌니까 새해에 다시 열어 봐.</p></div>`;
   }catch(e){ return ''; }
 }
 let _reportBuilders={};   // cid → ()=>chaptersHTML. 무거운 9장 보고서를 '열 때' 만들기 위한 지연 빌더(로컬 카운슬 성능 2026-07-21)
