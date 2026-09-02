@@ -1,0 +1,7 @@
+# 테스트 도구가 site/ 안에 mkstemp 로 만드는 임시 사본들.
+# tools/run_tests.py · tools/check_layout.py 가 ASSET_DIR(=site/) 에 만든다 —
+# 폰트·캐릭터 이미지 같은 상대경로 자산을 그대로 써야 진짜 화면이 나오기 때문이다.
+# 정상 종료 때는 지우지만 중간에 죽으면 남고, _deploy.py 의 `git add -A` 가
+# 그걸 통째로 공개 사이트에 올려 버렸다(1.2MB 짜리 앱 사본 2개가 실제로 라이브에 있었다).
+_selftest_*.html
+tmp*.html
