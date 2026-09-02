@@ -20,7 +20,7 @@
 /* ============================================================
    사주 × 별자리 운명 분석, 전부 로컬, 외부통신 없음
    ============================================================ */
-const BUILD='2026-09-01.23';   // 날짜=빌드일, .N=그날 배포 순번. 재배포마다 갱신 → 자동 새로고침 트리거
+const BUILD='2026-09-02.1';   // 날짜=빌드일, .N=그날 배포 순번. 재배포마다 갱신 → 자동 새로고침 트리거
 /* 자동 업데이트: ①켜질 때 최신 BUILD 확인 → 다르면 캐시버스트 이동 ②탭이 다시 보일 때도 확인 → 읽던 중이면 강제 리로드 대신 배너
    (폰 브라우저는 옛 탭을 리로드 없이 복원하므로 ②가 없으면 며칠 전 버전이 계속 보임 — 오너 "어떤 건 배포됐고 어떤 건 안 됐던데" 원인) */
 (function(){try{
@@ -235,21 +235,25 @@ const EL_PHOTO={
    ★버그(오너 제보 2026-07-20 "상대 이미지가 옷·머리만 바뀐다"): 예전 프롬프트는 용신(5종)으로
    옷 색·분위기만 갈려서, 용신이 같은 사람끼리는 프롬프트가 글자까지 동일하고 시드만 달랐다.
    이제 부부궁 주성(14종)이 얼굴형·인상까지 바꾼다 → 5종 → 5×14=70종(+성별×시드). */
+/* ★얼굴이 갈리게 하는 축. 추상 표현(sharp features)은 SDXL 이 거의 안 듣는다 —
+   배우자성만 바꿔 4장을 뽑았더니 얼굴이 수렴했다(2026-09-01 실측).
+   얼굴형 + 눈 + 하나 로 골격을 쓴다. 14종이 셋 다 겹치는 쌍 없이 갈린다.
+   어휘는 people.py 의 검증된 축 값을 따랐다. */
 const SPOUSE_LOOK={
-  자미:"dignified elegant features, composed",
-  천기:"slim delicate features, bright quick eyes",
-  태양:"bright open face, warm smile",
-  무곡:"sharp features, firm jawline",
-  천동:"soft round features, kind smile",
-  염정:"striking features, intense gaze",
-  천부:"calm even features, steady gaze",
-  태음:"fair soft features, dreamy eyes",
-  탐랑:"expressive features, playful smile",
-  거문:"serious features, deep observant eyes",
-  천상:"neat balanced features, polite look",
-  천량:"mature composed features, calm gaze",
-  칠살:"angular features, cool decisive stare",
-  파군:"unconventional features, restless bold look",
+  자미:"oval face, deep-set eyes, high nose bridge",
+  천기:"long narrow face, upturned almond eyes, thin lips",
+  태양:"round soft face, double-lid eyes, wide flat mouth",
+  무곡:"square jaw, close-set eyes, thick straight brows",
+  천동:"round soft face, downturned eyes, rounded nose tip",
+  염정:"wide cheekbones, deep-set eyes, arched thin brows",
+  천부:"oval face, wide-set monolid eyes, full lower lip",
+  태음:"long narrow face, downturned eyes, small defined mouth",
+  탐랑:"heart-shaped face, upturned almond eyes, lip beauty spot",
+  거문:"long narrow face, deep-set eyes, thin lips",
+  천상:"oval face, double-lid eyes, small defined mouth",
+  천량:"wide cheekbones, heavy low brows, wide flat mouth",
+  칠살:"square jaw, upturned almond eyes, sparse light brows",
+  파군:"heart-shaped face, close-set eyes, asymmetric smile",
 };
 function spouseStarOf(pr){
   try{const Z=ziwei(pr); if(!Z||Z.noTime) return null;
