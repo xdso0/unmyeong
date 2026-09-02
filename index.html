@@ -20,7 +20,7 @@
 /* ============================================================
    사주 × 별자리 운명 분석, 전부 로컬, 외부통신 없음
    ============================================================ */
-const BUILD='2026-09-02.3';   // 날짜=빌드일, .N=그날 배포 순번. 재배포마다 갱신 → 자동 새로고침 트리거
+const BUILD='2026-09-02.4';   // 날짜=빌드일, .N=그날 배포 순번. 재배포마다 갱신 → 자동 새로고침 트리거
 /* 자동 업데이트: ①켜질 때 최신 BUILD 확인 → 다르면 캐시버스트 이동 ②탭이 다시 보일 때도 확인 → 읽던 중이면 강제 리로드 대신 배너
    (폰 브라우저는 옛 탭을 리로드 없이 복원하므로 ②가 없으면 며칠 전 버전이 계속 보임 — 오너 "어떤 건 배포됐고 어떤 건 안 됐던데" 원인) */
 (function(){try{
@@ -196,7 +196,10 @@ let IMG_SERVER='';
 (function(){ try{
   fetch('imgserver.json?_='+Date.now(), {cache:'no-store'})
     .then(function(r){ return r.ok ? r.json() : null; })
-    .then(function(j){ if(j&&j.url){ IMG_SERVER=j.url; IMG_TOKEN=j.token||''; } })
+    .then(function(j){ if(j&&j.url){ IMG_SERVER=j.url; IMG_TOKEN=j.token||'';
+      /* ★주소가 늦게 오면 렌더 시점의 프리페치는 빈손으로 끝난다.
+         그때 기다리던 프로필이 있으면 지금 실행한다(2026-09-02). */
+      try{ if(typeof _prefetchWait!=='undefined' && _prefetchWait) prefetchPersona(_prefetchWait); }catch(e){} } })
     .catch(function(){});
 }catch(e){} })();   /* 예: 'https://xxxx.trycloudflare.com' */
 let IMG_TOKEN='';
@@ -521,6 +524,34 @@ function personaImg(elKey,role,pr,refY,lazy){
 /* ★ 서버가 꺼져 있을 때 (오너 지시 2026-08-27 "그냥 꺼지면 꺼져있다고 표시").
    예전엔 오라로 대체했다가 그것도 폐지하고 통째로 숨겼는데, 숨기면 <원래 없는 것>처럼 보인다.
    지금은 사실대로 말한다 — 그림을 만드는 컴퓨터가 꺼져 있다고. */
+/* ★상대 그림 <미리 만들기> (오너 지시 2026-09-02).
+   전엔 16·17장에 닿아야 요청이 나가서 장당 3~7분을 그 자리에서 기다렸다.
+   서버는 (프롬프트·시드·설정)으로 캐시하므로, 리포트를 그리는 순간 같은 URL 을
+   한 번 때려 두면 독자가 그 장에 닿을 때는 캐시 적중이 된다.
+   ★16·17장과 <똑같은 인자>로 불러야 캐시 키가 맞는다. 하나라도 다르면 헛일이다. */
+const _prefetched={};
+let _prefetchWait=null;
+function prefetchPersona(pr){
+  try{
+    if(!IMG_SERVER){ _prefetchWait=pr; return; }   /* 주소가 오면 그때 실행한다 */
+    _prefetchWait=null;
+    const jobs=[];
+    try{
+      const fe=fateElement(pr), p=fatePick(pr);
+      const refY=p?(p.past?p.past.y:(p.win?p.win.y:null)):null;
+      jobs.push(personaSpec(fe,'fate',pr,refY));
+    }catch(e){}
+    try{ jobs.push(personaSpec(avoidElement(pr),'avoid',pr,avoidYear(pr))); }catch(e){}
+    jobs.filter(Boolean).forEach(sp=>{
+      const url=IMG_SERVER.replace(/\/+$/,'')+'/img?prompt='+encodeURIComponent(sp.prompt)
+        +'&neg='+encodeURIComponent(PHOTO_NEG)+'&seed='+sp.seed
+        +(IMG_TOKEN?('&token='+encodeURIComponent(IMG_TOKEN)):'');
+      if(_prefetched[url]) return;
+      _prefetched[url]=1;
+      const im=new Image(); im.decoding='async'; im.src=url;   /* 응답은 버린다. 서버 캐시만 채운다 */
+    });
+  }catch(e){}
+}
 function imgOffBox(){
   return '<div class="img-off"><div class="img-off-i">🖥️</div>'
     +'<div class="img-off-t">이미지를 만드는 컴퓨터가 <b>지금 꺼져 있어</b></div>'
@@ -5871,7 +5902,8 @@ function renderMe(pr){
   EL_ORDER.forEach(e=>{const row=document.createElement('div');row.className='elem';
     row.innerHTML=`<div class="nm">${EL[e].name}</div><div class="bar"><i style="width:${pr.pct[e]}%;background:${EL[e].color}"></i></div><div class="v">${pr.pct[e]}%</div>`;
     bars.appendChild(row);});
-  renderMyDetail(pr); glossFirstUse(document.getElementById('myDetail'));   /* ★명리 용어 첫 등장 풀이 (2026-08-31, 오너 지시). 렌더가 끝난 뒤에 부른다 - 안에서 부르면 아직 빈 요소를 훑는다 */
+  renderMyDetail(pr); glossFirstUse(document.getElementById('myDetail'));
+  prefetchPersona(pr);   /* ★상대 그림을 지금부터 만들기 시작한다(오너 지시 2026-09-02) */   /* ★명리 용어 첫 등장 풀이 (2026-08-31, 오너 지시). 렌더가 끝난 뒤에 부른다 - 안에서 부르면 아직 빈 요소를 훑는다 */
   renderFate(pr);
   renderAvoid(pr);
   STATE._prCache=pr;
@@ -6375,7 +6407,33 @@ function chPhysMore(me,op,oname,rel){
   if(sMe&&sOp) mix=`둘 다 타고난 에너지가 센 편이라, 함께 있으면 활동량이 배로 늘어. 신나는 대신 쉼이 뒤로 밀리기 쉬우니, 아무것도 안 하는 날을 일부러 달력에 박아 둬. 그리고 에너지가 센 둘은 부딪힐 때도 세게 부딪히니까, 언성이 올라가면 그 자리에서 이기려 하지 말고 30분 산책으로 끊는 규칙을 만들어.`;
   else if(wMe&&wOp) mix=`둘 다 에너지를 아껴 쓰는 체질이라, 집에서 보내는 조용한 시간이 최고의 데이트야. 서로 무리한 약속을 강요하지 않는 게 큰 장점인데, 대신 관계가 익숙해질수록 새로운 자극이 줄어들 수 있어. 한 달에 한 번은 둘 다 안 가 본 곳에 가는 작은 모험을 넣어 주면 잔잔함이 지루함이 되는 걸 막아 줘.`;
   else mix=`한 명은 에너지가 밖으로 뻗는 체질이고 한 명은 안으로 모으는 체질이야. 이 조합의 함정은 활동적인 쪽이 끌고 다니다 지치고, 차분한 쪽이 끌려다니다 방전되는 것. 해법은 간단해, 주말 이틀 중 하루는 밖의 날, 하루는 집의 날로 나눠서 서로의 리듬을 번갈아 타 주는 거야. 그러면 다른 체질이 서로의 세계를 넓혀 주는 최고의 조합이 돼.`;
+  /* ★생성기가 신강약 3종뿐이라 15쌍 중 13쌍이 같은 문장을 받았다(2026-09-02 실측).
+     일지 십이운성 단계를 축으로 더한다. 12x12 라 종수가 충분하고
+     <에너지가 차고 빠지는 리듬>이라 이 장의 주제와 맞는다. */
+  const phaseOf=s=>['장생','목욕','관대','건록'].includes(s)?'up'
+    :s==='제왕'?'top':['쇠','병','사'].includes(s)?'down':'seed';
+  const stageTxt=(()=>{try{
+    const um=unseong(me), uo=unseong(op);
+    const sm=um&&um.일지, so=uo&&uo.일지;
+    if(!sm||!so) return '';
+    const km=(UNSEONG_DESC[sm]||{}).kw||'', ko=(UNSEONG_DESC[so]||{}).kw||'';
+    const pm=phaseOf(sm), po=phaseOf(so);
+    const name=`너는 <b>${sm}</b>${km?`(${km})`:''} 단계고 ${oname}${neun(oname)} <b>${so}</b>${ko?`(${ko})`:''} 단계야.`;
+    const same=(pm===po);
+    const body = same
+      ? (pm==='top'?` 둘 다 기운이 <b>정점</b>인 자리라 같이 있으면 화력이 세. 대신 둘 다 브레이크가 약해서 <b>쉬는 날을 달력에 미리 박아 두는</b> 게 이 조합의 안전장치야.`
+        :pm==='up'?` 둘 다 기운이 <b>차오르는</b> 구간이라 새로 벌이는 일이 잘 붙어. 다만 둘 다 <b>마무리보다 시작에 강해서</b>, 벌인 것을 정리할 사람을 밖에서 구하는 게 나아.`
+        :pm==='down'?` 둘 다 기운이 <b>가라앉는</b> 구간이라 서로 재촉하지 않는 게 편해. 대신 아무도 먼저 일으키지 않아서 <b>같이 정체되기</b> 쉬우니, 밖에서 약속을 하나쯤 걸어 두는 게 좋아.`
+        :` 둘 다 기운이 <b>안에 고이는</b> 구간이야. 겉으로 조용한데 속으로는 각자 준비 중이라, <b>지금 뭘 준비하고 있는지</b>만 서로 말해 두면 오해가 크게 줄어.`)
+      : ((pm==='top'||pm==='up')&&(po==='down'||po==='seed')
+        ? ` 네 기운이 <b>차 있는</b> 쪽이고 ${oname}${neun(oname)} <b>고이는</b> 쪽이야. 같은 하루를 보내도 <b>지치는 시점이 달라</b>. 네가 괜찮다고 더 밀면 상대는 다음 날을 통째로 쓰게 돼.`
+        : ((po==='top'||po==='up')&&(pm==='down'||pm==='seed')
+        ? ` ${oname}${iga(oname)} <b>차 있는</b> 쪽이고 너는 <b>고이는</b> 쪽이야. 네가 게으른 게 아니라 구간이 다른 거야. <b>먼저 못 한다고 말하는</b> 쪽이 관계를 지켜.`
+        : ` 기운의 구간이 서로 어긋나 있어. 한쪽이 오를 때 다른 쪽이 내려가는 배치라, <b>일정을 반씩 나눠 잡는</b> 게 둘 다 덜 지쳐.`));
+    return `<p class="body">${name}${body}</p>`;
+  }catch(e){ return ''; }})();
   return `<p class="body">체질궁합은 몸의 합이라기보다 <b>생활 리듬의 합</b>이야. ${rel==='love'?'데이트 체력':'같이 있을 때의 체력'}, 주말을 보내는 방식, 잠들고 일어나는 시간 같은 것들. 연애 초엔 콩깍지가 리듬 차이를 다 덮어 주는데, 오래가는 관계에선 이 리듬이 맞는 게 설렘보다 힘이 세.</p><p class="body">${mix}</p>
+  ${stageTxt}
   ${(()=>{const L=rhythmPairLine(me,op);return `<p class="body">${L||'리듬이 어긋나는 날엔 억지로 맞추지 말고 <b>같은 공간에서 각자 하고 싶은 걸</b> 해. 그것도 함께 있는 거야.'}</p>`;})()}`;
 }
 function chFutureMore(me,op,oname,rel){
