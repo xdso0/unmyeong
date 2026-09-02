@@ -20,7 +20,7 @@
 /* ============================================================
    사주 × 별자리 운명 분석, 전부 로컬, 외부통신 없음
    ============================================================ */
-const BUILD='2026-09-02.2';   // 날짜=빌드일, .N=그날 배포 순번. 재배포마다 갱신 → 자동 새로고침 트리거
+const BUILD='2026-09-02.3';   // 날짜=빌드일, .N=그날 배포 순번. 재배포마다 갱신 → 자동 새로고침 트리거
 /* 자동 업데이트: ①켜질 때 최신 BUILD 확인 → 다르면 캐시버스트 이동 ②탭이 다시 보일 때도 확인 → 읽던 중이면 강제 리로드 대신 배너
    (폰 브라우저는 옛 탭을 리로드 없이 복원하므로 ②가 없으면 며칠 전 버전이 계속 보임 — 오너 "어떤 건 배포됐고 어떤 건 안 됐던데" 원인) */
 (function(){try{
@@ -166,18 +166,18 @@ const PHOTO_BASE="head and shoulders, hands out of frame, phone selfie looking a
 const PHOTO_NEG="hands, fingers, deformed eyes, asymmetrical eyes, cross-eyed, extra ear, distorted face, plastic skin, airbrushed, beauty filter, harsh shadows, illustration, 3d render, text, watermark";
 /* 나이는 숫자만으로는 잘 안 붙는다. 나이대별 머리 단서를 같이 준다(실측). */
 const AGE_HAIR={
-  20:"young smooth face",
+  20:"smooth face",
   30:"faint smile lines",
   40:"fine eye lines",
   50:"greying temples",
-  60:"grey hair, gentle wrinkles",
+  60:"grey hair, wrinkles",
   70:"white hair, deep wrinkles",
   80:"white hair, deep wrinkles",
 };
 /* ★배경이 전원 같은 카페라 다 똑같아 보였다. 오행별로 갈라 준다. */
 const SCENE_BY_EL={
-  목:"plain wall, green plant",
-  화:"warm toned room",
+  목:"plain wall, plant",
+  화:"warm toned wall",
   토:"plain beige wall",
   금:"plain white wall",
   수:"dim plain wall",
@@ -239,21 +239,24 @@ const EL_PHOTO={
    배우자성만 바꿔 4장을 뽑았더니 얼굴이 수렴했다(2026-09-01 실측).
    얼굴형 + 눈 + 하나 로 골격을 쓴다. 14종이 셋 다 겹치는 쌍 없이 갈린다.
    어휘는 people.py 의 검증된 축 값을 따랐다. */
+/* ★얼굴 5축: 얼굴형 + 눈 + 코 + 입 + 눈썹 (2026-09-02, 오너 지시).
+   3축일 때보다 갈리지만, 추상어(asymmetric smile 등)는 여전히 안 듣는다.
+   그릴 수 있는 것만 쓴다. 나이·배경을 줄여 여기에 자리를 냈다. */
 const SPOUSE_LOOK={
-  자미:"oval face, deep-set eyes, high nose bridge",
-  천기:"long narrow face, upturned almond eyes, thin lips",
-  태양:"round soft face, double-lid eyes, wide flat mouth",
-  무곡:"square jaw, close-set eyes, thick straight brows",
-  천동:"round soft face, downturned eyes, rounded nose tip",
-  염정:"wide cheekbones, deep-set eyes, arched thin brows",
-  천부:"oval face, wide-set monolid eyes, full lower lip",
-  태음:"long narrow face, downturned eyes, small defined mouth",
-  탐랑:"heart-shaped face, upturned almond eyes, lip beauty spot",
-  거문:"long narrow face, deep-set eyes, thin lips",
-  천상:"oval face, double-lid eyes, small defined mouth",
-  천량:"wide cheekbones, heavy low brows, wide flat mouth",
-  칠살:"square jaw, upturned almond eyes, sparse light brows",
-  파군:"heart-shaped face, close-set eyes, asymmetric smile",
+  자미:"oval face, deep-set eyes, high nose bridge, small mouth, level brows",
+  천기:"long narrow face, upturned eyes, narrow nose, thin lips, arched brows",
+  태양:"round open face, double-lid eyes, upturned nose, wide mouth, high brows",
+  무곡:"square jaw, close-set eyes, straight nose, flat mouth, thick brows",
+  천동:"round soft face, downturned eyes, rounded nose, small lips, soft brows",
+  염정:"wide cheekbones, deep-set eyes, hooked nose, defined lips, dark brows",
+  천부:"broad face, monolid eyes, low nose bridge, full lips, sparse brows",
+  태음:"long narrow face, downturned eyes, narrow nose, small mouth, pale brows",
+  탐랑:"heart-shaped face, upturned eyes, short nose, full lips, arched brows",
+  거문:"long face, monolid eyes, high nose bridge, thin lips, straight brows",
+  천상:"oval face, double-lid eyes, straight nose, even lips, rounded brows",
+  천량:"broad face, hooded eyes, wide nose, wide mouth, heavy low brows",
+  칠살:"angular face, narrow eyes, high thin nose, thin lips, light brows",
+  파군:"asymmetric face, close-set eyes, crooked nose, uneven lips, uneven brows",
 };
 function spouseStarOf(pr){
   try{const Z=ziwei(pr); if(!Z||Z.noTime) return null;
