@@ -20,7 +20,7 @@
 /* ============================================================
    사주 × 별자리 운명 분석, 전부 로컬, 외부통신 없음
    ============================================================ */
-const BUILD='2026-09-02.1';   // 날짜=빌드일, .N=그날 배포 순번. 재배포마다 갱신 → 자동 새로고침 트리거
+const BUILD='2026-09-02.2';   // 날짜=빌드일, .N=그날 배포 순번. 재배포마다 갱신 → 자동 새로고침 트리거
 /* 자동 업데이트: ①켜질 때 최신 BUILD 확인 → 다르면 캐시버스트 이동 ②탭이 다시 보일 때도 확인 → 읽던 중이면 강제 리로드 대신 배너
    (폰 브라우저는 옛 탭을 리로드 없이 복원하므로 ②가 없으면 며칠 전 버전이 계속 보임 — 오너 "어떤 건 배포됐고 어떤 건 안 됐던데" 원인) */
 (function(){try{
@@ -3139,8 +3139,12 @@ function fatePick(pr){
 function fateNearStrong(pr){
   try{
     const all=fateYearScores(pr); if(!all||!all.length) return null;
-    const _y=(typeof nowSajuYear==='function')?nowSajuYear(new Date()):new Date().getFullYear();
-    const fut=all.filter(x=>x.y>=_y); if(!fut.length) return null;
+    /* ★fatePick 과 <같은 판정>을 써야 한다. 연도만 보면 「이미 지났다」고 말한 해를
+       가장 가까운 창으로 다시 내민다(2026-09-02 실측: 15부 중 13명). */
+    const _d=new Date(), _y=(typeof nowSajuYear==='function')?nowSajuYear(_d):_d.getFullYear();
+    const _cm=(_d.getFullYear()>_y)?13:_d.getMonth()+1;
+    const _alive=x=>x.y>_y||(x.y===_y&&(FATE_MON_END[x.el]||12)>=_cm);
+    const fut=all.filter(_alive); if(!fut.length) return null;
     const mx=Math.max.apply(null,fut.map(x=>x.sc));
     return fut.filter(x=>x.sc>=mx-1).sort((a,b)=>a.y-b.y)[0]||null;
   }catch(e){ return null; }
