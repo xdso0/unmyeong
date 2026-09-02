@@ -20,7 +20,7 @@
 /* ============================================================
    사주 × 별자리 운명 분석, 전부 로컬, 외부통신 없음
    ============================================================ */
-const BUILD='2026-09-02.4';   // 날짜=빌드일, .N=그날 배포 순번. 재배포마다 갱신 → 자동 새로고침 트리거
+const BUILD='2026-09-02.5';   // 날짜=빌드일, .N=그날 배포 순번. 재배포마다 갱신 → 자동 새로고침 트리거
 /* 자동 업데이트: ①켜질 때 최신 BUILD 확인 → 다르면 캐시버스트 이동 ②탭이 다시 보일 때도 확인 → 읽던 중이면 강제 리로드 대신 배너
    (폰 브라우저는 옛 탭을 리로드 없이 복원하므로 ②가 없으면 며칠 전 버전이 계속 보임 — 오너 "어떤 건 배포됐고 어떤 건 안 됐던데" 원인) */
 (function(){try{
@@ -7029,8 +7029,21 @@ function coupleDaysHTML(me, op, rawName, rel){
       return first? ` ${who} 쪽과 <b>${kind}</b>이라 <b>${meaning}</b>에 특히 맞아.`
                   : ` ${who} 쪽과 <b>${kind}</b>.`;
     };
+    /* ★양쪽 십이운성을 거르는 데만 쓰고 버렸다. 그날이 <무슨 일에 맞는지>를
+       거기서 뽑는다. 12x12 라 날마다·쌍마다 갈린다(2026-09-02). */
+    const RANK={건록:6,제왕:6,관대:5,장생:5,양:4,목욕:4,태:3,쇠:3,병:2,사:1,묘:1,절:1};
+    const useSeen={};
+    const useOf=x=>{
+      const pick=(RANK[x.um]||0)>=(RANK[x.uo]||0)?{s:x.um,who:'네'}:{s:x.uo,who:'상대'};
+      if(!pick.s) return '';
+      const d=UNS_USE[pick.s];
+      if(!d) return '';
+      if(useSeen[pick.s]) return ` ${pick.who} 기운은 다시 <b>${pick.s}</b>.`;
+      useSeen[pick.s]=1;
+      return ` ${pick.who} 기운이 <b>${pick.s}</b>${(()=>{const k=UNSEONG_DESC[pick.s]&&UNSEONG_DESC[pick.s].kw;return (k?`(${k})`:'')+'.';})()} ${d.replace(/^기운이 /,'').replace(/^([^,]{0,14})이라 /,'').replace(/^([^,]{0,14})라 /,'')}`;
+    };
     const lv=x=>x.score>=4?'둘 다 채울 기운':(x.sm===2||x.so===2)?'한쪽엔 채울 기운, 한쪽엔 거들 기운':'둘 다 거들 기운';
-    const list=pick.map(x=>`<li><b>${x.m}월 ${x.d}일</b> · ${x.gz}일 · <b>${EL[x.el].name}</b> · ${lv(x)}${relOf(x)}</li>`).join('');
+    const list=pick.map(x=>`<li><b>${x.m}월 ${x.d}일</b> · ${x.gz}일 · <b>${EL[x.el].name}</b> · ${lv(x)}${relOf(x)}${useOf(x)}</li>`).join('');
     const top=pick.filter(x=>x.score>=4);
     const head=(top.length&&top.length<pick.length)
       ? `그중 <b>${top.map(x=>x.m+'월 '+x.d+'일').join(' · ')}</b>${iga(top[top.length-1].d+'일')} 제일 세.`+` 이 날은 <b>둘 다에게 채울 기운</b>이 들어오는 날이라, 큰 결정을 여기 놓으면 서로 덜 지쳐.`
