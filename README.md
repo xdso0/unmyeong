@@ -11,6 +11,17 @@
 
 ## 📂 구조 (수정하는 법)
 
+```
+unmyeong/
+├─ index.html            빌드 산출물(정본은 ../사주별자리_운명분석.html)
+├─ manifest.webmanifest · sw.js · robots.txt · sitemap.xml · llms.txt · imgserver.json · .nojekyll
+├─ assets/               아이콘·OG·QR·배경 (2026-11-09 루트에서 이동)
+├─ char/ · char2/        캐릭터 자산
+├─ fonts/ · guide/       폰트(OFL) · 가이드 이미지
+└─ README.md
+```
+
+
 이 앱은 **`index.html` 파일 하나**가 전부예요. (CSS·JS·데이터 모두 안에 들어 있음)
 
 > ⚠️ **이 저장소의 `index.html`은 빌드 산출물입니다 — 직접 수정 금지.**
