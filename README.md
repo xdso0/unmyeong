@@ -4,7 +4,7 @@
 성격·운명의 상대·피해야 할 상대·궁합을 풀어 주는 **단일 HTML 웹앱**.
 
 - 🌐 **라이브:** https://xdso0.github.io/unmyeong/
-- 📱 모바일 우선 · 글래스(초록·파랑) 디자인 · 동네 언니 반말 톤
+- 📱 모바일 우선 · 반응형 단일 HTML · 다정한 반말 톤 (디자인 개편 진행 중, 2026-11)
 - 🔒 **개인정보는 전부 브라우저(localStorage)에만 저장** — 외부 전송 없음
 
 ---
@@ -29,8 +29,8 @@ unmyeong/
 
 수정하려면 (상위 폴더에서):
 1. `사주별자리_운명분석.html`(정본)을 편집기로 열어서 고친다
-2. `python build.py --bump` 실행 → BUILD 태그 +1, 압축된 `site/index.html` 자동 생성
-3. `cd site && git add -A && git commit -m "수정 내용 BUILD <태그>" && git push`
+2. `python tools/_deploy.py "수정 내용"` 실행 → BUILD 태그 +1, 압축된 `site/index.html` 생성 → 커밋·푸시 → 라이브 전파 확인까지 한 번에
+   (배포 없이 빌드만: `python tools/build.py`)
 
 자세한 규칙은 `../README.md` 참고.
 
@@ -49,10 +49,10 @@ unmyeong/
 
 **화면 렌더**
 - `describePerson()` — 종합 풀이
-- `renderMyDetail()` — '나의 분석'(목차 아코디언 + 융합 박스)
+- `renderMyDetail()` — 개인 리포트 15장(명식 → 용신 → 신살 → 개운 → 자미 명반·12궁 → 나 → 연애 → 운명의 상대 → 피할 상대 → 대인 → 일·돈 → 건강 → 그림자 → 시기 → 실전)
 - `renderFate()` / `renderAvoid()` — 운명의 상대 / 피해야 할 상대
-- `renderCompatList()` — 궁합 8장 + 자미 관계운
-- `saveResultImage()` — 인스타 공유 카드(1080×1920)
+- `renderCompatList()` — 궁합 보고서 16장(연인·친구·직장 관계별 치환) + 자미 관계운
+- `saveCharCard()` / `shareResult()` — 캐릭터 카드 저장 · 텍스트 요약 공유
 
 **데이터 테이블** (오행별 문구 — 여기 고치면 내용이 바뀜)
 - `EL`, `SIPSUNG`, `EL_PERSONA`, `AVOID_DETAIL`, `PARTNER_EXTRA`, `ZW_STAR`, `ZODIAC` 등
