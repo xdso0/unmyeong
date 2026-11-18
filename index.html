@@ -66,7 +66,7 @@
 /* ============================================================
    사주 × 별자리 운명 분석, 전부 로컬, 외부통신 없음
    ============================================================ */
-const BUILD='2026-11-18.2';   // 날짜=빌드일, .N=그날 배포 순번. 재배포마다 갱신 → 자동 새로고침 트리거
+const BUILD='2026-11-18.3';   // 날짜=빌드일, .N=그날 배포 순번. 재배포마다 갱신 → 자동 새로고침 트리거
 /* 자동 업데이트: ①켜질 때 최신 BUILD 확인 → 다르면 캐시버스트 이동 ②탭이 다시 보일 때도 확인 → 읽던 중이면 강제 리로드 대신 배너
    (폰 브라우저는 옛 탭을 리로드 없이 복원하므로 ②가 없으면 며칠 전 버전이 계속 보임 — 오너 "어떤 건 배포됐고 어떤 건 안 됐던데" 원인) */
 (function(){try{
@@ -3884,7 +3884,8 @@ const FATE_MON={목:'3~4월',화:'6~8월',토:'9~10월',금:'10~11월',수:'1~2�
    「다음이 2026년 6~8월」이라고 안내했다(기준일 2026-08-28에 B·F·G 3인). 지나간 창을 안 가리키려고
    만든 fatePassedNote 안에서 다시 지나간 창을 가리키던 셈이다. (2026-08-28) */
 const FATE_MON_END={목:4,화:8,토:10,금:11,수:2};
-/* ★나이 게이트(5차 B1·D4, 2026-11-18). 기준 해는 사주 해(nowSajuYear). */
+/* ★나이 게이트(5차 B1·D4, 2026-11-18). 기준 해는 사주 해(nowSajuYear) — <입춘 기준 연나이>라 생일 전후로 만 나이와 최대 1년 다를 수 있다(6차 U1).
+   이용 가능 나이(만 14세) 판정만은 생년월일 기준 <만 나이>로 한다(ageGateError). */
 function ageNow(pr){try{const ny=(typeof nowSajuYear==='function')?nowSajuYear(new Date()):new Date().getFullYear();return ny-pr.y;}catch(e){return 30;}}
 /* 인연 횟수·해 목록·상대 생년월·운명의 시기는 19세 이상 65세 미만에게만 — 미성년엔 이르고, 고령엔 「앞으로 몇 번·몇 년생」이 맞지 않는다 */
 function romanceAgeOk(pr){const a=ageNow(pr); return a>=19&&a<65;}
@@ -4195,7 +4196,8 @@ function wealthYears(pr){
   const _wSeen={};
   const _line=(y,L,key,full,shortTxt)=>{ const had=_wSeen[key]; _wSeen[key]=1;
     return had ? `${y}년(${L}), ${shortTxt}` : `${y}년(${L}), ${full}`; };
-  for(let y=2026;y<=2035;y++){ const ye=yearGanzhi(y).el, L=yearGanzhi(y).label;
+  const _wy0=(typeof nowSajuYear==='function')?nowSajuYear(new Date()):new Date().getFullYear();   /* 6차 F1: 2026~2035 상수 → 올해부터 10년 */
+  for(let y=_wy0;y<=_wy0+9;y++){ const ye=yearGanzhi(y).el, L=yearGanzhi(y).label;
     if(ye===we) out.push(we===_gi
       ? _line(y,L,'we_gi','돈이 크게 보이는 해. 다만 네 기신이라 <b>벌리기보다 지키기</b>가 맞아 ⚠','같은 성격의 해 ⚠')
       : _line(y,L,'we','재물이 직접 들어오는 해 💰','같은 성격의 해 💰'));
@@ -6041,12 +6043,14 @@ function shadowAxes(pr){
 }
 /* 「미리 알아 둘 해」의 끝 연도. 15장 ⑦ 안에만 상수로 두고 궁합 「조심할 해」(6689행)는 2033을
    그대로 박아 놔서, 이 값을 바꾸면 두 목록이 어긋난다. 한 곳에서 정한다. (2026-08-28) */
-const BAD_Y_END=2033;
+/* ★6차 F1(2026-11-18): 2026~2033 상수였다 — 2027년부터 지난 해를 포함하고 매년 줄어 2034년엔 빈 목록. 올해부터 8년 창으로 */
+const BAD_Y_START=(typeof nowSajuYear==='function')?nowSajuYear(new Date()):new Date().getFullYear();
+const BAD_Y_END=BAD_Y_START+7;
 function shadowReport(pr){
   const gan=STEMS[pr.p.ds], Y=yongsin(pr), ex=elemExtremes(pr);
   const grp=['극약','태약','신약'].includes(pr.sinLevel)?'약':['신강','태강','극왕'].includes(pr.sinLevel)?'강':'중';
   const excess=EL_ORDER.filter(e=>pr.pct[e]>=30);
-  const badYears=[]; for(let y=2026;y<=BAD_Y_END;y++){const se=yearGanzhi(y).el; if(se===Y.gi) badYears.push(`${y}년(${yearGanzhi(y).label})`);}   // 연운 표(yearRow)와 같은 기준(연지) — 연간 기준이던 이원화 수정
+  const badYears=[]; for(let y=BAD_Y_START;y<=BAD_Y_END;y++){const se=yearGanzhi(y).el; if(se===Y.gi) badYears.push(`${y}년(${yearGanzhi(y).label})`);}   // 연운 표(yearRow)와 같은 기준(연지) — 연간 기준이던 이원화 수정
   const s1grp=pr.sipTop[0], s1cnt=pr.sip[s1grp]||0, s1pct=Math.round(s1cnt/(SIP_ORDER.reduce((a2,k)=>a2+((pr.sip&&pr.sip[k])||0),0)||1)*100)   /* 원시 개수는 소수(2.5개)로 나와 9장의 %와 단위가 어긋났다 */;
   return `<p class="body sub" style="margin:0 0 10px">여기까진 네 빛을 봤으니, 이제 그림자를 볼 차례야. 듣기 좋은 얘기만 하는 건 반쪽짜리 풀이라서, <b>같은 명식에서 나오는 약점·리스크를 그대로</b> 적을게. 이건 ‘너는 이래서 안 돼’가 아니라, <b>미리 알면 피해 갈 수 있는 지도</b>야.</p>`+
   `<p class="body"><b>① 일간 ${gan}(${EL[pr.dayEl].name})의 그림자</b>: ${DAY_SHADOW[gan]}</p>`+
@@ -6974,7 +6978,7 @@ function compatibility(me,other,rel0){
     hae?`여기에 일지 해가 있어서, <b>제3자(친구·가족)의 말이나 사소한 오해</b>가 조용히 관계를 갉아. 남의 말보다 서로한테 직접 확인하는 습관이 필수야.`:
     (yuk||tri)?`다행히 일지는 합으로 묶여 있어서 바탕은 튼튼해. 위기가 와도 회복 탄력이 좋은 편이야.`:
     `일지엔 특별한 충·형·해가 없어서, 위기는 구조보다 <b>무심함</b>에서 와.`;
-  const badY=[]; for(let y=2026;y<=BAD_Y_END;y++){const se=yearGanzhi(y).el;   // 개인 연운과 같은 기준(연지)으로 통일
+  const badY=[]; for(let y=BAD_Y_START;y<=BAD_Y_END;y++){const se=yearGanzhi(y).el;   // 개인 연운과 같은 기준(연지)으로 통일
     const mine=se===Ya.gi, yours=se===Yb2.gi;
     if(mine||yours) badY.push(`<b>${y}년(${yearGanzhi(y).label})</b>: ${mine&&yours?'둘 다':mine?'너':oname}의 기신 ${EL[se].name}의 해`);}
   const rescue=[
@@ -7106,7 +7110,7 @@ function renderAllChips(){
 function analyzeWithRitual(){
   /* ★검증을 리추얼 전으로(로컬 카운슬 UX 2026-07-21): 예전엔 5초 가짜 로딩("태양의 위치를 계산")을
      보여준 뒤에야 "생일 넣으라"고 했다. 빈 입력·잘못된 날짜는 클릭 즉시 잡는다. */
-  const berr=birthError(document.getElementById('birth').value);
+  const berr=birthError(document.getElementById('birth').value)||ageGateError(document.getElementById('birth').value);
   if(berr){toast(berr); focusField('birthY'); return;}
   if(!_genderPicked){toast('성별을 꼭 선택해 주세요 (비공개도 괜찮아)'); focusField('genderChips'); return;}
   NAR_SKIP=false;   // 이번 분석 시작: 오프라인 스킵 플래그 초기화
@@ -7191,6 +7195,12 @@ function focusField(id){
     f.focus({preventScroll:true});
   }catch(err){}
 }
+/* ★만 14세 미만은 결과를 보여 주지 않는다(오너 결정 2026-11-18 「차단」, 6차 D6). 만 나이로 잰다. 상대(궁합) 입력엔 쓰지 않는다. */
+function ageGateError(birth){
+  try{ const [y,m,d]=String(birth||'').split('-').map(Number); if(!y) return '';
+    const now=new Date(); let age=now.getFullYear()-y; if(now.getMonth()+1<m||(now.getMonth()+1===m&&now.getDate()<d)) age--;
+    return age<14?'이 서비스는 만 14세 이상만 이용할 수 있어요':''; }catch(e){ return ''; }
+}
 function birthError(birth){
   if(!birth) return "생년월일을 입력해 주세요";
   const p=birth.split('-').map(Number); if(p.length!==3||p.some(isNaN)) return "생년월일 형식을 확인해 주세요";
@@ -7228,7 +7238,7 @@ function resetDtSelects(){['birthY','birthM','birthD','birthH'].forEach(function
 function analyze(){
   const name=document.getElementById('name').value.trim()||"나";
   const birth=document.getElementById('birth').value;
-  const berr=birthError(birth); if(berr){toast(berr); focusField('birthY'); return;}
+  const berr=birthError(birth)||ageGateError(birth); if(berr){toast(berr); focusField('birthY'); return;}
   const [y,m,d]=birth.split('-').map(Number);
   const time=document.getElementById('birthTime').value;
   const trueSolar=document.getElementById('trueSolar').checked;
@@ -7372,7 +7382,7 @@ function renderMe(pr){
   tg(`본질 ${EL[pr.dayEl].name}`,'gold');
   /* 표시 태그는 본문(지장간 자)과 같은 기운을 가리켜야 한다(2026-09-30). domEl 은 본기라 드물게 달랐다. */
   tg(`강한 기운 ${EL[((typeof elemExtremes==='function'&&elemExtremes(pr))||{}).strong||pr.domEl].name}`);
-  tg(`보완할 기운 ${EL[pr.weakEl].name}`,'rose');
+  tg(`가장 옅은 기운 ${EL[pr.weakEl].name}`,'rose');   /* 6차 F6: 「보완할 기운」은 용신 칩과 다른 오행이라 헷갈렸다 */
   /* 성별·지향 칩은 표시하지 않음(오너 지시: 스크린샷 공유 시 민감정보 노출 방지). 입력값은 내부 로직에만 사용 */
   document.getElementById('myPortrait').style.display='none';   // 오라 대신 명식표 사용
   const bars=document.getElementById('elemBars');bars.innerHTML='';
@@ -8520,14 +8530,14 @@ function elemMixHTML(me, op, rawName, rel){
       const useTxt=(()=>{try{
         const Y=yongsin(isMe?op:me), nm3=isMe?escapeHtml(oname):'너';
         if(e===Y.yong||e===Y.hee) return isMe
-          ? ` 더군다나 이건 ${nm3}에게 <b>${e===Y.yong?'가장':'두 번째로'} 필요한 기운</b>이라, 네가 맡는 만큼 상대가 실제로 편해져. ${RV.br} 게 아니라, 그냥 네가 하던 대로 하면 돼.`
+          ? ` 더군다나 이건 ${nm3}에게 <b>${e===Y.yong?'가장':'두 번째로'} 필요한 기운</b>이라, 네가 맡는 만큼 상대가 실제로 편해져. 따로 애쓸 것 없이, 네가 원래 하던 대로 하면 그게 곧 도움이야.`
           : ` 더군다나 이건 <b>네게 ${e===Y.yong?'가장':'두 번째로'} 필요한 기운</b>이야. 이 관계에서 네가 얻는 게 기분 문제가 아니라 실제 이득이라는 뜻이야.`;
         if(e===Y.gi) return isMe
           ? ` 다만 이 기운은 ${nm3}에겐 <b>과하면 독</b>이야. 비어 있다고 다 채우려 들면 오히려 부담이 돼서, <b>모자란 것만</b> 대주는 정도가 맞아.`
           : ` 다만 이 기운은 너한테 <b>과하면 독</b>이야. 비어 있던 자리라 채워지면 시원한데, 계속 기대면 도리어 ${RV.dr}. <b>빌리는 것이지 내 것이 되는 게 아니라고</b> 보는 게 맞아.`;
         return '';
       }catch(err){return '';}})();
-      return `<div class="info-card"><div class="lab">${subj} 채우는 자리 · ${EL[e].name}</div>`
+      return `<div class="info-card${(heFills.length&&iFill.length)?'':' wide'}"><div class="lab">${subj} 채우는 자리 · ${EL[e].name}</div>`
         + `<div class="val" style="font-weight:500">${isMe
             ? `${oname}에겐 <b>${JOSA(EL[e].name,'이','가')}</b> 없는데 너한텐 있어. ${risk} 이걸 ${oname}${neun(oname)} 혼자선 잘 못 해서, 네가 맡으면 관계가 편해져.`
             : `너한텐 <b>${JOSA(EL[e].name,'이','가')}</b> 없는데 ${oname}한텐 있어. ${risk} 네가 계속 안 되던 그 자리를 상대가 자연스럽게 하니까, <b>맡기는 게 이기는 것</b>이야.`}${useTxt}</div></div>`;
@@ -9901,7 +9911,7 @@ function vnSubmit(kind){
   if(kind==='name'){ const v=(document.getElementById('vnName').value||'').trim().slice(0,20); ov._data.name=v; document.getElementById('name').value=v; vnShow(VN_IDX.birth); return; }
   if(kind==='birth'){
     ['birthY','birthM','birthD'].forEach(id=>{ document.getElementById(id).value=document.getElementById('vn_'+id).value; });
-    syncBirth(); const err=birthError(document.getElementById('birth').value);
+    syncBirth(); const err=birthError(document.getElementById('birth').value)||ageGateError(document.getElementById('birth').value);
     if(err){ toast(err); return; }
     vnShow(VN_IDX.timeq); return;
   }
@@ -10600,7 +10610,7 @@ function askText(pr,cat){
       `이번 주는 목표를 반으로 줄여. 대신 ${LUCKY[Y.yong]?LUCKY[Y.yong].day:'주말'}에 ${EL[Y.yong].kw[0]} 기운을 채우는 일(${EL_CHARGE[Y.yong]||'산책·햇볕·혼자 쉬는 시간'}) 하나만 해. 충전이 먼저고 속도는 그다음이야.`)
     ,
     timing:(()=>{const score=el=>elScore(pr,el);
-      const cur=score(ye), nxt=score(yearGanzhi(2027).el);
+      const cur=score(ye), nxt=score(yearGanzhi(NOWY+1).el);   /* 6차 F2: 2027 상수였다 */
       /* 결론(👉)은 올해 세운만 보고, 실행은 내년과 비교해서 정하다 보니 한 답 안에서 부딪혔다.
          「미뤘던 큰 건 밀어붙일 순풍」이라 해 놓고 「제일 큰 건 하나만 내년 상반기로」(A·K·L),
          「애매하면 한 해 더 봐」라 해 놓고 「내년은 올해만 못한 흐름」(E·G·H).
