@@ -66,7 +66,7 @@
 /* ============================================================
    사주 × 별자리 운명 분석, 전부 로컬, 외부통신 없음
    ============================================================ */
-const BUILD='2026-11-19.1';   // 날짜=빌드일, .N=그날 배포 순번. 재배포마다 갱신 → 자동 새로고침 트리거
+const BUILD='2026-11-19.2';   // 날짜=빌드일, .N=그날 배포 순번. 재배포마다 갱신 → 자동 새로고침 트리거
 /* 자동 업데이트: ①켜질 때 최신 BUILD 확인 → 다르면 캐시버스트 이동 ②탭이 다시 보일 때도 확인 → 읽던 중이면 강제 리로드 대신 배너
    (폰 브라우저는 옛 탭을 리로드 없이 복원하므로 ②가 없으면 며칠 전 버전이 계속 보임 — 오너 "어떤 건 배포됐고 어떤 건 안 됐던데" 원인) */
 (function(){try{
@@ -5135,13 +5135,13 @@ function healthAxes(pr){
     const sins=(typeof sinsalList==='function')?sinsalList(pr):[];
     /* ① 부족한 기운 x 신강약 — 같은 부족이어도 채우는 법이 정반대다 */
     const way = b==='강'
-      ? `<p class="body"><b>신강은 체력 검사 결과가 아니야.</b> 네 ${JOSA(pr.sinLevel,'은','는')} 명리에서 스스로 밀어붙이는 쪽으로 읽는 분류야. 이걸 생활 질문으로 바꾸면, 일을 시작할 때보다 <b>멈출 기준을 정할 때</b> 어려움이 있는지 돌아볼 수 있어. ${EL[w].name}의 ${EL[w].kw.join('·')} 같은 상징을 더해야 건강해진다는 뜻은 아니야. 이번 주 일정에서 네가 직접 줄일 수 있는 일을 하나 찾아봐.</p>`
+      ? `<p class="body">네 ${JOSA(pr.sinLevel,'은','는')} 명리에서 스스로 밀어붙이는 쪽으로 읽는 분류야. 이걸 생활 질문으로 바꾸면, 일을 시작할 때보다 <b>멈출 기준을 정할 때</b> 어려움이 있는지 돌아볼 수 있어. 이번 주 일정에서 네가 직접 줄일 수 있는 일을 하나 찾아봐.</p>`
       : b==='약'
       ? `<p class="body"><b>신약을 몸이 약하다는 뜻으로 읽지 마.</b> 네 ${JOSA(pr.sinLevel,'은','는')} 주변 도움과 환경을 함께 보는 명리 분류야. 생활을 돌아볼 땐 <b>부탁할 수 있는데도 혼자 맡은 일</b>이 있는지부터 확인해. ${EL[w].name}의 ${EL[w].kw.join('·')} 같은 상징은 질문을 고르는 재료일 뿐이야. 운동이나 식사를 제한해야 한다는 결론은 이 값에서 나오지 않아.</p>`
       : `<p class="body"><b>중화는 건강 보증이 아니야.</b> 명리에서 여러 기운을 비교적 고르게 본다는 뜻이야. ${EL[w].name}의 ${EL[w].kw.join('·')} 같은 주제를 참고하면서, 일이 많은 날과 적은 날의 생활 기록을 나란히 놓아 봐. <b>무엇을 했을 때 편했고 무엇이 부담이었는지</b>는 직접 겪은 내용으로 판단하는 게 중요해. 사주 분류에 맞추려고 네 경험을 고쳐 해석할 필요는 없어.</p>`;
     /* ② 태어난 계절 x 약한 기운 */
     const seasonLine = seasonNm
-      ? `<p class="body"><b>태어난 계절과 옅은 기운을 구분해 볼게.</b> 네 월지는 <b>${seasonNm}</b>(${EL[seasonEl].name})에 속하고, 이 계산에서 옅게 나온 건 <b>${EL[w].name}</b>${iya(w)}. ${seasonEl===w?`태어난 계절과 옅은 기운이 같아. 계절 하나만 보고 오행 분포를 알 수 없다는 사례야. ${wSeason}에 태어났다고 그 계절의 기운이 반드시 많아지는 건 아니거든.`:`계절의 ${EL[seasonEl].name}${wa_gwa(seasonEl)} 옅은 ${EL[w].name}${neun(w)} 서로 다른 값이야. 앞은 출생 계절을, 뒤는 글자 분포를 읽은 것이지 어느 계절에 몸이 더 좋아진다는 비교가 아니야.`} 지금의 생활은 출생 계절보다 <b>현재의 일정과 실제 컨디션</b>을 보고 조절해.</p>`
+      ? `<p class="body"><b>태어난 계절과 옅은 기운을 구분해 볼게.</b> 네 월지는 <b>${seasonNm}</b>(${EL[seasonEl].name})에 속하고, 이 계산에서 옅게 나온 건 <b>${EL[w].name}</b>${iya(w)}. ${seasonEl===w?`태어난 계절과 옅은 기운이 같아. 계절 하나만 보고 오행 분포를 알 수 없다는 사례야. ${wSeason}에 태어났다고 그 계절의 기운이 반드시 많아지는 건 아니거든.`:`계절의 ${EL[seasonEl].name}${wa_gwa(seasonEl)} 옅은 ${EL[w].name}${neun(w)} 서로 다른 값이야. 앞은 출생 계절을, 뒤는 글자 분포를 읽은 거야.`} 지금의 생활은 출생 계절보다 <b>현재의 일정과 실제 컨디션</b>을 보고 조절해.</p>`
       : '';
     /* ③ 과다 기운 */
     /* 「둘 다 옅은 쪽이라 같이 챙기면 돼」는 거짓이었다 — 조건이 ex.strong!==w 뿐이라
@@ -5149,7 +5149,7 @@ function healthAxes(pr){
        단정하지 말고 같은 자로 잰 값을 그대로 보여 준 뒤 갈래를 나눈다. 20% = 5분의 1(평균). */
     const wPct=(()=>{try{ return Math.round(jijangPct(pr.p)[w]||0); }catch(e){ return null; }})();
     const exLine = (ex && ex.strong!==w)
-      ? `<p class="body">부족한 것만 보면 반쪽이야. 겉에 안 보이는 속까지 다 세면 제일 두꺼운 건 <b>${EL[ex.strong].name}</b>(${ex.strongV}%)이고 제일 얇은 건 <b>${EL[ex.weak].name}</b>(${ex.weakV}%)이야.${ex.weak!==w?` 이 장 첫머리에서 채울 기운으로 짚은 건 <b>${EL[w].name}</b>인데 여기선 다른 게 나오지. 앞은 <b>겉으로 드러난 ${nGlyph(pr)} 글자</b>만 세고, 이 비율은 <b>지지 속에 숨은 기운</b>까지 더해서 재거든. 이 자로 재면 ${EL[w].name}${jong(EL[w].name.charAt(0))?'은':'는'} <b>${wPct}%</b>야. ${wPct>=20?`겉에 안 드러났을 뿐 속엔 깔려 있다는 뜻이라, 없는 걸 새로 만드는 게 아니라 <b>묵혀 둔 걸 꺼내 쓰는</b> 쪽으로 가면 돼. 명리의 상징을 생활 질문으로 옮기는 비유야.`:`두 자로 재도 옅은 쪽이라 같이 챙기면 돼.`}`:``} 이 수치는 <b>글자의 구성비</b>이지 영양소나 신체 능력의 비율이 아니야. ${EL[ex.strong].name} 관련 활동을 줄이거나 특정 음식을 더 먹어야 한다는 뜻으로 사용하지 마.</p>`
+      ? `<p class="body">부족한 것만 보면 반쪽이야. 겉에 안 보이는 속까지 다 세면 제일 두꺼운 건 <b>${EL[ex.strong].name}</b>(${ex.strongV}%)이고 제일 얇은 건 <b>${EL[ex.weak].name}</b>(${ex.weakV}%)이야.${ex.weak!==w?` 이 장 첫머리에서 채울 기운으로 짚은 건 <b>${EL[w].name}</b>인데 여기선 다른 게 나오지. 앞은 <b>겉으로 드러난 ${nGlyph(pr)} 글자</b>만 세고, 이 비율은 <b>지지 속에 숨은 기운</b>까지 더해서 재거든. 이 자로 재면 ${EL[w].name}${jong(EL[w].name.charAt(0))?'은':'는'} <b>${wPct}%</b>야. ${wPct>=20?`겉에 안 드러났을 뿐 속엔 깔려 있다는 뜻이라, 없는 걸 새로 만드는 게 아니라 <b>묵혀 둔 걸 꺼내 쓰는</b> 쪽으로 가면 돼. 명리의 상징을 생활 질문으로 옮기는 비유야.`:`두 자로 재도 옅은 쪽이라 같이 챙기면 돼.`}`:``} 이 수치는 <b>글자의 구성비</b>야.</p>`
       /* ★결정론이 말하는 최약이 <분포로는 최다>인 사주가 실재한다(2026-09-09, 검증 85차 GGGG1).
          전엔 `ex.strong!==w` 가 거짓이면 문단을 <통째로> 빼버렸다.
          그 가드가 있던 이유는 맞았다 — 「토를 채워라」 바로 뒤에
@@ -5177,14 +5177,14 @@ function healthAxes(pr){
     }catch(e){return '';}})();
     const k=sins.filter(x=>HEALTH_SIN[x]).slice(0,2);
     const sinLine = k.length
-      ? `<p class="body"><b>생활을 돌아볼 때 참고할 상징</b>도 있어. ${k.map(x=>`<b>${x}</b>(${GLOSS_KO[x]||_ONE0[x]||'특정 글자 조합에 붙는 전통적 표식'})`).join(' · ')}. 이 표식은 건강 위험을 측정한 결과가 아니야. 이름에서 떠오르는 인상이 네 실제 생활과 맞는지 비교하고, 맞지 않는 이야기는 받아들이지 않아도 돼.</p>`
+      ? `<p class="body"><b>생활을 돌아볼 때 참고할 상징</b>도 있어. ${k.map(x=>`<b>${x}</b>(${GLOSS_KO[x]||_ONE0[x]||'특정 글자 조합에 붙는 전통적 표식'})`).join(' · ')}. 이름에서 떠오르는 인상이 네 실제 생활과 맞는지 비교하고, 맞지 않는 이야기는 받아들이지 않아도 돼.</p>`
       : `<p class="body">이 목록에서 별도로 짚을 신살은 없어. 명리의 특정 글자 조합이 없다는 뜻일 뿐, <b>건강하거나 아프다는 판단과는 무관해.</b> 몸의 불편이 있다면 사주에 표식이 있는지부터 찾지 말고 실제 상태를 확인해.</p>`;
     /* ⑤ 지금 대운이 몸에 부담인가 */
     const dwLine=(()=>{try{
       const dw=sajuDaeun(pr); if(!dw||!dw.list||!dw.list.length) return '';
       const cur=dw.list.filter(x=>dw.curAge>=x.age).slice(-1)[0]; if(!cur) return '';
       const help=(cur.el===w);
-      return `<p class="body"><b>지금의 시기</b>도 상징으로만 볼게. 너는 <b>${cur.age}~${cur.age+9}세 ${cur.gz} 대운</b>을 지나고, 그 기운은 <b>${JOSA(EL[cur.el].name,'이야','야')}</b>. ${help?`이번 대운의 기운과 원국에서 옅은 ${EL[w].name}${iga(w)} 같아. 전통적으로는 보충이라는 이야기로 풀지만, 몸 만들기에 유리한 기간을 측정한 것은 아니야.`:`원국에서 옅은 ${EL[w].name}${wa_gwa(w)} 이번 대운의 ${EL[cur.el].name}${neun(cur.el)} 달라. 두 값을 나란히 읽는 데 의미가 있는 것이지, 건강 관리가 잘되거나 안 된다는 판정은 아니야.`} 계획은 이 10년 분류가 아니라 네가 실제로 유지할 수 있는 일정에 맞춰.</p>`;
+      return `<p class="body"><b>지금의 시기</b>도 상징으로만 볼게. 너는 <b>${cur.age}~${cur.age+9}세 ${cur.gz} 대운</b>을 지나고, 그 기운은 <b>${JOSA(EL[cur.el].name,'이야','야')}</b>. ${help?`이번 대운의 기운과 원국에서 옅은 ${EL[w].name}${iga(w)} 같아. 전통적으로는 보충이라는 이야기로 풀어.`:`원국에서 옅은 ${EL[w].name}${wa_gwa(w)} 이번 대운의 ${EL[cur.el].name}${neun(cur.el)} 달라. 두 값을 나란히 읽는 데 의미가 있어.`} 계획은 이 10년 분류가 아니라 네가 실제로 유지할 수 있는 일정에 맞춰.</p>`;
     }catch(e){return '';}})();
     const johuLine=(()=>{try{
       const J=johu(pr); if(!J||!JOHU_CHECK[J.level]) return '';
@@ -5199,7 +5199,7 @@ function healthMore(pr){
   const w=pr.weakEl;
   const ORGAN={목:'간과 담(쓸개), 그리고 눈과 근육',화:'심장과 소장, 그리고 혈액순환',토:'위장과 비장, 그러니까 소화기 전반',금:'폐와 대장, 그리고 피부·호흡기',수:'신장과 방광, 그리고 뼈·귀'}[w];
   const SEASON={목:'봄',화:'여름',토:'환절기',금:'가을',수:'겨울'}[w];
-  return `<p class="body">옛 오행 분류는 <b>${EL[w].name}</b>${eul(w)} <b>${ORGAN}</b>${wa_gwa(ORGAN)}, 계절로는 <b>${SEASON}</b>${wa_gwa(SEASON)} 연결해. <b>장기의 약함·질병·계절별 건강 변화를 예측하는 근거는 아니야.</b> 증상을 운세 탓으로 돌리거나 진료를 미루지 마. 검진·치료·운동 강도는 실제 건강 상태와 의료진의 안내로 정해.</p>`;
+  return `<p class="body">옛 오행 분류는 <b>${EL[w].name}</b>${eul(w)} <b>${ORGAN}</b>${wa_gwa(ORGAN)}, 계절로는 <b>${SEASON}</b>${wa_gwa(SEASON)} 연결해. <b>장기의 약함·질병·계절별 건강 변화를 예측하는 근거는 아니야.</b> 증상을 운세 탓으로 돌리거나 진료를 미루지 마. 검진·치료·운동 강도는 실제 건강 상태와 의료진의 안내로 정해.</p>`;   /* 장기 이름이 나오는 자리엔 안전 문구를 그대로 둔다(test_health_safety_claims_preserved) */
 }
 /* 배우자궁 = 일지(日支). 12지지별로 관계에서 드러나는 결이 다르다. */
 const SPOUSE_SEAT={
@@ -5757,7 +5757,7 @@ function renderMyDetail(pr){
       `<div class="info-grid" style="margin-top:10px">${domRow('🤝','대인운','social')}</div>`) +
     moneyCareerSec +
     sec('🌱','건강운, 몸이 보내는 신호',
-      `<p class="body"><b>사주로 건강 상태를 진단할 수는 없어.</b> 여기서는 네 명식의 <b>${EL[pr.weakEl].name}(${EL[pr.weakEl].kw.join('·')})</b> 같은 상징을 생활을 돌아보는 질문으로 옮겨 볼게. 몸의 불편이나 검사 결과를 설명하는 의학적 근거가 아니며, 질병이나 회복 시기를 예측하지 않아.</p>`+
+      `<p class="body"><b>사주로 건강 상태를 진단할 수는 없어.</b> 여기서는 네 명식의 <b>${EL[pr.weakEl].name}(${EL[pr.weakEl].kw.join('·')})</b> 같은 상징을 생활을 돌아보는 질문으로 옮겨 볼게. 이 장에 나오는 오행·신강·계절·수치·표식·대운은 <b>모두 생활을 돌아보는 상징</b>이야. 몸의 불편이나 검사 결과를 설명하는 의학적 근거가 아니고, 질병이나 회복 시기를 예측하지 않아. 증상이 있으면 운세 탓으로 돌리거나 진료를 미루지 말고, 검진·치료·운동 강도는 실제 건강 상태와 의료진의 안내로 정해.</p>`+   /* ★면책은 여기 한 번(오너 2026-11-19 「장 머리에 한 번으로 모으기」) */
       /* ★10장 최악쌍 0.913~0.927 — 주축(가장 옅은 오행)이 <제대로 쓰이는데 값이 겹친다>
          (2026-09-08, 검증 79차). A 와 P 는 얇은 오행도 화, 두꺼운 오행도 수, 용신도 토라
          52문장 중 46개가 토씨까지 같았다. 11장처럼 <안 쓰이는 축>이 아니라 <같은 값>이다.
@@ -6429,9 +6429,7 @@ function fateHTML(pr){
     ["어떤 상황", (()=>{const G=gyeokGuk(pr);const t=G&&FATE_SITU_GYEOK[G.격];
       return t?`${t}<br><span style="color:var(--muted)">네 <b>${G.격}</b> 구조가 인연이 붙는 상황을 정해.</span>`:`${P.situation}<br><span style="color:var(--muted)">예: ${REL_CONTEXT[fe]}</span>`;})()],
     ...(dwFate?[["만남 무대", `지금 너는 <b>${JOSA(dwFate,'이','가')}</b> 크게 움직이는 10년 위에 있어서, 이 시기의 인연은 그 자리에서 얽히기 쉬워`]]:[]),
-    ["별자리로", (()=>{/* ★자르지 않는다(2026-09-07). 여기만 2개로 잘라서 「전갈자리(몰입·통찰)」이,
-        다른 장에선 3개라 「(몰입·통찰·집념)」이 나갔다 — 같은 별자리를 두 가지로 배우게 된다. */
-       const mk=myZ.kw.join('·');return `너는 <b>${pr.zod}</b>(${mk})${iya(pr.zod)}, 상대는 <b>${zs.join('·')}</b>(${z.kw.join('·')}) 결일 때 주파수가 깊이 맞아`;})()],
+    /* 「별자리로」 줄은 지웠다(오너 2026-11-19 「8장에서 별자리 후보 삭제」) — 계절 기준 후보가 궁합의 서양 4원소와 반대로 읽혔다 */
     ...(triAnimals.length?[["띠 궁합", `너는 <b>${pr.animal}띠</b>라 삼합을 이루는 <b>${triAnimals.join('·')}띠</b> 상대와 유난히 편하게 흘러가${(()=>{const y=(typeof YUKMAP!=='undefined'&&YUKMAP[pr.p.db]!=null)?BRANCH_ANIMAL[YUKMAP[pr.p.db]]:null; return y? `. 다만 이건 <b>네 띠(태어난 해)</b> 기준이라 <b>지내기 편한</b> 쪽이고, 위에서 짚은 <b>${y}띠</b>는 <b>배우자궁(태어난 날)</b> 기준이라 <b>깊이 붙는</b> 쪽이야. 답이 둘로 갈리는 게 아니라 <b>보는 자리가 다른 것</b>` : ''; })()}`]]:[]),
   ];
   const signs=[
@@ -6448,7 +6446,7 @@ function fateHTML(pr){
   const _def = Math.max(0, 22 - ((pr.pct&&pr.pct[fe])||0));             // 용신 오행 결핍도 0~22
   const prob = Math.round(Math.max(45, Math.min(95, 55 + _imb*0.7 + _def*0.8)));
   const ae=avoidElement(pr), Lf=LUCKY[fe];
-  return `<div class="hero-card fate"><div class="hero-img">${personaImg(fe,'fate',pr,(function(){try{const _p=fatePick(pr);/* ★본문이 쓰는 해를 그대로 넘긴다 (2026-08-31). null 로 두면 partnerAgeWord 가 fateYearScores 로 다른 해를 골라 본문과 나이가 갈렸다(실측 23세 vs 40세). */return _p?(_p.past?_p.past.y:(_p.win?_p.win.y:null)):null;}catch(e){return null;}})())}</div><div class="hero-ov"><div class="role good">♥ 운명의 상대</div><h3 class="mc-title">${EL[fe].name}의 기운을 지닌 사람</h3><div class="prob-badge">💞 인연 신호 <b>${prob}%</b></div>${lookLineKo(pr,fe,'fate')}<div class="body sub" style="font-size:11px;color:var(--muted);margin-top:2px">※ 미래 예측이 아니라 <b>사주 궁합의 세기</b>를 눈금으로 나타낸 값이야</div></div></div><div class="mc-zodtags" style="margin-top:14px">${zs.map(n=>`<span class="tag gold">${n} ${ZODIAC[n].sym}</span>`).join('')}</div><p class="body sub" style="font-size:12px;color:var(--muted);margin-top:6px">※ 이 별자리들은 <b>사주 오행(${EL[fe].name})에 대응하는 계절</b>로 고른 거야. 궁합 장에서 쓰는 <b>서양 4원소</b>(불·흙·바람·물)와는 다른 기준이라, 같은 별자리가 두 곳에서 다르게 분류될 수 있어. 아래에서 짚는 생월과 계절이 안 맞아 보일 수 있어. 그쪽은 좁게 고른 자리고, 여기 ${['','한','두','세','네'][zs.length]||zs.length} 후보는 넓게 고른 거라 그래. 겹치면 제일 강하고, 안 겹치면 <b>생월 쪽(좁은 자)을 먼저</b> 봐.</p><p class="mc-desc">${desc}</p><div class="mc-section">💘 어떻게 만나게 될까</div><p class="body">${scenario}</p>
+  return `<div class="hero-card fate"><div class="hero-img">${personaImg(fe,'fate',pr,(function(){try{const _p=fatePick(pr);/* ★본문이 쓰는 해를 그대로 넘긴다 (2026-08-31). null 로 두면 partnerAgeWord 가 fateYearScores 로 다른 해를 골라 본문과 나이가 갈렸다(실측 23세 vs 40세). */return _p?(_p.past?_p.past.y:(_p.win?_p.win.y:null)):null;}catch(e){return null;}})())}</div><div class="hero-ov"><div class="role good">♥ 운명의 상대</div><h3 class="mc-title">${EL[fe].name}의 기운을 지닌 사람</h3><div class="prob-badge">💞 인연 신호 <b>${prob}%</b></div>${lookLineKo(pr,fe,'fate')}<div class="body sub" style="font-size:11px;color:var(--muted);margin-top:2px">※ 미래 예측이 아니라 <b>사주 궁합의 세기</b>를 눈금으로 나타낸 값이야</div></div></div><p class="mc-desc">${desc}</p><div class="mc-section">💘 어떻게 만나게 될까</div><p class="body">${scenario}</p>
      ${(function(){try{if(ageNow(pr)<19) return ''; const _p=fatePick(pr); if(!_p) return '';const _ns=fateNearStrong(pr); if(!_ns) return '';const _m=_p.past?_p.past:_p.win;const _same=(_m.y===_ns.y);const _nA=_ns.y-pr.y+1, _mA=_m.y-pr.y+1;const _note=_same?`\uc774\uac74 \ub2e4\ub978 \uc0ac\ub78c\uc774 \uc544\ub2c8\uc57c. \ub124 \uacbd\uc6b0\uc5d4 <b>\uac00\uc7a5 \uc13c \ucc3d\uc774 \uace7 \uac00\uc7a5 \uac00\uae4c\uc6b4 \ucc3d</b>\uc774\ub77c \uac19\uc740 \uc0ac\ub78c\u00b7\uac19\uc740 \uc2dc\uc810\uc774\uc57c. \uae30\ub2e4\ub9b4 \uac83 \uc5c6\uc774 \uc9c0\uae08 \uacb0\uc744 \ub9de\ucd94\uba74 \ub3fc.`:(_p.past?`\uc704\ub294 <b>\uac00\uc7a5 \uc14c\ub358 \ucc3d</b>(${_m.y}\ub144 \u00b7 ${_mA}\uc138) \ubb34\ub835\uc758 \uacb0\uc774\uace0, \uc774\uac74 <b>\uc55e\uc73c\ub85c \uac00\uc7a5 \uac00\uae4c\uc6b4 \uac15\ud55c \ucc3d</b>\uc758 \uacb0\uc774\uc57c. \ub2e4\ub978 \uc0ac\ub78c \ub458\uc774 \uc544\ub2c8\ub77c <b>\uac19\uc740 \uacb0\uc744 \ub9cc\ub0a0 \ub450 \uc2dc\uc810</b>\uc774\ub77c\uace0 \ubcf4\uba74 \ub3fc.`:`\uc704\ub294 <b>\uac00\uc7a5 \uc13c \ucc3d</b>(${_m.y}\ub144 \u00b7 ${_mA}\uc138)\uc778\ub370 \uc880 \uba40\uc5b4. \uc774\uac74 <b>\uadf8\uc5d0 \ubc84\uae08\uac00\uba74\uc11c \uac00\uc7a5 \ube68\ub9ac \uc624\ub294 \ucc3d</b>\uc774\uc57c. \ub458 \ub2e4 \uac19\uc740 \uacb0\uc758 \uc0ac\ub78c\uc774\uc57c.`);return `<details class="fate-more" style="margin-top:14px" ontoggle="fateLazyOpen(this)"><summary style="cursor:pointer;font-weight:800;color:var(--violet);padding:11px 4px;min-height:44px;display:flex;align-items:center;gap:7px;flex-wrap:wrap">⏳ 가장 가까운 강한 인연도 보기<span style="font-weight:600;font-size:12px;color:var(--muted)">${_ns.y}년 · 네 ${_nA}세 무렵</span></summary><div class="hero-card fate" style="margin-top:8px"><div class="hero-img">${personaImg(fe,'fate',pr,_ns.y,true)}</div><div class="hero-ov"><div class="role good">⏳ 가장 가까운 강한 인연</div><h3 class="mc-title">${_ns.y}년 · 네 ${_nA}세 무렵</h3><p class="body sub" style="margin-top:6px">${_note}</p></div></div></details>`;}catch(e){return '';}})()}${fatePassedNote(pr)}
      ${meetRadius(pr)}
      <div class="mc-section">한눈에 보기</div><div class="kv">${kvRows(kv)}</div>
