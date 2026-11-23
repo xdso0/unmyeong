@@ -64,7 +64,7 @@
 /* ============================================================
    사주 × 별자리 운명 분석, 전부 로컬, 외부통신 없음
    ============================================================ */
-const BUILD='2026-11-23.8';   // 날짜=빌드일, .N=그날 배포 순번. 재배포마다 갱신 → 자동 새로고침 트리거
+const BUILD='2026-11-24.1';   // 날짜=빌드일, .N=그날 배포 순번. 재배포마다 갱신 → 자동 새로고침 트리거
 /* 자동 업데이트: ①켜질 때 최신 BUILD 확인 → 다르면 캐시버스트 이동 ②탭이 다시 보일 때도 확인 → 읽던 중이면 강제 리로드 대신 배너
    (폰 브라우저는 옛 탭을 리로드 없이 복원하므로 ②가 없으면 며칠 전 버전이 계속 보임 — 오너 "어떤 건 배포됐고 어떤 건 안 됐던데" 원인) */
 (function(){try{
@@ -3309,13 +3309,18 @@ function showMonthDetail(m){
   box.innerHTML=`<div class="mon-dt"><b>${m}월 일별 흐름</b><button onclick="document.getElementById('monDetail').innerHTML=''" style="float:right;border:0;background:none;cursor:pointer">✕</button><div class="day-grid">${cells}</div><p class="body sub" style="font-size:13.5px;margin-top:7px">${best.length?`밀어붙이기 좋은 날: <b>${best.slice(0,10).join('·')}일</b>. `:''}${warn.length?`속도 줄일 날: <b>${warn.slice(0,10).join('·')}일</b>.`:''} (일진 천간과 네 용신·기신의 합)</p></div>`;
   box.scrollIntoView({block:'nearest',behavior:'smooth'});
 }
+function closeMs(how){
+  try{ if(how==='user'&&history.state&&history.state.overlay==='ms'){ history.back(); return; } }catch(e){}
+  const mv=document.getElementById('msView'); if(mv) mv.classList.remove('on'); document.body.style.overflow='';
+}
 function openMs(){
   const pr=STATE._prCache; if(!pr) return;
   let mv=document.getElementById('msView');
   if(!mv){mv=document.createElement('div');mv.id='msView';mv.setAttribute('role','dialog');mv.setAttribute('aria-modal','true');mv.setAttribute('aria-label','만세력');document.body.appendChild(mv);}
-  mv.innerHTML=`<div class="rep-top"><b>📜 ${escapeHtml(pr.name)} 만세력</b><button class="rep-close" onclick="document.getElementById('msView').classList.remove('on');document.body.style.overflow=''">✕ 닫기</button></div><div class="rep-body msview">${renderMyeongsik(pr)}
+  mv.innerHTML=`<div class="rep-top"><b>📜 ${escapeHtml(pr.name)} 만세력</b><button class="rep-close" onclick="closeMs('user')">✕ 닫기</button></div><div class="rep-body msview">${renderMyeongsik(pr)}
     <p class="body sub" style="text-align:center;margin-top:12px">${pr.dayStem}${BRANCHES[pr.p.db]}일주 · 절기(태양 황경) 기준 월주 · 진태양시 옵션 반영</p></div>`;
   mv.classList.add('on');document.body.style.overflow='hidden';
+  try{ if(!(history.state&&history.state.overlay)) history.pushState({screen:'result',tab:document.body.dataset.tab||'',overlay:'ms'},''); }catch(e){}   /* X1 */
 }
 /* ===== 시기별 운 흐름 (10년 단위, 용신 기준) ===== */
 /* 시기를 '어떻게 타는가' — 명궁 주성·신살·일간·월지 계절·대운 잔여.
@@ -5898,7 +5903,8 @@ function toggleSec(h){const s=h.closest('.rsec'),open=!s.classList.toggle('colla
 function setTab(t,noScroll){ try{
   document.body.dataset.tab=t;
   document.querySelectorAll('.rtab').forEach(b=>{ const on=(b.dataset.tab===t); b.classList.toggle('on',on); b.setAttribute('aria-pressed',String(on)); });
-  try{ if(history.state&&history.state.screen==='result') history.replaceState(Object.assign({},history.state,{tab:t}),''); }catch(e){}   /* W3 */
+  try{ const _st=history.state||{}, _r=document.getElementById('result');
+    if(!_st.overlay&&!_st.sheet&&(_st.screen==='result'||(_r&&_r.classList.contains('show')))) history.replaceState(Object.assign({},_st,{screen:'result',tab:t}),''); }catch(e){}   /* W3·X1 */
   if(t==='story') pageModeOn();
   if(!noScroll){ const nav=document.querySelector('.reading-nav'); if(nav) window.scrollTo({top:Math.max(0,nav.getBoundingClientRect().top+window.pageYOffset-8),behavior:'auto'}); }
   if(typeof _tocFloatSync==='function') _tocFloatSync();
@@ -5906,7 +5912,8 @@ function setTab(t,noScroll){ try{
 document.addEventListener('focusin',function(e){ try{ const tb=document.body.dataset.tab;
   if(tb&&tb!=='compat'&&e.target&&e.target.closest&&e.target.closest('#compSection')) setTab('compat',true); }catch(_){} });
 window.addEventListener('beforeprint',function(){ try{ if(document.body.dataset.tab){ document.body.dataset.tabPrint=document.body.dataset.tab; delete document.body.dataset.tab; } }catch(e){} });
-window.addEventListener('afterprint',function(){ try{ if(document.body.dataset.tabPrint){ document.body.dataset.tab=document.body.dataset.tabPrint; delete document.body.dataset.tabPrint; } }catch(e){} });
+window.addEventListener('afterprint',function(){ try{ if(document.body.dataset.tabPrint){ document.body.dataset.tab=document.body.dataset.tabPrint; delete document.body.dataset.tabPrint; } }catch(e){}
+  try{ const r=document.getElementById('result'), fn=document.getElementById('footNote'); if(fn&&r&&r.classList.contains('show')) fn.open=false; }catch(e){} });   /* X2 */
 /* ★쪽 넘김: 지금 쪽 표시. 쪽 모드가 아니면(덤프·인쇄 경로) 아무것도 안 한다 */
 let _pageId='';
 function pageTo(id){ const d=document.getElementById('myDetail'); if(!d||!d.classList.contains('paged')) return;
@@ -7618,10 +7625,11 @@ function openCompatReport(cid){
     chapters=tmp.innerHTML;
   }
   const d=det.dataset;
-  rv.innerHTML=`<div class="rep-top"><b>${d.ric||'💞'} ${escapeHtml(d.rmy)} × ${escapeHtml(d.rname)} 궁합 보고서</b><button class="rep-close" onclick="closeCompatReport()">✕ 닫기</button></div><div class="rep-body"><div class="rep-cover"><div class="rc-lab">하늘궁전 · 운명의 아이들, COMPATIBILITY REPORT</div><h2>${escapeHtml(d.rmy)} × ${escapeHtml(d.rname)}</h2><div class="rc-sub">${escapeHtml(d.rsub)}</div><div class="rc-score" style="color:${scoreColor(+d.rtotal)}">${d.rtotal}<small style="font-size:16px;color:var(--muted)"> /100 · ${escapeHtml(d.rverdict)}</small></div></div>
+  rv.innerHTML=`<div class="rep-top"><b>${d.ric||'💞'} ${escapeHtml(d.rmy)} × ${escapeHtml(d.rname)} 궁합 보고서</b><button class="rep-close" onclick="closeCompatReport('user')">✕ 닫기</button></div><div class="rep-body"><div class="rep-cover"><div class="rc-lab">하늘궁전 · 운명의 아이들, COMPATIBILITY REPORT</div><h2>${escapeHtml(d.rmy)} × ${escapeHtml(d.rname)}</h2><div class="rc-sub">${escapeHtml(d.rsub)}</div><div class="rc-score" style="color:${scoreColor(+d.rtotal)}">${d.rtotal}<small style="font-size:16px;color:var(--muted)"> /100 · ${escapeHtml(d.rverdict)}</small></div></div>
       ${chapters}
       <p class="body sub" style="text-align:center;color:var(--muted);margin-top:20px">사주×자미두수×별자리 기반 · 두 사람의 명식에서 계산된 보고서야</p></div>`;
   rv.classList.add('on'); rv.scrollTop=0; document.body.style.overflow='hidden';
+  try{ if(!(history.state&&history.state.overlay)) history.pushState({screen:'result',tab:document.body.dataset.tab||'',overlay:'report'},''); }catch(e){}   /* X1 */
   snsParas(rv);   /* 문단 나누기(개인 리포트와 같은 규칙) */
   glossFirstUse(rv, (d.rrel&&d.rrel!=='love')?{'일지':'태어난 날의 아래 글자, 가장 가까운 사람 자리'}:null);   /* 친구·직장엔 「배우자 자리」 풀이를 안 붙인다(2026-11-12) */   /* ★용어 풀이는 페이징 전에 - 숨은 장에도 붙어야 한다 */
   repSetupPaging();
@@ -7902,7 +7910,9 @@ function repSetupPaging(){
     _repPage=0; repRender();
   }catch(e){}
 }
-function closeCompatReport(){
+function closeCompatReport(how){
+  /* X1: 사용자 닫기(✕·Esc)는 연 때 쌓은 기록을 되감는다 — popstate 가 다시 불러 실제로 닫는다 */
+  try{ if(how==='user'&&history.state&&history.state.overlay==='report'){ history.back(); return; } }catch(e){}
   const rv=document.getElementById('reportView'); if(rv) rv.classList.remove('on');
   document.body.style.overflow='';
   if(rv&&rv._returnFocus&&rv._returnFocus.isConnected) rv._returnFocus.focus({preventScroll:true});
@@ -12326,8 +12336,8 @@ if(ANALYTICS_CODE){
     if(e.key!=='Escape') return;
     var bm=document.getElementById('backupTextModal'); if(bm){bm.remove();return;}
     var rp=document.getElementById('restorePasteModal'); if(rp){rp.remove();return;}
-    var rv=document.getElementById('reportView'); if(rv&&rv.classList.contains('on')){closeCompatReport();return;}
-    var mv=document.getElementById('msView'); if(mv&&mv.classList.contains('on')){mv.classList.remove('on');document.body.style.overflow='';return;}
+    var rv=document.getElementById('reportView'); if(rv&&rv.classList.contains('on')){closeCompatReport('user');return;}
+    var mv=document.getElementById('msView'); if(mv&&mv.classList.contains('on')){closeMs('user');return;}
     var dp=document.getElementById('dictPanel'); if(dp&&dp.classList.contains('on')){toggleDict();return;}
     var tp=document.getElementById('tocPanel'); if(tp&&tp.classList.contains('on')){toggleToc();return;}
   });
@@ -12335,7 +12345,7 @@ if(ANALYTICS_CODE){
   window.addEventListener('popstate',function(){
     if(_openSheetEl){ _closeSheet(false); return; }   /* 바텀시트가 열려 있으면 뒤로가기는 시트만 닫는다(앱 이탈·화면전환 방지) */
     var rv=document.getElementById('reportView'); if(rv&&rv.classList.contains('on')){closeCompatReport();return;}
-    var mv=document.getElementById('msView'); if(mv&&mv.classList.contains('on')){mv.classList.remove('on');document.body.style.overflow='';return;}
+    var mv=document.getElementById('msView'); if(mv&&mv.classList.contains('on')){closeMs();return;}
     var r=document.getElementById('result');
     var st=history.state;   /* W3: 앞으로가기로 결과 기록에 돌아오면 결과와 그때의 탭을 다시 켠다 */
     if(st&&st.screen==='result'){ if(r&&!r.classList.contains('show')&&document.querySelector('#myDetail .rsec')){ showResultScreen(); if(st.tab) setTab(st.tab,true); } return; }
