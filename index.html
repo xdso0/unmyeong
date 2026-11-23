@@ -66,7 +66,7 @@
 /* ============================================================
    사주 × 별자리 운명 분석, 전부 로컬, 외부통신 없음
    ============================================================ */
-const BUILD='2026-11-23.2';   // 날짜=빌드일, .N=그날 배포 순번. 재배포마다 갱신 → 자동 새로고침 트리거
+const BUILD='2026-11-23.3';   // 날짜=빌드일, .N=그날 배포 순번. 재배포마다 갱신 → 자동 새로고침 트리거
 /* 자동 업데이트: ①켜질 때 최신 BUILD 확인 → 다르면 캐시버스트 이동 ②탭이 다시 보일 때도 확인 → 읽던 중이면 강제 리로드 대신 배너
    (폰 브라우저는 옛 탭을 리로드 없이 복원하므로 ②가 없으면 며칠 전 버전이 계속 보임 — 오너 "어떤 건 배포됐고 어떤 건 안 됐던데" 원인) */
 (function(){try{
@@ -3346,7 +3346,7 @@ function flowStory(pr){
     ? `네 명궁은 <b>${mg.kw}</b> 기질이 두드러지는 자리라, 좋은 해가 왔을 때 그걸 <b>${mg.kw}</b> 쪽으로 쓸 때 제일 크게 돌아와. 결이 다른 방식으로 기회를 쓰면, 순풍이었는데도 남는 게 없는 해가 되기 쉬워.`
     : `태어난 시각을 몰라서 명궁으로 스타일까진 못 짚어. 대신 지난 좋은 해에 <b>네가 실제로 뭘 해서 남았는지</b> 하나만 떠올려 봐. 그게 네 방식이야.`;
   const stemLine = SP.ess
-    ? `그리고 흐름을 타는 <b>속도</b>도 사람마다 달라. <b>${pr.dayStem}</b> 일간인 너는 좋은 해에도 네 속도가 있어. ${edgeCh(pr,'flow')} 순풍이라고 성격까지 바꿀 필요는 없어. 원래 네 방식대로 하되 폭만 키우는 게 맞아.`
+    ? `그리고 흐름을 타는 <b>속도</b>도 사람마다 달라. <b>${pr.dayStem}</b> 일간인 너는 좋은 해에도 네 속도가 있어. ${edgeCh(pr,'flow')} 순풍이라고 성격까지 바꿀 필요는 없어. ${(typeof ageNow==='function'&&ageNow(pr)>=65)?'폭을 키우진 말고 네 방식만 지켜.':'원래 네 방식대로 하되 폭만 키우는 게 맞아.'}`
     : '';
   const seasonLine = `네 월주는 <b>${STEMS[pr.p.ms]}${BRANCHES[pr.p.mb]}</b>, 일주는 <b>${STEMS[pr.p.ds]}${BRANCHES[pr.p.db]}</b>${iya(BRANCHES[pr.p.db])}. 태어난 달의 글자와 나를 나타내는 날의 글자를 함께 읽어. 월지 <b>${BRANCHES[pr.p.mb]}</b>의 대표 오행은 <b>${EL[seasonEl].name}</b>${iya(seasonEl)}.`;
   /* ★월간 십성(2026-09-21). 월주 간지는 글자로 보여 주는데 그 글자가 일간에게 무엇인지는 안 읽었다.
@@ -3411,7 +3411,7 @@ function yearTactic(pr,tone,ye,again){
           약:'루틴을 지키는 자가 이기는 해야. 무리해서 판을 벌이면 손해가 더 크니, 꾸준함으로 점수를 쌓는 게 이득이야.',
           중:'루틴을 지키는 자가 이기는 해야. 큰 승부 대신 꾸준함으로 점수를 쌓아.'}};
   /* ★11차(오너 2026-11-23 「65세 이상 따로」): 75세에게도 「미뤄 둔 큰 결정을 배치해, 크게 벌여도 버텨」가 나갔다 */
-  const OLD={good:'좋은 흐름이 들어오는 해야. 새로 벌이기보다 <b>정리하고 물려줄 것</b>을 이 해에 매듭지으면 결과가 오래 남아.',
+  const OLD={good:'벌이기 좋은 기운이 들어와도 네 나이대엔 새 판보다 <b>마무리</b>에 쓰는 게 남아. 정리하고 물려줄 것을 이 해에 매듭지어.',
     bad:'무리 없이 지키는 해로 써. 건강과 일정 관리가 1순위고, 큰돈이 걸린 결정은 가족과 한 번 더 상의해.',
     flat:'하던 일의 <b>질을 올리는</b> 해야. 양을 늘리기보다 이미 가진 것을 다듬는 쪽이 남아.'};
   const OLD_AGAIN={good:'이 해도 좋은 흐름이라 같은 원칙이야. 정리하고 물려줄 것을 매듭지어.',
@@ -3477,7 +3477,7 @@ function lifeGraph(pr){
   /* pts 는 75세까지만 찍는다. rest 가 비는 건 「남은 구간이 낮다」가 아니라 「눈금이 끝났다」인데
      그걸 「그만큼 높은 자리가 없어서」라고 단정했다(D·E·F·M·N 5인). 눈금이 끝났다고 말한다. */
   const peakTxt=(peak.age<curAge)
-    ? `흐름상 <b>가장 순풍이었던 건 ${peak.age}세 무렵(${peak.yr}년경)</b>이야. 이미 지난 구간이고,${!next?` 이 그래프는 75세 눈금까지만 그려서 그 뒤는 안 잡혀. 남은 시기는 아래 대운표로 봐.`:windy?` 앞으로 남은 구간에선 <b>${next.age}세 무렵(${next.yr}년경)</b>이 제일 높아.`:` 앞으로 남은 구간에선 <b>${next.age}세 무렵(${next.yr}년경)</b>이 그중 제일 높은데, 순풍이라 부를 만큼은 아니야. 시기를 기다리기보다 습관으로 가는 게 맞아.`}`
+    ? `흐름상 <b>가장 순풍이었던 건 ${peak.age}세 무렵(${peak.yr}년경)</b>이야. 이미 지난 구간이고,${!next?` 이 그래프는 75세 눈금까지만 그려서 그 뒤는 안 잡혀. 남은 시기는 아래 대운표로 봐.`:windy?` 앞으로 남은 구간에선 <b>${next.age}세 무렵(${next.yr}년경)</b>이 제일 높아.`:` 앞으로 남은 구간에선 <b>${next.age}세 무렵(${next.yr}년경)</b>이 그중 제일 높은데, 대운 흐름으로는 완만한 편이야. 해마다의 순풍은 연운 카드가 따로 짚고, 큰 흐름으로는 시기를 기다리기보다 습관으로 가는 게 맞아.`}`
     : windy
     ? `대운·세운을 겹친 큰 흐름으로는 <b>${peak.age}세 무렵(${peak.yr}년경)</b>이 가장 순풍 타는 시기야. 해마다의 차이는 연운 카드가 따로 짚어.`
     : `흐름상 <b>${peak.age}세 무렵(${peak.yr}년경)</b>이 그중 제일 높은 구간이야. 다만 크게 순풍이라 할 자리는 아니라, 너한텐 시기보다 습관이 더 크게 작용해.`;
@@ -4430,7 +4430,7 @@ function myeongsikStory(pr,noIntro){
        6a6db46 에서 닫은 「프롬프트가 스스로 모순」과 같은 계열이 본문에 남아 있었다. */
     const _same = !!(mo && U.일지===U.월지);
     return `<p class="body">${_same?'너는 집에서나 밖에서나 결이 크게 안 달라지는 사람이야.':'너는 집에서랑 밖에서 좀 다른 사람이야.'}<br>
-    집에서는 ${D.self}. 연애에선 ${D.love}.${mo?(U.일지===U.월지?` 그리고 밖에서도 <b>똑같아</b>. 집과 일터의 결이 같은 사람이라, 어디서든 비슷하게 보여. 다른 얼굴을 안 쓰는 게 편한 대신, 쉬는 자리와 일하는 자리가 안 나눠지고.`:` 밖은 얘기가 달라. 일터에서는 ${mo.self}. 태어난 날의 아래 글자가 집 안이고 태어난 달의 아래 글자가 바깥이라, 이 둘이 이렇게 갈리는 거야.`):''}<br>
+    집에서는 ${D.self}.${mo?(U.일지===U.월지?` 그리고 밖에서도 <b>똑같아</b>. 집과 일터의 결이 같은 사람이라, 어디서든 비슷하게 보여. 다른 얼굴을 안 쓰는 게 편한 대신, 쉬는 자리와 일하는 자리가 안 나눠지고.`:` 밖은 얘기가 달라. 일터에서는 ${mo.self}. 태어난 날의 아래 글자가 집 안이고 태어난 달의 아래 글자가 바깥이라, 이 둘이 이렇게 갈리는 거야.`):''}<br>
     일을 손에 쥐면 <b>${D.work}</b>.${(mo&&U.일지!==U.월지)?` <span style="color:var(--muted);font-size:13px">(앞의 「일터에서는…」이 <b>자리</b>(월지 ${BRANCHES[pr.p.mb]})라면, 이건 <b>일을 처리하는 손버릇</b>(일지 ${BRANCHES[pr.p.db]}의 십이운성 ${U.일지})이야. 기본값은 일간·격국이 말하는 <b>타고난 바탕</b>이고, 이 손버릇은 <b>가까운 사람·익숙한 자리</b>에서 나와.)</span>`:''}<span style="color:var(--muted);font-size:13px"> (십이운성 자리를 잡는 표는 유파마다 조금 갈려. 이 앱은 <b>화토동법</b>—무·기를 화와 같이 보는 기준—하나로 통일했으니, 다른 데서 본 값과 다를 수 있어.)</span> 연애에서의 속도와 리듬은 ${CHREF('사랑·연애','연애')}에서 이어 볼게.<br><span style="color:var(--muted)">💡 ${D.tip}</span></p>`;})()}
   ${(()=>{const G=gyeokGuk(pr);if(!G||!GYEOK_DESC[G.격])return '';const g=GYEOK_DESC[G.격];
     /* 9차 #2: 격국 강약점·신강 발현·팁은 11장(일로 보는 네 구조)·13장(짜임새에서 새는 자리)에 있다 */
@@ -5542,7 +5542,7 @@ function renderMyDetail(pr){
          연애 <속도>는 월지 운성(UNSEONG_DESC.pace, 궁합 10462행과 같은 표)으로 읽는다 — 새 문장 없음, 월주 정보 추가. */
       const M=UNSEONG_DESC[U.월지];
       return `<p class="body">일지, 곧 배우자 자리의 결로는 <b>${U.일지}</b>(${D.kw})${iya(U.일지)}. ${D.love}.</p>`
-        +(M&&M.pace?`<p class="body">연애의 <b>속도</b>는 월지(태어난 달의 지지)에서 읽어. 월지 운성은 <b>${U.월지}</b>(${M.kw})${iya(U.월지)}${U.월지===U.일지?' — 일지와 같은 단계라 끌림과 속도가 한 결로 가':''}. ${M.pace}.</p>`:'');}catch(e){return '';}})()+
+        +(M&&M.pace?`<p class="body">연애가 <b>시작되는 속도</b>는 월지(태어난 달의 지지)에서 읽어. 월지 운성은 <b>${U.월지}</b>(${M.kw})${iya(U.월지)}${U.월지===U.일지?' — 일지와 같은 단계라 끌림과 속도가 한 결로 가':''}. ${M.pace}.</p>`:'');}catch(e){return '';}})()+
     domainSplit(pr, LOVE_SPLIT, '연애에서 특히 갈리는 지점이 있어.', '관성', '관계에서 나를 잡아 주는 힘')+
     spouseAxes(pr)+
     (()=>{const _s=(typeof sinsalList==='function')?sinsalList(pr):[];const dohwa=_s.includes('도화살');
@@ -5829,7 +5829,7 @@ function renderMyDetail(pr){
       sajuDaeunCard(pr)+
       flowStory(pr)+
       (()=>{const Zt=ziwei(pr); if(!Zt||Zt.noTime) return ''; const dw=Zt.daewoon.find(d=>Zt.curAge>=d.age&&Zt.curAge<d.age+10)||Zt.daewoon[0]; if(!dw) return '';
-        return `<div class="zwfuse" style="margin-top:12px"><span class="fh">🧩 자미두수 대운, 지금 ‘인생의 챕터’</span>여기서는 <b>10년마다 인생의 주제가 바뀌는 큰 흐름</b>을 봐. 지금 너는 <b>${dw.age}~${dw.age+9}세 ${dw.pal} 대운</b> ${JOSA(dwPos(Zt.curAge,dw.age),'이라','라')}, 이 10년은 <b>‘${ZW_PAL_SUB[dw.pal]}’</b>${iga(ZW_PAL_SUB[dw.pal])} 인생의 메인 무대란 뜻이지. 쉽게 말해 <b>지금 이 시기엔 ‘${ZW_PAL_SUB[dw.pal]}’ 쪽에서 가장 큰 일·변화·기회가 일어나기 쉬우니, 여기에 힘을 실으면 운을 탄다</b>는 거야.${(()=>{const left=dw.age+10-Zt.curAge;const nx=Zt.daewoon.find(d=>d.age===dw.age+10);return (left<=2&&nx)?`<br><br><b>⏳ 대운 교체 임박, ${left<=0?'올해':left+'년 뒤'}부터 새 챕터!</b> ${dw.age+10}세부터는 무대가 <b>${nx.pal}(${GLOSS_KO[nx.pal]})</b>로 넘어가. 10년짜리 인생 주제가 바뀌는 전환기라, 큰 결정(이직·결혼·이사)은 이 흐름 교체를 보고 타이밍을 잡으면 좋아.`:'';})()}</div>`;})()) +
+        return `<div class="zwfuse" style="margin-top:12px"><span class="fh">🧩 자미두수 대운, 지금 ‘인생의 챕터’</span>여기서는 <b>10년마다 인생의 주제가 바뀌는 큰 흐름</b>을 봐. 지금 너는 <b>${dw.age}~${dw.age+9}세 ${dw.pal} 대운</b> ${JOSA(dwPos(Zt.curAge,dw.age),'이라','라')}, 이 10년은 <b>‘${ZW_PAL_SUB[dw.pal]}’</b>${iga(ZW_PAL_SUB[dw.pal])} 인생의 메인 무대란 뜻이지. ${dw.pal==='질액궁'?'쉽게 말해 <b>이 10년은 몸을 돌보는 일이 주제</b>야. 검진·생활 리듬 같은 지루한 것들에 힘을 실어. 몸 상태는 의료진의 안내로 판단해.':`쉽게 말해 <b>지금 이 시기엔 ‘${ZW_PAL_SUB[dw.pal]}’ 쪽에서 가장 큰 일·변화·기회가 일어나기 쉬우니, 여기에 힘을 실으면 운을 탄다</b>는 거야.`}${(()=>{const left=dw.age+10-Zt.curAge;const nx=Zt.daewoon.find(d=>d.age===dw.age+10);return (left<=2&&nx)?`<br><br><b>⏳ 대운 교체 임박, ${left<=0?'올해':left+'년 뒤'}부터 새 챕터!</b> ${dw.age+10}세부터는 무대가 <b>${nx.pal}(${GLOSS_KO[nx.pal]})</b>로 넘어가. 10년짜리 인생 주제가 바뀌는 전환기라, 큰 결정(${Zt.curAge>=65?'이사·재산 정리·돌봄 계획':'이직·결혼·이사'})은 이 흐름 교체를 보고 타이밍을 잡으면 좋아.`:'';})()}</div>`;})()) +
     sec('🧭','실전 활용, 방위·날짜·삼재', practicalSec(pr)) +
     narClose(pr);
   snsParas(document.getElementById('myDetail'));   /* 문단 나누기 — buildToc 이 손대기 전에 */
@@ -6532,9 +6532,9 @@ function fateHTML(pr){
      <div class="mc-section">한눈에 보기</div>
      ${(()=>{const S=kvSplit(kv,FATE_ME_KEYS,FATE_ME_DROP,'왜 이 사람인가, 네 쪽 이유');return `<div class="kv">${S.table}</div>${S.why}`;})()}
      ${zwFused}
-     <div class="mc-section">관계가 깊어지는 방식</div><p class="body sub">${P.develop}${MF?` <br><b>${myoStar} 명궁인 너</b>는 ${JOSA(MF.me,'이라','라')}, ${MF.fill} 관계가 한 단계씩 깊어져.`:''}${(()=>{const U=unseong(pr),D=UNSEONG_DESC[U.일지];return D?` <br><b>속도는 ‘${U.일지}’(${D.kw}) 단계</b>야. ${D.pace}. ${D.develop}. 앞 문장들이 상대 기운의 결이라면 이 속도는 <b>네 일지</b>의 결이라, 상대가 빠르게 다가와도 네 쪽 리듬은 이거야.`:'';})()}</p><div class="mc-section">이런 신호면 ‘얘다’ 싶어</div><ul class="clean">${signs.map(s=>`<li>${s}</li>`).join('')}</ul><div class="mc-section">💬 연락·대화의 결, 이렇게 다가와</div><p class="body sub">${FATE_TALK[fe]}${FS?`<br><b>부부궁 ${zwSt1}의 결이 얹히면</b>, ${FS.talk}.`:''}${MF?`<br>그리고 <b>${myoStar} 명궁</b>인 너는 ${JOSA(MF.me,'이라','라')}, 그 결을 알아봐 주는 연락의 온도에서 마음이 열려.`:''}</p><div class="mc-section">🚀 만남을 앞당기는 4가지</div><ul class="clean"><li><b>연습 장소</b>, ${P.places[0]}, ${P.places[2]} 같은 곳에 정기적으로 가. 상대 기운(${EL[fe].kw[0]})을 네 몸에 붙이는 연습이야.</li><li><b>타이밍 맞추기</b>, 약속은 <b>${Lf.day}</b>에, 포인트는 <b>${Lf.color}</b> 계열로. ${EL[fe].name} 기운을 네 쪽으로 당기는 세팅이야.</li><li><b>말해 두기</b>, 주변에 ‘${EL[fe].kw.slice(0,2).join('·')} 느낌인 사람 있으면 소개해 줘’라고 구체적으로 말해 둬. 운명도 경로가 있어야 와.</li>
+     <div class="mc-section">관계가 깊어지는 방식</div><p class="body sub">${P.develop}${MF?` <br><b>${myoStar} 명궁인 너</b>는 ${JOSA(MF.me,'이라','라')}, ${MF.fill} 관계가 한 단계씩 깊어져.`:''}${(()=>{const U=unseong(pr),D=UNSEONG_DESC[U.일지];return D?` <br><b>가까워진 뒤 깊어지는 리듬은 ‘${U.일지}’(${D.kw}) 단계</b>야. ${D.pace}. ${D.develop}. 앞 문장들이 상대 기운의 결이라면 이 리듬은 <b>네 일지</b>의 결이라, 시작이 빨라도 가까워진 뒤엔 이 리듬으로 가.`:'';})()}</p><div class="mc-section">이런 신호면 ‘얘다’ 싶어</div><ul class="clean">${signs.map(s=>`<li>${s}</li>`).join('')}</ul><div class="mc-section">💬 연락·대화의 결, 이렇게 다가와</div><p class="body sub">${FATE_TALK[fe]}${FS?`<br><b>부부궁 ${zwSt1}의 결이 얹히면</b>, ${FS.talk}.`:''}${MF?`<br>그리고 <b>${myoStar} 명궁</b>인 너는 ${JOSA(MF.me,'이라','라')}, 그 결을 알아봐 주는 연락의 온도에서 마음이 열려.`:''}</p><div class="mc-section">🚀 만남을 앞당기는 4가지</div><ul class="clean"><li><b>연습 장소</b>, ${P.places[0]}, ${P.places[2]} 같은 곳에 정기적으로 가. 상대 기운(${EL[fe].kw[0]})을 네 몸에 붙이는 연습이야.</li><li><b>타이밍 맞추기</b>, 약속은 <b>${Lf.day}</b>에, 포인트는 <b>${Lf.color}</b> 계열로. ${EL[fe].name} 기운을 네 쪽으로 당기는 세팅이야.</li><li><b>말해 두기</b>, 주변에 ‘${EL[fe].kw.slice(0,2).join('·')} 느낌인 사람 있으면 소개해 줘’라고 구체적으로 말해 둬. 운명도 경로가 있어야 와.</li>
        ${(()=>{const U=unseong(pr);const t=U&&FATE_ACCEL_UNS[U.일지];
-         return t?`<li><b>네 단계에 맞게 움직이기</b>, ${t} <span style="color:var(--muted)">(지금 네 기운이 ‘${U.일지}’ 단계라 이 방식이 제일 잘 먹혀.)</span></li>`:'';})()}
+         return t?`<li><b>네 단계에 맞게 움직이기</b>, ${t} <span style="color:var(--muted)">(네 일지가 ‘${U.일지}’ 단계라 이 방식이 제일 잘 먹혀.)</span></li>`:'';})()}
      </ul><div class="mc-section">🔍 헷갈릴 때, 운명 vs 피해야 할 상대 구분법</div><p class="body sub">구분 기준은 딱 하나, <b>만나고 난 뒤의 나</b>야. 운명(${EL[fe].name})의 사람과는 만나고 오면 <b>채워지고 편해져</b>. 피해야 할 상대(${EL[ae].name})${wa_gwa(EL[ae].name)}는 만나고 오면 <b>어딘가 소모되고 눈치 본 기억이 남아</b>. 세 번만 만나 보고 그 뒤의 네 에너지를 체크해. 몸은 거짓말 안 해.</p><div class="mc-tip">💡 잘 지내는 법, ${P.tip}</div>`;
 }
 function renderFate(pr){document.getElementById('fateCard')&&(document.getElementById('fateCard').innerHTML=fateHTML(pr));}
