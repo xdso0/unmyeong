@@ -62,7 +62,7 @@
 /* ============================================================
    사주 × 별자리 운명 분석, 전부 로컬, 외부통신 없음
    ============================================================ */
-const BUILD='2026-11-26.3';   // 날짜=빌드일, .N=그날 배포 순번. 재배포마다 갱신 → 자동 새로고침 트리거
+const BUILD='2026-11-27.1';   // 날짜=빌드일, .N=그날 배포 순번. 재배포마다 갱신 → 자동 새로고침 트리거
 /* 자동 업데이트: ①켜질 때 최신 BUILD 확인 → 다르면 캐시버스트 이동 ②탭이 다시 보일 때도 확인 → 읽던 중이면 강제 리로드 대신 배너
    (폰 브라우저는 옛 탭을 리로드 없이 복원하므로 ②가 없으면 며칠 전 버전이 계속 보임 — 오너 "어떤 건 배포됐고 어떤 건 안 됐던데" 원인) */
 (function(){try{
@@ -715,9 +715,10 @@ function personaSpec(elKey,role,pr,refY){
   /* 빛은 자리가 남을 때만(CLIP 77토큰) — 머리·색을 넣자 최악 조합이 넘쳤다. 글자 수로 어림하고 게이트(prompt_len)가 토큰으로 잰다 */
   if(light) prompt+=', '+light;
   /* ★얼굴 값(2026-11-25, 오너 「얼굴이 제일 중요」): 서버가 얼굴만 다시 그리고(주성 기준 얼굴) 얼굴형을 조절한다(오행 폭·주성 턱·주성 눈 — 눈은 2026-11-26 띠→주성).
-     fb(상대 띠)는 서버가 검증·캐시 키에만 쓴다. 성별이 정해지지 않으면(사람말 person) 싣지 않는다 — 16장 「눈매」 줄도 같은 조건. */
+     fb(상대 띠)는 서버가 검증·캐시 키에만 쓴다. 성별이 정해지지 않으면(사람말 person) fx='x' — 얼굴형 조절(warp)은 성별이 필요 없다(2026-11-27).
+     다시 그리기(full) 방식만 성별별 기준 얼굴이 있어서 x 를 건너뛴다. */
   let face=null;
-  try{ const fx=/ man$/.test(gw)?'m':(/ woman$/.test(gw)?'f':'');
+  try{ const fx=/ man$/.test(gw)?'m':(/ woman$/.test(gw)?'f':'x');
     if(FACE_STAGE_ON&&role!=='avoid'&&sp&&fx&&pr&&pr.p&&pr.p.db>=0) face={fs:sp,fe:elKey,fb:BRANCHES[YUKMAP[pr.p.db]],fx:fx}; }catch(e){ face=null; }
   return {prompt:prompt, seed:(seed%100000), age:age, face:face};
 }
@@ -737,8 +738,9 @@ function fateLazyOpen(det){
 }
 /* ★얼굴 단계 스위치(2026-11-25 오너 「화면 정리만 먼저」 → 11-26 「얼굴단계 켜」 → 같은 날 다시 끔).
    끈 이유: 원본 크기에서 얼굴형 조절(warp)이 윤곽 밖 머리칼·옷까지 번져 휘고(적대 검토 Z4), 오너 「얼굴 찌그러지고 귀도 찌그러지고 너무 이상」.
-   기준 얼굴(IP-Adapter)은 주성 특징 기여가 측정상 없었다. 켜면 운명의 상대 요청에 얼굴 값을 싣고 16장 「눈매」 줄이 보인다 — 서버 IMG_FACE=1 과 같이. */
-const FACE_STAGE_ON=false;
+   기준 얼굴(IP-Adapter)은 주성 특징 기여가 측정상 없었다.
+   → 2026-11-27 오너 「켜」: 번짐을 고친 <얼굴형 조절만> 방식(서버 IMG_FACE_MODE 기본 warp)으로 다시 켬. 운명의 상대 요청에 얼굴 값을 싣고 16장 「눈매」 줄이 보인다. */
+const FACE_STAGE_ON=true;
 /* 상대 그림 주소 — 그림 칸과 미리 만들기가 <글자까지 같은> 주소를 써야 캐시가 맞는다 */
 function personaUrl(sp){
   const f=sp.face;
@@ -747,6 +749,12 @@ function personaUrl(sp){
     +(f?('&fs='+encodeURIComponent(f.fs)+'&fe='+encodeURIComponent(f.fe)+'&fb='+encodeURIComponent(f.fb)+'&fx='+f.fx):'')
     +(IMG_TOKEN?('&token='+encodeURIComponent(IMG_TOKEN)):'');
 }
+/* ★그림이 실제로 나오는가(2026-11-27 적대 검토 Z5) — 상대가 미성년이면 personaSpec 이 null 이라 그림이 없다.
+   그림을 옮긴 줄(16장 「머리 모양」·「눈매」, 17장 「인상」·「머리 모양」)은 그림이 있을 때만 — 그림 칸과 같은 해(refY)로 판정. */
+function partnerShown(pr,role){ try{
+  const el=role==='avoid'?avoidElement(pr):fateElement(pr);
+  const ry=role==='avoid'?((typeof avoidYear==='function')?avoidYear(pr):null):(()=>{const _p=fatePick(pr);return _p?(_p.past?_p.past.y:(_p.win?_p.win.y:null)):null;})();
+  return !!personaSpec(el,role,pr,ry); }catch(e){ return false; } }
 function personaImg(elKey,role,pr,refY,lazy){
   /* 시드는 refY 를 안 탄다 — 운명의 상대는 한 사람이고 두 창은 그 사람을 만날 두 시점이다.
      시드를 바꾸면 <다른 사람 둘>로 읽힌다(2026-08-31). */
@@ -6641,8 +6649,8 @@ function fateHTML(pr){
     ["성격", `${EL[fe].kw.join('·')}`+(FS?`. 여기에 네 부부궁(${zwSt1}) 결이 얹혀. ${FS.trait}.`:'')],
     ...(ageNow(pr)>=19?[["체형·인상", X.height]]:[]),
     ["첫인상·분위기", P.vibe+(FS?` ${FS.vibe}. 그게 네 부부궁이 새겨 둔 끌림 코드야.`:'')],
-    ...((()=>{const sp=spouseStarOf(pr);return (sp&&SPOUSE_HAIR_KO[sp])?[["머리 모양", `<b>${SPOUSE_HAIR_KO[sp]}</b>. 네 부부궁(${sp})의 결을 머리 모양으로 옮긴 거야`]]:[];})()),
-    ...((()=>{const sp=spouseStarOf(pr);return (FACE_STAGE_ON&&sp&&SPOUSE_EYE_KO[sp]&&/ (man|woman)$/.test(partnerGenderWord()))?[["눈매", `<b>${SPOUSE_EYE_KO[sp]}</b>. 네 부부궁(${sp})이 그리는 눈매야`]]:[];})()),
+    ...((()=>{const sp=spouseStarOf(pr);return (sp&&SPOUSE_HAIR_KO[sp]&&partnerShown(pr,'fate'))?[["머리 모양", `<b>${SPOUSE_HAIR_KO[sp]}</b>. 네 부부궁(${sp})의 결을 머리 모양으로 옮긴 거야`]]:[];})()),
+    ...((()=>{const sp=spouseStarOf(pr);return (FACE_STAGE_ON&&sp&&SPOUSE_EYE_KO[sp]&&partnerShown(pr,'fate'))?[["눈매", `<b>${SPOUSE_EYE_KO[sp]}</b>. 네 부부궁(${sp})이 그리는 눈매야`]]:[];})()),
     ["직업·관심사", P.job],
     ...((()=>{const J=johu(pr);return J?[["계절이 정한 내 온도", `너는 ${J.season}에 난 사람이라 ${J.bias} 결이 바탕이야. ${J.need===fe?`그래서 <b>${EL[J.need].name}</b> 기운을 지닌 상대가 옆에 오면 ${J.level==='부족'?'비어 있던 온도가 채워져서 유난히 편해져':'이미 갖춘 걸 더 단단하게 받쳐 줘'}`:`용신 <b>${EL[fe].name}</b>의 상대에게 <b>${EL[J.need].name}</b>의 온기까지 곁들여 있으면 ${J.level==='부족'?'비어 있던 온도까지 채워져서 유난히 편해져':'이미 갖춘 걸 더 단단하게 받쳐 줘'}`}`]]:[];})()),
     ["나의 오행 균형", `네 사주는 <b>${ext.strong}(${ext.strongV}%)</b> 기운이 가장 세고 <b>${ext.weak}(${ext.weakV}%)</b> 기운이 가장 옅어. ${ext.weak===EL[fe].name.charAt(0)?`제일 옅은 기운이 곧 네 용신이라, <b>${EL[fe].name}</b>${eul(EL[fe].name.charAt(0))} 지닌 상대가 옆에 오면 빈 곳이 그대로 메워져`:`옆에 와야 할 건 제일 옅은 칸이 아니라 네 <b>${EL[fe].name}(용신)</b>${eul(EL[fe].name.charAt(0))} 지닌 사람이야(둘이 왜 갈리는지는 ${CHREF('개운 가이드','개운')}에서 짚었어). 그 사람이 옆에 올 때 이 치우침이 풀려`}`],
@@ -6749,10 +6757,10 @@ function avoidHTML(pr){
     ["나의 오행 균형", `네 사주는 <b>${extA.strong}(${extA.strongV}%)</b>${iga(extA.strong)} 과하고 <b>${extA.weak}(${extA.weakV}%)</b>${iga(extA.weak)} 옅어. 이 <b>${EL[ae].name}</b>(기신) 결의 사람은 그 불균형을 더 키우는 쪽이라 오래 붙으면 진이 빠져`],
     ["나의 기운 세기", bodyA],
     ...(ageNow(pr)>=19?[["체형·인상", X.height]]:[]),
-    ...((()=>{const S=spouseStarOf(pr)&&avoidShaOf(pr);if(!S) return [];
+    ...((()=>{const S=spouseStarOf(pr)&&avoidShaOf(pr);if(!S||!partnerShown(pr,'avoid')) return [];
       const why=S.별==='화기'?`네 부부궁 별(${S.on})에 <b>화기</b>가 붙어 있어서`:`네 부부궁에 <b>${S.별}</b>(${(SHA_MEAN[S.별]||'').split(',')[0]})${iga(S.별)} 앉아 있어서`;
       return [["인상", `<b>${AVOID_SHA_KO[S.별]}</b>. ${why}, 끌리지만 부딪히는 사람의 얼굴이야`]];})()),
-    ...((()=>{const sp=spouseStarOf(pr);return (sp&&AVOID_HAIR_KO[sp])?[["머리 모양", `<b>${AVOID_HAIR_KO[sp]}</b>. 네 부부궁(${sp})이 끌리는 결을 머리 모양으로 옮긴 거야`]]:[];})()),
+    ...((()=>{const sp=spouseStarOf(pr);return (sp&&AVOID_HAIR_KO[sp]&&partnerShown(pr,'avoid'))?[["머리 모양", `<b>${AVOID_HAIR_KO[sp]}</b>. 네 부부궁(${sp})이 끌리는 결을 머리 모양으로 옮긴 거야`]]:[];})()),
     ["어디서 마주치나", P.places.map(x=>'· '+x).join('<br>')],
     ...(dwAvoid?[["특히 취약한 무대 (대운)", `지금 네 <b>‘${dwAvoid}’ 대운</b>은 그 영역에서 마음이 헐거워지기 쉬운 시기라, 이 결의 상대가 그 틈으로 들어오기 쉬워`]]:[]),
     ["별자리로", `너는 <b>${JOSA(pr.zod,'이라','라')}</b><b>${zs.join('·')}</b> 결과 자주 부딪혀. 끌림도 세지만 소모도 세`],
