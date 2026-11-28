@@ -62,7 +62,7 @@
 /* ============================================================
    사주 × 별자리 운명 분석, 전부 로컬, 외부통신 없음
    ============================================================ */
-const BUILD='2026-11-27.1';   // 날짜=빌드일, .N=그날 배포 순번. 재배포마다 갱신 → 자동 새로고침 트리거
+const BUILD='2026-11-28.1';   // 날짜=빌드일, .N=그날 배포 순번. 재배포마다 갱신 → 자동 새로고침 트리거
 /* 자동 업데이트: ①켜질 때 최신 BUILD 확인 → 다르면 캐시버스트 이동 ②탭이 다시 보일 때도 확인 → 읽던 중이면 강제 리로드 대신 배너
    (폰 브라우저는 옛 탭을 리로드 없이 복원하므로 ②가 없으면 며칠 전 버전이 계속 보임 — 오너 "어떤 건 배포됐고 어떤 건 안 됐던데" 원인) */
 (function(){try{
@@ -380,7 +380,8 @@ const SPOUSE_HAIR_KO={자미:'단정하게 넘긴 머리',천기:'가볍게 층�
 const SPOUSE_HAIR_M={자미:"neatly slicked-back hair",천기:"light layered short hair",태양:"short hair with open forehead",무곡:"short crew cut",
   천동:"soft wavy hair",염정:"glossy black hair",천부:"classic side-parted hair",태음:"medium-length straight hair",탐랑:"styled curly hair",
   거문:"neat side-swept hair",천상:"neatly groomed short hair",천량:"natural relaxed hair",칠살:"short undercut hair",파군:"tousled messy hair"};
-const SPOUSE_HAIR_F={자미:"neatly tied-back long hair",천기:"light layered medium hair",태양:"swept-back hair with open forehead",무곡:"sharp short bob",
+/* ★자미 여자 머리는 구체어로(2026-11-28 실측: 「neatly tied-back」 은 풀린 머리로 나옴 → 「low ponytail」 은 2/2 묶여 나옴. 칠살 「very short pixie」 는 넘긴 머리가 돼 되돌림). 본문 SPOUSE_HAIR_KO 그대로 */
+const SPOUSE_HAIR_F={자미:"long hair tied back in a low ponytail",천기:"light layered medium hair",태양:"swept-back hair with open forehead",무곡:"sharp short bob",
   천동:"soft wavy long hair",염정:"glossy long black hair",천부:"classic shoulder-length hair",태음:"long straight hair",탐랑:"styled curly long hair",
   거문:"sleek tied hair",천상:"neat bob haircut",천량:"natural loose hair",칠살:"short pixie cut",파군:"tousled shaggy hair"};
 /* ★피해야 할 상대는 운명의 상대용 배우자 얼굴을 재사용하지 않는다(2026-09-04, 오너 지시).
